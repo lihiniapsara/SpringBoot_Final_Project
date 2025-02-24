@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login System - Firebase</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+
+        body {
+            background-image: url('images/login.png'); /* Replace with your image URL */
+            background-size: cover; /* Ensures the image covers the entire screen */
+            background-position: center; /* Centers the image */
+            background-repeat: no-repeat; /* Prevents the image from repeating */
+            background-attachment: fixed; /* Makes the background fixed while scrolling */
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            justify-content: flex-start; /* Aligns the container to the left */
+            align-items: center; /* Centers the items vertically */
+            padding-left: 50px; /* Adds some padding to the left to avoid touching the edge */
+        }
+
+        /* Login container positioned to the left */
+        .login-container {
+            width: 400px;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-red {
+            background-color: #d32f2f;
+            color: white;
+        }
+
+        .btn-red:hover {
+            background-color: #c62828;
+        }
+
+        .form-control:focus {
+            border-color: #d32f2f;
+            box-shadow: 0 0 0 0.25rem rgba(211, 47, 47, 0.25);
+        }
+
+        .social-icon {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+            background-color: rgba(255, 255, 255, 0); /* White background */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+
+        .social-icon:hover {
+            transform: scale(1.1); /* Slightly larger on hover */
+        }
+
+        .social-icon img {
+            transition: transform 0.3s ease;
+        }
+
+        .social-icon img:hover {
+            transform: scale(1.1); /* Slightly increase the size */
+        }
+
+
+        .facebook-icon {
+            background-color: #3b5998;
+            color: white;
+        }
+
+        .facebook-icon:hover {
+            background-color: #2d4373;
+        }
+        .social-icons-container {
+            display: flex;
+            align-items: center; /* Center the items vertically */
+            justify-content: flex-end; /* Center the items horizontally */
+            margin-top: 20px;
+        }
+
+        .social-icon i {
+            margin: 0;
+        }
+
+
+        .forgot-password-btn {
+            text-decoration: underline;
+        }
+
+        /* Forgot Password Popup */
+        .popup-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-content {
+            background-color: rgba(255, 255, 255, 0.68);
+            padding: 30px;
+            border-radius: 10px;
+            width: 300px;
+        }
+
+        .close-btn {
+            font-size: 20px;
+            cursor: pointer;
+            color: #000000;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="login-container">
+    <h3 class="text-center mb-4 text-danger">Login</h3>
+
+    <!-- Email & Phone Number Login -->
+    <form id="loginForm">
+        <div class="mb-3">
+            <label for="email" class="form-label">Email Or Phone</label>
+            <input type="email" class="form-control" id="email" placeholder="Enter your email or phone" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+            <a href="#" class="forgot-password-btn text-decoration-none" style="color: #8b0000;" onclick="showForgotPasswordPopup()">Forgot Password?</a>
+
+        </div>
+        <!-- Login Button aligned to the right -->
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-red w-50">Login</button>
+        </div>    </form>
+
+    <!-- Google and Facebook Login -->
+    <div class="social-icons-container">
+        <!-- Google Login Icon -->
+        <div id="googleLogin" class="social-icon google-icon" onclick="googleLogin()">
+            <img src="images/google.png" style="width: 30px; height: 30px;" alt="Google Logo" />
+        </div>
+
+        <!-- Facebook Login Icon -->
+        <div id="facebookLogin" class="social-icon facebook-icon" onclick="facebookLogin()">
+            <i class="fab fa-facebook-f"></i>
+        </div>
+    </div>
+
+
+    <p class="mt-3 text-center">Don't have an account?
+        <a href="DonarRegister.html" class="text-decoration-none"> Sign up Now</a>
+    </p>
+</div>
+
+<!-- Forgot Password Popup -->
+<div id="forgotPasswordPopup" class="popup-container">
+    <div class="popup-content">
+        <span class="close-btn" onclick="hideForgotPasswordPopup()">&times;</span>
+        <h4>Reset Password</h4>
+        <form id="resetPasswordForm">
+            <div class="mb-3">
+                <label for="resetEmail" class="form-label">Email or Phone</label>
+                <input type="text" class="form-control" id="resetEmail" placeholder="Enter your email or phone" required>
+            </div>
+            <div class="d-flex justify-content-end">
+                 <button type="submit" class="btn btn-red w-50">Send OTP</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider } from "https://www.gstatic.com/firebasejs/9.8.0/firebase-auth.js";
+
+
+
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyD52WhQ79ew9x1fbJjrteEAMeQ_yYNJwjw",
+        authDomain: "springbootfinal-ddc59.firebaseapp.com",
+        projectId: "springbootfinal-ddc59",
+        storageBucket: "springbootfinal-ddc59.firebasestorage.app",
+        messagingSenderId: "1917804613",
+        appId: "1:1917804613:web:84e4c12345d665099b832c",
+        measurementId: "G-HTF9SLYP3F"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Email Login
+    document.getElementById("loginForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                console.log("Logged in: ", userCredential.user);
+            })
+            .catch((error) => {
+                console.error("Error: ", error.message);
+            });
+    });
+
+    // Google Login
+    const googleProvider = new GoogleAuthProvider();
+    document.getElementById("googleLogin").addEventListener("click", () => {
+        signInWithPopup(auth, googleProvider)
+            .then((result) => {
+                console.log("Google login successful: ", result.user);
+            })
+            .catch((error) => {
+                console.error("Google login error: ", error.message);
+            });
+    });
+
+    // Facebook Login
+    const facebookProvider = new FacebookAuthProvider();
+    document.getElementById("facebookLogin").addEventListener("click", () => {
+        signInWithPopup(auth, facebookProvider)
+            .then((result) => {
+                console.log("Facebook login successful: ", result.user);
+            })
+            .catch((error) => {
+                console.error("Facebook login error: ", error.message);
+            });
+    });
+
+    // Forgot Password Popup Functions
+    function showForgotPasswordPopup() {
+        document.getElementById("forgotPasswordPopup").style.display = 'flex';
+    }
+
+    function hideForgotPasswordPopup() {
+        document.getElementById("forgotPasswordPopup").style.display = 'none';
+    }
+
+    // Reset Password
+    document.getElementById("resetPasswordForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const emailOrPhone = document.getElementById("resetEmail").value;
+
+        if (emailOrPhone.includes('@')) {
+            auth.sendPasswordResetEmail(emailOrPhone)
+                .then(() => {
+                    alert("Password reset link sent to your email.");
+                    hideForgotPasswordPopup();
+                })
+                .catch((error) => {
+                    console.error("Error: ", error.message);
+                });
+        } else {
+            const appVerifier = new firebase.auth.RecaptchaVerifier('resetPasswordForm', {
+                size: 'invisible',
+                callback: function(response) {
+                    console.log("Recaptcha resolved.");
+                }
+            });
+
+            auth.signInWithPhoneNumber(emailOrPhone, appVerifier)
+                .then((confirmationResult) => {
+                    const code = prompt("Enter the OTP sent to your phone:");
+                    return confirmationResult.confirm(code);
+                })
+                .then((result) => {
+                    alert("Password reset successful!");
+                    hideForgotPasswordPopup();
+                })
+                .catch((error) => {
+                    console.error("Phone reset error: ", error.message);
+                });
+        }
+    });
+</script>
+
+</body>
+</html>
