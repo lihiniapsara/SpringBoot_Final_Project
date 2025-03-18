@@ -9,7 +9,7 @@
 
     <style>
         body {
-            background-image: url('images/donar-register.png');
+            background-image: url('../Assest/images/donar-register.png');
             background-size: cover; /* Ensures the image covers the whole screen */
             background-position: center center; /* Centers the image */
             background-repeat: no-repeat; /* Prevents the image from repeating */
@@ -141,14 +141,14 @@
                     <input type="text" class="form-control" placeholder="Choose a username" required>
                 </div>
                 <div class="col-md-6 mb-3">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-control" placeholder="Enter your email" required>
+                </div>
+                <div class="col-md-6 mb-3">
                     <label class="form-label">Password</label>
                     <input type="password" class="form-control" id="password" placeholder="Choose a password" required>
                 </div>
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Confirm Password</label>
-                    <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm your password" required>
-                    <small id="passwordError" class="text-danger" style="display: none;">Passwords do not match!</small>
-                </div>
+
             </div>
             <div class="mb-3 form-check">
                 <input type="checkbox" class="form-check-input" id="terms" required>
@@ -172,18 +172,18 @@
 <div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 25px; margin-left: 135px;">
     <a href="#" onclick="openPopup('donor')" style="text-decoration: none; color: black; font-weight: bold; display: flex; flex-direction: column; align-items: center; position: relative;">
         <p style="position: absolute; top: 47px; text-align: center;">Donor <br> Register</p>
-        <img src="images/red-blood-drop.png" style="width: 150px; height: 150px;">
+        <img src="../Assest/images/red-blood-drop.png" style="width: 150px; height: 150px;">
     </a>
 
 
 
     <a href="#" onclick="openPopup1('hospital')" style="text-decoration: none; color: black; font-weight: bold; display: flex; flex-direction: column; align-items: center; position: relative;">
         <p style="position: absolute; top: 47px; text-align: center;">Hospital <br> Register</p>
-        <img src="images/red-blood-drop.png" style="width: 150px; height: 150px;">
+        <img src="../Assest/images/red-blood-drop.png" style="width: 150px; height: 150px;">
     </a>
     <a href="#" onclick="openPopup2('camp')" style="text-decoration: none; color: black; font-weight: bold; display: flex; flex-direction: column; align-items: center; position: relative;">
         <p style="position: absolute; top: 47px; text-align: center;">Camp <br> Register</p>
-        <img src="images/red-blood-drop.png" style="width: 150px; height: 150px;">
+        <img src="../Assest/images/red-blood-drop.png" style="width: 150px; height: 150px;">
     </a>
 </div>
 

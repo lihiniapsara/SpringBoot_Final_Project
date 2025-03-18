@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Life - Donate Blood, Save Lives</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px 0;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo h1 {
+            color: #e60023;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin: 0 15px;
+            position: relative;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            font-size: 16px;
+            transition: color 0.3s;
+            display: block;
+            padding: 5px 0;
+        }
+
+        .nav-links a:hover {
+            color: #e60023;
+        }
+
+        .nav-links li:hover .bi_megamenu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .bi_megamenu {
+            position: absolute;
+            top: 100%;
+            left: -200px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            width: 900px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            border-radius: 5px;
+            padding: 20px 0;
+            z-index: 1000;
+        }
+
+        .megamenu_row {
+            display: flex;
+            width: 100%;
+        }
+
+        .megamenu-column {
+            flex: 1;
+            padding: 0 20px;
+        }
+
+        .border-end {
+            border-right: 1px solid #eee;
+        }
+
+        .column-title {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .pages_list {
+            list-style: none;
+        }
+
+        .pages_list li {
+            margin: 8px 0;
+        }
+
+        .pages_list a {
+            color: #666;
+            font-size: 14px;
+            text-decoration: none;
+            transition: color 0.3s;
+            padding: 0;
+        }
+
+        .pages_list a:hover {
+            color: #e60023;
+        }
+
+        .megamenu-column.banner {
+            flex: 1.2;
+        }
+
+        .megamenu-banner {
+            padding: 0 15px;
+        }
+
+        .fblog_content {
+            margin-top: 10px;
+        }
+
+        .fblog_content a {
+            display: block;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+            margin-bottom: 5px;
+            text-decoration: none;
+        }
+
+        .fblog_content span {
+            color: #777;
+            font-size: 12px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .language-selector {
+            margin-right: 20px;
+            padding: 8px 12px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 21px;
+            cursor: pointer;
+        }
+
+        .menu-toggle span {
+            height: 3px;
+            width: 100%;
+            background-color: #333;
+            border-radius: 10px;
+        }
+
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/api/placeholder/1600/800') center/cover no-repeat;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            color: white;
+            padding-top: 60px;
+        }
+
+        .hero-content {
+            max-width: 650px;
+        }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            background-color: #e60023;
+            padding: 8px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .hero-tag .play-icon {
+            background-color: white;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+
+        .hero-tag span {
+            font-weight: 500;
+        }
+
+        .hero h2 {
+            color: #e60023;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 30px;
+            line-height: 1.2;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: #f76c82;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #e6546a;
+        }
+
+        .cta-section {
+            display: flex;
+            margin-top: 100px;
+        }
+
+        .cta-box {
+            flex: 1;
+            padding: 30px;
+            display: flex;
+            color: white;
+        }
+
+        .cta-box-red {
+            background-color: #e60023;
+        }
+
+        .cta-box-dark {
+            background-color: #222;
+        }
+
+        .cta-content {
+            max-width: 80%;
+        }
+
+        .cta-box h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .cta-box p {
+            margin-bottom: 20px;
+            opacity: 0.9;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .cta-icon {
+            margin-left: auto;
+            font-size: 24px;
+        }
+
+        @media (max-width: 992px) {
+            .bi_megamenu {
+                position: static;
+                width: 100%;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                display: none;
+            }
+
+            .nav-links {
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background: white;
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            }
+
+            .nav-links li {
+                margin: 10px 0;
+            }
+
+            .megamenu_row {
+                flex-direction: column;
+            }
+
+            .megamenu-column {
+                padding: 10px 0;
+                border-right: none;
+                border-bottom: 1px solid #eee;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+
+            .hero h2 {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .cta-section {
+                flex-direction: column;
+            }
+
+            .hero h1 {
+                font-size: 2.3rem;
+            }
+
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<header>
+    <div class="container">
+        <nav>
+            <div class="logo">
+                <h1>Blood Life</h1>
+            </div>
+
+            <ul class="nav-links">
+                <li>
+                    <a href="#">Home</a>
+                    <div class="bi_megamenu">
+                        <div class="megamenu_row">
+                            <div class="megamenu-column border-end">
+                                <h6 class="column-title">Home</h6>
+                                <ul class="pages_list">
+                                    <li><a href="index.html">Home 1</a></li>
+                                    <li><a href="index-2.html">Home 2</a></li>
+                                    <li><a href="index-3.html">Home 3</a></li>
+                                </ul>
+                            </div>
+                            <div class="megamenu-column border-end">
+                                <h6 class="column-title">Pages</h6>
+                                <ul class="pages_list">
+                                    <li><a href="about.html">About Us</a></li>
+                                    <li><a href="service.html">Service</a></li>
+                                    <li><a href="service-details.html">Service Details</a></li>
+                                    <li><a href="team-member.html">Team Member</a></li>
+                                    <li><a href="terms.html">Terms &amp; Condation</a></li>
+                                    <li><a href="privacypolicy.html">Privacy Policy</a></li>
+                                </ul>
+                            </div>
+                            <div class="megamenu-column border-end">
+                                <h6 class="column-title">Pages</h6>
+                                <ul class="pages_list">
+                                    <li><a href="photo-gallary.html">photo-gallary</a></li>
+                                    <li><a href="faq.html">faq</a></li>
+                                    <li><a href="campaign.html">Campaign</a></li>
+                                    <li><a href="campaign-details.html">Campaign Details</a></li>
+                                    <li><a href="donate.html">Donate</a></li>
+                                    <li><a href="register.html">Register</a></li>
+                                    <li><a href="register.html">Contract</a></li>
+                                    <li><a href="404.html">404</a></li>
+                                </ul>
+                            </div>
+                            <div class="megamenu-column border-end">
+                                <h6 class="column-title">Blog</h6>
+                                <ul class="pages_list">
+                                    <li><a href="blog-default.html">Blog Default</a></li>
+                                    <li><a href="blog-details.html">Blog Details</a></li>
+                                    <li><a href="blog-style1.html">Blog Style 1</a></li>
+                                    <li><a href="blog-style2.html">Blog style 2</a></li>
+                                    <li><a href="blog-details-left-sidebar.html">Blog Leftsidebar</a></li>
+                                    <li><a href="blog-details-right-sidebar.html">Blog Rightsidebar</a></li>
+                                </ul>
+                            </div>
+                            <div class="megamenu-column banner">
+                                <div class="megamenu-banner img">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="fblog_img img">
+                                                <a href="blog-details.html"><img src="/api/placeholder/300/200" alt="Blog image"></a>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="fblog_content">
+                                                <a href="blog-details.html">A Formula For Help And Happiness</a>
+                                                <span>18 February, 2022</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li><a href="#">About Us</a></li>
+                <li>
+                    <a href="#">Campaign</a>
+                    <div class="bi_megamenu">
+                        <div class="megamenu_row">
+                            <div class="megamenu-column border-end">
+                                <h6 class="column-title">Campaign</h6>
+                                <ul class="pages_list">
+                                    <li><a href="campaign.html">All Campaigns</a></li>
+                                    <li><a href="campaign-details.html">Campaign Details</a></li>
+                                    <li><a href="donate.html">Donate Now</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <a href="#">Pages</a>
+                    <div class="bi_megamenu">
+                        <div class="megamenu_row">
+                            <div class="megamenu-column border-end">
+                                <h6 class="column-title">Main Pages</h6>
+                                <ul class="pages_list">
+                                    <li><a href="about.html">About Us</a></li>
+                                    <li><a href="service.html">Service</a></li>
+                                    <li><a href="service-details.html">Service Details</a></li>
+                                    <li><a href="team-member.html">Team Member</a></li>
+                                </ul>
+                            </div>
+                            <div class="megamenu-column border-end">
+                                <h6 class="column-title">Other Pages</h6>
+                                <ul class="pages_list">
+                                    <li><a href="photo-gallary.html">Photo Gallery</a></li>
+                                    <li><a href="faq.html">FAQ</a></li>
+                                    <li><a href="donate.html">Donate</a></li>
+                                    <li><a href="register.html">Register</a></li>
+                                    <li><a href="404.html">404</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <a href="#">Blog</a>
+                    <div class="bi_megamenu">
+                        <div class="megamenu_row">
+                            <div class="megamenu-column border-end">
+                                <h6 class="column-title">Blog</h6>
+                                <ul class="pages_list">
+                                    <li><a href="blog-default.html">Blog Default</a></li>
+                                    <li><a href="blog-details.html">Blog Details</a></li>
+                                    <li><a href="blog-style1.html">Blog Style 1</a></li>
+                                    <li><a href="blog-style2.html">Blog style 2</a></li>
+                                    <li><a href="blog-details-left-sidebar.html">Blog Leftsidebar</a></li>
+                                    <li><a href="blog-details-right-sidebar.html">Blog Rightsidebar</a></li>
+                                </ul>
+                            </div>
+                            <div class="megamenu-column banner">
+                                <div class="megamenu-banner img">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="fblog_img img">
+                                                <a href="blog-details.html"><img src="/api/placeholder/300/200" alt="Blog image"></a>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="fblog_content">
+                                                <a href="blog-details.html">A Formula For Help And Happiness</a>
+                                                <span>18 February, 2022</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+
+            <div class="nav-right">
+                <div class="language-selector">English</div>
+                <div class="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-tag">
+                <div class="play-icon">▶</div>
+                <span>Intro Video</span>
+            </div>
+
+            <h2>Donate blood, save life!</h2>
+            <h1>Donate Blood And Inspire Others.</h1>
+
+            <a href="#" class="btn">Explore Now</a>
+
+            <div class="cta-section">
+                <div class="cta-box cta-box-red">
+                    <div class="cta-content">
+                        <h3>Register Now</h3>
+                        <p>Be a hero today. Your donation can save up to three lives and inspire countless others to make a difference.</p>
+                    </div>
+                    <div class="cta-icon">→</div>
+                </div>
+
+                <div class="cta-box cta-box-dark">
+                    <div class="cta-content">
+                        <h3>Donate Now</h3>
+                        <p>One donation can save multiple lives. Join our mission to ensure blood is available for all who need it.</p>
+                    </div>
+                    <div class="cta-icon">→</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Simple navigation toggle for mobile
+    document.querySelector('.menu-toggle').addEventListener('click', function() {
+        const navLinks = document.querySelector('.nav-links');
+        navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+    });
+</script>
+</body>
+</html>
