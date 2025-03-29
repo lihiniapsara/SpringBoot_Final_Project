@@ -133,10 +133,9 @@
     <h3 class="text-center mb-4 text-danger">Login</h3>
 
     <!-- Email & Phone Number Login -->
-    <form id="loginForm">
         <div class="mb-3">
-            <label for="email" class="form-label">Email Or Phone</label>
-            <input type="email" class="form-control" id="email" placeholder="Enter your email or phone" required>
+            <label for="email" class="form-label">Email Address</label>
+            <input type="email" class="form-control" id="email" placeholder="Enter your email address" required>
         </div>
         <div class="mb-3">
             <label for="password" class="form-label">Password</label>
@@ -145,9 +144,8 @@
         </div>
         <!-- Login Button aligned to the right -->
         <div class="d-flex justify-content-end">
-            <button type="submit" class="btn btn-red w-50">Login</button>
+            <button id="loginbtn" class="btn btn-red w-50">Login</button>
         </div>
-    </form>
 
     <!-- Google and Facebook Login -->
     <div class="social-icons-container">
@@ -185,6 +183,7 @@
 </div>
 
 <!-- Firebase SDK -->
+<!--
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.8.0/firebase-auth.js";
@@ -288,6 +287,221 @@
         }
     });
 </script>
+-->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Store feedback entries
+    let feedbackEntries = [];
 
+    document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Get form data
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const rating = document.querySelector('input[name="rating"]:checked').value;
+        const strengths = document.getElementById('strengths').value;
+        const improvements = document.getElementById('improvements').value;
+        const additional = document.getElementById('additional').value;
+        const recommendation = document.getElementById('recommendation').value;
+
+        // Create feedback entry object
+        const feedbackEntry = {
+            name,
+            email,
+            rating,
+            strengths,
+            improvements,
+            additional,
+            recommendation,
+            date: new Date().toLocaleString()
+        };
+
+        // Add to entries array
+        feedbackEntries.push(feedbackEntry);
+
+        // Display cards
+        displayFeedbackCards();
+
+        // Reset form
+        this.reset();
+
+        // Reset star ratings display
+        document.querySelectorAll('label[for^="star"]').forEach(label => {
+            label.style.backgroundColor = '#e2e8f0';
+        });
+
+        // Show confirmation
+        alert('Thank you for your feedback!');
+    });
+
+    // Function to display feedback cards as paragraphs
+    function displayFeedbackCards() {
+        const cardsContainer = document.getElementById('feedbackCards');
+        cardsContainer.innerHTML = ''; // Clear existing cards
+
+        // Generate paragraphs for each feedback entry
+        feedbackEntries.forEach((entry, index) => {
+            // Create card container
+            const card = document.createElement('div');
+            card.style.backgroundColor = 'white';
+            card.style.borderRadius = '12px';
+            card.style.boxShadow = '0 4px 15px rgba(0,0,0,0.06)';
+            card.style.padding = '20px';
+            card.style.marginBottom = '20px';
+
+            // Generate star display
+            const starsHtml = generateStars(entry.rating);
+
+            // Get recommendation badge style
+            const { badgeColor, badgeText, badgeIcon } = getRecommendationStyle(entry.recommendation);
+
+            // Set card content in paragraph style
+            card.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <h3 style="margin: 0; font-size: 1.1rem; color: #2d3748; font-weight: 600;">${entry.name}</h3>
+          <div style="font-size: 0.8rem; color: #718096;">${entry.date}</div>
+        </div>
+
+        <div style="font-size: 0.85rem; color: #718096; margin-bottom: 10px;">${entry.email}</div>
+
+        <div style="display: flex; align-items: center; margin-bottom: 15px;">
+          <div style="font-weight: 500; font-size: 0.9rem; color: #4a5568; margin-right: 10px;">Rating:</div>
+          <div style="display: flex; align-items: center;">
+            ${starsHtml}
+            <span style="margin-left: 8px; font-weight: 600; color: #2d3748;">${entry.rating}/5</span>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 15px; border-left: 3px solid #4299e1; padding-left: 15px;">
+          <div style="font-weight: 500; font-size: 0.9rem; color: #4a5568; margin-bottom: 5px;">What they liked:</div>
+          <p style="margin: 0; font-size: 0.95rem; color: #4a5568; line-height: 1.6;">${entry.strengths}</p>
+        </div>
+
+        <div style="margin-bottom: 15px; border-left: 3px solid #f6ad55; padding-left: 15px;">
+          <div style="font-weight: 500; font-size: 0.9rem; color: #4a5568; margin-bottom: 5px;">What could be improved:</div>
+          <p style="margin: 0; font-size: 0.95rem; color: #4a5568; line-height: 1.6;">${entry.improvements}</p>
+        </div>
+
+        ${entry.additional ? `
+        <div style="margin-bottom: 15px; border-left: 3px solid #cbd5e0; padding-left: 15px;">
+          <div style="font-weight: 500; font-size: 0.9rem; color: #4a5568; margin-bottom: 5px;">Additional comments:</div>
+          <p style="margin: 0; font-size: 0.95rem; color: #4a5568; line-height: 1.6;">${entry.additional}</p>
+        </div>
+        ` : ''}
+
+        <div style="margin-top: 15px;">
+          <div style="display: inline-block; padding: 6px 12px; border-radius: 20px; background-color: ${badgeColor}; color: white; font-size: 0.8rem; font-weight: 500;">
+            <i class="${badgeIcon}" style="margin-right: 5px;"></i>${badgeText}
+          </div>
+        </div>
+      `;
+
+            cardsContainer.appendChild(card);
+        });
+
+        // If no entries yet, show a message
+        if (feedbackEntries.length === 0) {
+            const emptyState = document.createElement('div');
+            emptyState.style.backgroundColor = 'white';
+            emptyState.style.borderRadius = '12px';
+            emptyState.style.boxShadow = '0 4px 15px rgba(0,0,0,0.06)';
+            emptyState.style.padding = '30px';
+            emptyState.style.textAlign = 'center';
+            emptyState.style.color = '#718096';
+            emptyState.innerHTML = `
+        <i class="far fa-comment-dots" style="font-size: 3rem; color: #cbd5e0; margin-bottom: 15px;"></i>
+        <p style="margin: 0; font-size: 1.1rem;">No feedback submissions yet. Be the first to share your thoughts!</p>
+      `;
+            cardsContainer.appendChild(emptyState);
+        }
+    }
+
+    // Function to generate star display
+    function generateStars(rating) {
+        let starsHtml = '';
+        for (let i = 1; i <= 5; i++) {
+            const starClass = i <= rating ? 'fas fa-star' : 'far fa-star';
+            const starColor = i <= rating ? '#f6ad55' : '#cbd5e0';
+            starsHtml += `<i class="${starClass}" style="color: ${starColor}; font-size: 0.9rem; margin-right: 2px;"></i>`;
+        }
+        return starsHtml;
+    }
+
+    // Function to get recommendation style
+    function getRecommendationStyle(recommendation) {
+        switch(recommendation) {
+            case 'yes':
+                return {
+                    badgeColor: '#48bb78',
+                    badgeText: 'Would Recommend',
+                    badgeIcon: 'fas fa-thumbs-up'
+                };
+            case 'maybe':
+                return {
+                    badgeColor: '#ed8936',
+                    badgeText: 'Might Recommend',
+                    badgeIcon: 'fas fa-question-circle'
+                };
+            case 'no':
+                return {
+                    badgeColor: '#e53e3e',
+                    badgeText: 'Would Not Recommend',
+                    badgeIcon: 'fas fa-thumbs-down'
+                };
+            default:
+                return {
+                    badgeColor: '#718096',
+                    badgeText: 'No Recommendation',
+                    badgeIcon: 'fas fa-info-circle'
+                };
+        }
+    }
+
+    // JavaScript to handle the rating highlighted state
+    const ratingInputs = document.querySelectorAll('input[name="rating"]');
+    ratingInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            // Reset all labels
+            document.querySelectorAll('label[for^="star"]').forEach(label => {
+                label.style.backgroundColor = '#e2e8f0';
+            });
+
+            // Highlight selected and lower ratings
+            const selectedValue = parseInt(this.value);
+            for (let i = 1; i <= selectedValue; i++) {
+                document.querySelector(`label[for="star${i}"]`).style.backgroundColor = '#f6ad55';
+            }
+        });
+    });
+
+    // Add hover effects to form elements
+    const formInputs = document.querySelectorAll('input[type="text"], input[type="email"], textarea, select');
+    formInputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.style.borderColor = '#4299e1';
+            this.style.boxShadow = '0 0 0 3px rgba(66, 153, 225, 0.15)';
+        });
+        input.addEventListener('blur', function() {
+            this.style.borderColor = '#e2e8f0';
+            this.style.boxShadow = 'none';
+        });
+    });
+
+    // Add hover effect for submit button
+    const submitButton = document.querySelector('button[type="submit"]');
+    submitButton.addEventListener('mouseover', function() {
+        this.style.backgroundColor = '#3182ce';
+        this.style.boxShadow = '0 4px 8px rgba(49, 130, 206, 0.3)';
+    });
+    submitButton.addEventListener('mouseout', function() {
+        this.style.backgroundColor = '#4299e1';
+        this.style.boxShadow = '0 2px 5px rgba(66, 153, 225, 0.3)';
+    });
+
+    // Initialize the feedback display
+    displayFeedbackCards();
+</script>
+<script src="../JS/login.js"></script>
 </body>
 </html>

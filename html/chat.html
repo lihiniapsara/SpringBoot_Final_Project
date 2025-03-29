@@ -6,7 +6,171 @@
     <title>Blood AI - Blood Donors Organization</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../Assest/css/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    <style>
+
+        input[type="radio"]:checked + label,
+        input[type="radio"]:hover + label {
+            color: #ff1e1e;
+        }
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #ff1e1e;
+            outline: none;
+        }
+        button:hover {
+            background-color: #e01a1a;
+        }
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal {
+            background-color: white;
+            width: 90%;
+            max-width: 300px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .modal1 {
+            background-color: white;
+            /*
+            width: 90%;
+            */
+            max-width: 1300px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+
+
+        .modal-header {
+            background-color: rgba(252, 61, 61, 0.74);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header1 {
+            background-color: rgba(252, 61, 61, 0.74);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .modal-close {
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .modal-content {
+            padding: 20px;
+        }
+
+        .modal-content1 {
+            padding: 20px;
+        }
+
+        .selection-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .selection-option {
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .selection-option:hover {
+            background-color: #e0e0e0;
+        }
+
+        .registration-form {
+            display: none;
+        }
+
+        .registration-form h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .registration-form1 {
+            display: none;
+        }
+
+        .registration-form1 h3 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .registration-form button {
+            padding: 10px 20px;
+            background-color: #ff1e1e;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .back-button {
+            background-color: #6c757d !important;
+            margin-right: 10px;
+        }
+    </style>
 </head>
 <body>
 <!-- Header -->
@@ -24,21 +188,16 @@
                 <li><a href="#testimonials">Feedback</a></li>
                 <li><a href="#request">Request</a></li>
 
-                    <a href="login.html" style="text-decoration: none;">
-                        <button class="cta">
-                            <span>LOGIN</span>
-                            <svg width="15px" height="8px" viewBox="0 0 13 10">
-                                <path d="M1,5 L11,5"></path>
-                                <polyline points="8 1 12 5 8 9"></polyline>
-                            </svg>
-                        </button>
-                    </a>
-
-
-
-
+                <a href="login.html" style="text-decoration: none;">
+                    <button class="cta">
+                        <span>LOGIN</span>
+                        <svg width="15px" height="8px" viewBox="0 0 13 10">
+                            <path d="M1,5 L11,5"></path>
+                            <polyline points="8 1 12 5 8 9"></polyline>
+                        </svg>
+                    </button>
+                </a>
             </ul>
-
         </nav>
     </div>
 </header>
@@ -57,7 +216,7 @@
     <div class="container"  >
         <!-- Call-to-action Section -->
         <section class="cta-section" style="margin-top: -90px; z-index: 1000">
-            <div class="cta-box register-box">
+            <div class="cta-box register-box" id="registerNowBtn">
                 <div id="register">
                     <h2 class="cta-title">Register Now</h2>
                     <p class="cta-text">Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain,</p>
@@ -86,7 +245,7 @@
                 </div>
                 <div class="card-content">
 
-                    <div class="card-icon" style="position: absolute; top: 190px; left: 200px; transform: translate(-50%, -50%); z-index: 2000;">
+                    <div class="card-icon" style="position: absolute; top: 190px; left: 200px; transform: translate(-50%, -50%);">
                         <img src="../Assest/img/d1.png" alt="Plus icon">
                     </div>
                     <h3 class="card-title">Become a donate</h3>
@@ -101,7 +260,7 @@
 
                 </div>
                 <div class="card-content">
-                    <div class="card-icon" style="position: absolute; top: 190px; left: 50%; transform: translate(-50%, -50%); z-index: 2000;">
+                    <div class="card-icon" style="position: absolute; top: 190px; left: 50%; transform: translate(-50%, -50%); ">
                         <img src="../Assest/img/d2.png" alt="Research icon">
                     </div>
                     <h3 class="card-title">Why give blood?</h3>
@@ -115,7 +274,7 @@
                     <img src="../Assest/img/r3.jpg" alt="How donations help">
                 </div>
                 <div class="card-content">
-                    <div class="card-icon" style="position: absolute; top: 190px; left: 50%; transform: translate(-50%, -50%); z-index: 2000;">
+                    <div class="card-icon" style="position: absolute; top: 190px; left: 50%; transform: translate(-50%, -50%); ">
                         <img src="../Assest/img/d3.png" alt="Heart icon">
                     </div>
                     <h3 class="card-title">How Donations Help?</h3>
@@ -269,21 +428,21 @@
 <!-- Header Call Now Banner -->
 <section class="header-call-now-banner"  >
     <div class="header-banner" style="background-image: linear-gradient(rgba(0,0,0,0.74), rgba(0,0,0,0.75)), url('../Assest/img/n1.jpg');height: 270px">
-    <div class="call-now-container" style="margin-top: 50px">
-        <div class="phone-icon">
-            <i class="fas fa-phone-alt"></i>
-        </div>
-        <div class="call-now-content">
-            <div class="call-now-header">Blood Donation</div>
-            <div class="phone-number">Call Now: 333 555 9090</div>
-            <div class="hours-email">
-                <span><i class="far fa-clock"></i> 9am-5:30pm (Mon-Fri)</span>
-                <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
-                <span><i class="far fa-envelope"></i> info@blood.org</span>
+        <div class="call-now-container" style="margin-top: 50px">
+            <div class="phone-icon">
+                <i class="fas fa-phone-alt"></i>
+            </div>
+            <div class="call-now-content">
+                <div class="call-now-header">Blood Donation</div>
+                <div class="phone-number">Call Now: 333 555 9090</div>
+                <div class="hours-email">
+                    <span><i class="far fa-clock"></i> 9am-5:30pm (Mon-Fri)</span>
+                    <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+                    <span><i class="far fa-envelope"></i> info@blood.org</span>
+                </div>
             </div>
         </div>
     </div>
-</div>
 </section>
 
 <!-- Popular Campaigns Section -->
@@ -323,57 +482,90 @@
 </section>
 
 <!-- Testimonials Section -->
-<section id="testimonials" class="section testimonials">
-    <div class="container">
-        <div class="section-title">
-            <h2>Donor Experiences</h2>
+<!-- Testimonials Section -->
+<!-- Testimonials Section -->
+<section id="testimonials" class="section testimonials" style="background-color: #e1e0e0; padding: 60px 0;">
+    <div style="display: flex; flex-direction: row; max-width: 1200px; margin: 0 auto; padding: 0 20px; gap: 40px; flex-wrap: wrap;">
+        <!-- Left side - Form -->
+        <div style="flex: 1; width: 650px;height: 600px;background-color: #fff; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); padding: 20px;">
+            <h1 style="text-align: center; color: #333; font-size: 1.5rem; margin-top: 0; margin-bottom: 20px; font-weight: 600;">Share Your Feedback</h1>
+            <form id="feedbackForm">
+                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                    <div style="flex: 1;">
+                        <label for="name" style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.9rem; color: #555;">Full Name</label>
+                        <input type="text" id="name" name="name" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 0.9rem; background-color: #f9f9f9; transition: border-color 0.3s;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label for="email" style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.9rem; color: #555;">Email Address</label>
+                        <input type="email" id="email" name="email" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 0.9rem; background-color: #f9f9f9; transition: border-color 0.3s;">
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.9rem; color: #555;">Rating</label>
+                    <div style="display: flex; gap: 6px;">
+                        <input type="radio" id="star5" name="rating" value="5" required style="display: none;">
+                        <label for="star5" style="cursor: pointer; font-size: 1.5rem; color: #ddd; transition: color 0.2s;">★</label>
+                        <input type="radio" id="star4" name="rating" value="4" style="display: none;">
+                        <label for="star4" style="cursor: pointer; font-size: 1.5rem; color: #ddd; transition: color 0.2s;">★</label>
+                        <input type="radio" id="star3" name="rating" value="3" style="display: none;">
+                        <label for="star3" style="cursor: pointer; font-size: 1.5rem; color: #ddd; transition: color 0.2s;">★</label>
+                        <input type="radio" id="star2" name="rating" value="2" style="display: none;">
+                        <label for="star2" style="cursor: pointer; font-size: 1.5rem; color: #ddd; transition: color 0.2s;">★</label>
+                        <input type="radio" id="star1" name="rating" value="1" style="display: none;">
+                        <label for="star1" style="cursor: pointer; font-size: 1.5rem; color: #ddd; transition: color 0.2s;">★</label>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label for="strengths" style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.9rem; color: #555;">What You Liked</label>
+                    <textarea id="strengths" name="strengths" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 0.9rem; height: 60px; background-color: #f9f9f9; resize: vertical; transition: border-color 0.3s;"></textarea>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label for="improvements" style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.9rem; color: #555;">Suggestions for Improvement</label>
+                    <textarea id="improvements" name="improvements" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 0.9rem; height: 60px; background-color: #f9f9f9; resize: vertical; transition: border-color 0.3s;"></textarea>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label for="recommendation" style="display: block; margin-bottom: 6px; font-weight: 500; font-size: 0.9rem; color: #555;">Would You Recommend Us?</label>
+                    <select id="recommendation" name="recommendation" required style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 0.9rem; background-color: #f9f9f9; appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" width=\"16\" height=\"16\"><path fill=\"none\" d=\"M0 0h24v24H0z\"/><path d=\"M12 15l-4.243-4.243 1.415-1.414L12 12.172l2.828-2.829 1.415 1.414z\" fill=\"rgba(85,85,85,1)\"/></svg>'); background-position: right 10px center; background-repeat: no-repeat;">
+                    <option value="" disabled selected>Select an option</option>
+                    <option value="yes">Yes</option>
+                    <option value="maybe">Maybe</option>
+                    <option value="no">No</option>
+                    </select>
+                </div>
+
+                <button type="submit" style="background-color: #ff1e1e; color: white; padding: 10px 25px; border: none; border-radius: 5px; cursor: pointer; font-size: 0.9rem; font-weight: 500; display: block; margin: 0 auto; transition: background-color 0.3s;">Submit Feedback</button>
+            </form>
         </div>
-        <div class="testimonial-container">
-            <div class="testimonial-card slide-in-left">
-                <div class="testimonial-text">
-                    "Donating blood was one of the most fulfilling experiences of my life. Knowing that my donation could save lives gave me a sense of purpose. The staff was friendly and made the process comfortable."
+
+        <!-- Right side - Feedback display -->
+        <div style="flex: 1.5; min-width: 200px;">
+            <div id="feedbackCards" style="display: flex; flex-direction: column; gap: 20px;">
+                <!-- Sample Feedback Card 1 -->
+                <div style="background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <div style="font-size: 1.2rem; color: #ff1e1e; margin-right: 10px;">★★★★★</div>
+                        <div style="font-weight: 500; color: #333;">John Doe</div>
+                    </div>
+                    <p style="color: #555; font-size: 1rem; margin-bottom: 10px;">"The team was incredibly supportive, and the process was smooth. I’m proud to be part of this life-saving mission!"</p>
+                    <p style="color: #777; font-size: 0.9rem;">March 20, 2025</p>
                 </div>
-                <div class="testimonial-author">
-                    <div class="author-img">
-                        <img src="/api/placeholder/100/100" alt="Testimonial Author">
+                <!-- Sample Feedback Card 2 -->
+                <div style="background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <div style="font-size: 1.2rem; color: #ff1e1e; margin-right: 10px;">★★★★☆</div>
+                        <div style="font-weight: 500; color: #333;">Jane Smith</div>
                     </div>
-                    <div class="author-info">
-                        <h4>Robert Smith</h4>
-                        <p>Regular Donor, 5 Years</p>
-                    </div>
-                </div>
-            </div>
-            <div class="testimonial-card slide-in-right">
-                <div class="testimonial-text">
-                    "After my sister needed blood transfusions during her cancer treatment, I decided to become a regular donor. The process is quick, easy, and the team at Blood AI makes it a pleasant experience every time."
-                </div>
-                <div class="testimonial-author">
-                    <div class="author-img">
-                        <img src="/api/placeholder/100/100" alt="Testimonial Author">
-                    </div>
-                    <div class="author-info">
-                        <h4>Lisa Johnson</h4>
-                        <p>Regular Donor, 3 Years</p>
-                    </div>
+                    <p style="color: #555; font-size: 1rem; margin-bottom: 10px;">"Great experience overall, but the waiting time could be improved."</p>
+                    <p style="color: #777; font-size: 0.9rem;">March 19, 2025</p>
                 </div>
             </div>
         </div>
     </div>
-</section>
-
-
-<!-- Blood Donor Group Section -->
-<!--<section class="donor-group-section">
-    <div class="donor-group-bg"></div>
-    <div class="container">
-        <h2 class="donor-group-title">We Are Blood Donor Group</h2>
-        <div class="play-button">
-            <i class="fas fa-play" style="color: white;"></i>
-        </div>
-    </div>
-</section>-->
-
-<!-- Blood Request Section -->
+</section><!-- Blood Request Section -->
 <section class="request-section">
     <div class="container">
         <div class="request-container">
@@ -531,202 +723,684 @@
         </div>
     </footer>
 </section>
-    <!--
-     About Section
-    <section id="about" class="section">
-        <div class="container-about">
-            <div class="section-title">
-                <h2>About Blood AI</h2>
-            </div>
-            <div class="about-container">
-                <div class="about-content slide-in-left">
-                    <h2>Welcome to Blood Donors Organization</h2>
-                    <p>Founded in 2010, Blood AI is dedicated to ensuring a safe and adequate blood supply for our community. Every day, blood donors help patients of all ages: accident and burn victims, heart surgery and organ transplant patients, and those battling cancer.</p>
-                    <p>Our mission is to collect and distribute voluntary donations of blood to hospitals for the benefit of patients requiring blood transfusions.</p>
-                    <a href="#" class="btn">Read More</a>
 
-                    <div class="stats-container">
-                        <div class="stat-item fade-in">
-                            <div class="stat-number">150K+</div>
-                            <div class="stat-label">Donors</div>
-                        </div>
-                        <div class="stat-item fade-in">
-                            <div class="stat-number">75K+</div>
-                            <div class="stat-label">Blood Units</div>
-                        </div>
-                        <div class="stat-item fade-in">
-                            <div class="stat-number">500+</div>
-                            <div class="stat-label">Events</div>
-                        </div>
-                        <div class="stat-item fade-in">
-                            <div class="stat-number">300K+</div>
-                            <div class="stat-label">Lives Saved</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="about-img slide-in-right">
-                    <img src="/api/placeholder/600/400" alt="About Blood AI">
-                </div>
+<!-- Modal/Popup Overlay -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 id="modalTitle">Select Registration Type</h2>
+            <span class="modal-close" id="modalClose">&times;</span>
+        </div>
+        <div class="modal-content">
+            <!-- Selection Menu -->
+            <div class="selection-container" id="selectionMenu">
+                <div class="selection-option" data-type="donor">Donor Registration</div>
+                <div class="selection-option" data-type="hospital">Hospital Registration</div>
+                <div class="selection-option" data-type="camp">Camp Registration</div>
             </div>
         </div>
-    </section>
-
-    &lt;!&ndash; Team Section &ndash;&gt;
-    <section id="team" class="section">
-        <div class="container-team">
-            <div class="section-title">
-                <h2>Our Expert Team</h2>
-            </div>
-            <div class="team-grid">
-                <div class="team-card fade-in">
-                    <div class="team-img">
-                        <img src="/api/placeholder/400/400" alt="Team Member">
-                        <div class="overlay">
-                            <div class="team-social">
-                                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                                <a href="#"><i class="fab fa-twitter"></i></a>
-                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="team-content">
-                        <h3>Dr. Sarah Johnson</h3>
-                        <p>Chief Medical Officer</p>
-                    </div>
-                </div>
-                <div class="team-card fade-in">
-                    <div class="team-img">
-                        <img src="/api/placeholder/400/400" alt="Team Member">
-                        <div class="overlay">
-                            <div class="team-social">
-                                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                                <a href="#"><i class="fab fa-twitter"></i></a>
-                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="team-content">
-                        <h3>Dr. Michael Brown</h3>
-                        <p>Hematology Specialist</p>
-                    </div>
-                </div>
-                <div class="team-card fade-in">
-                    <div class="team-img">
-                        <img src="/api/placeholder/400/400" alt="Team Member">
-                        <div class="overlay">
-                            <div class="team-social">
-                                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                                <a href="#"><i class="fab fa-twitter"></i></a>
-                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="team-content">
-                        <h3>Emily Wilson</h3>
-                        <p>Donor Relations</p>
-                    </div>
-                </div>
-            </div>
+    </div>
+    <div class="modal1">
+        <div class="modal-header1">
+            <span class="modal-close" id="modalClose1">&times;</span>
         </div>
-    </section>
+        <div class="modal-content1">
 
-    &lt;!&ndash; Testimonials Section &ndash;&gt;
-    <section id="testimonials" class="section testimonials">
-        <div class="container-testimonials">
-            <div class="section-title">
-                <h2>Donor Experiences</h2>
-            </div>
-            <div class="testimonial-container">
-                <div class="testimonial-card slide-in-left">
-                    <div class="testimonial-text">
-                        "Donating blood was one of the most fulfilling experiences of my life. Knowing that my donation could save lives gave me a sense of purpose. The staff was friendly and made the process comfortable."
+
+            <div class="registration-form" id="donorForm">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
+                    <div>
+                        <label>Full Name</label>
+                        <input type="text" id="donorname" style="width: 100%; padding: 3px;" placeholder="Enter your full name" required>
                     </div>
-                    <div class="testimonial-author">
-                        <div class="author-img">
-                            <img src="/api/placeholder/100/100" alt="Testimonial Author">
+                    <div>
+                        <label>Date of Birth</label>
+                        <input type="date" id="dateOfBirth" style="width: 100%; padding: 3px;" required>
+                    </div>
+                    <div>
+                        <label>Gender</label>
+                        <select id="gender" style="width: 100%; padding: 3px;" required>
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Blood Group</label>
+                        <select id="bloodGroup" style="width: 100%; padding: 3px;" required>
+                            <option value="">Select Blood Group</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>NIC/Passport Number</label>
+                        <input type="text" id="nicOrPassport" style="width: 100%; padding: 3px;" placeholder="Enter NIC or Passport Number" required>
+                    </div>
+                    <div>
+                        <label>Contact Number</label>
+                        <input type="tel" id="contactdonor" style="width: 100%; padding: 3px;" placeholder="Enter your phone number" required>
+                    </div>
+                    <div>
+                        <label>Email Address</label>
+                        <input type="email" id="donoremail" style="width: 100%; padding: 3px;" placeholder="Enter your email address" required>
+                    </div>
+                    <div style="grid-column: span 2;">
+                        <label>Home Address</label>
+                        <textarea id="homeAddress" style="width: 100%; padding: 3px;" rows="2" placeholder="Enter your home address" required></textarea>
+                    </div>
+                    <div>
+                        <label>City</label>
+                        <input type="text" id="city" style="width: 100%; padding: 3px;" placeholder="Enter your city" required>
+                    </div>
+                    <div>
+                        <label>District</label>
+                        <select id="dist" style="width: 100%; padding: 3px;" required onchange="updateProvince()">
+                            <option value="">Select District</option>
+                            <option value="Colombo">Colombo</option>
+                            <option value="Gampaha">Gampaha</option>
+                            <option value="Kalutara">Kalutara</option>
+                            <option value="Kandy">Kandy</option>
+                            <option value="Matale">Matale</option>
+                            <option value="Nuwara Eliya">Nuwara Eliya</option>
+                            <option value="Galle">Galle</option>
+                            <option value="Matara">Matara</option>
+                            <option value="Hambantota">Hambantota</option>
+                            <option value="Jaffna">Jaffna</option>
+                            <option value="Kilinochchi">Kilinochchi</option>
+                            <option value="Mannar">Mannar</option>
+                            <option value="Vavuniya">Vavuniya</option>
+                            <option value="Mullaitivu">Mullaitivu</option>
+                            <option value="Batticaloa">Batticaloa</option>
+                            <option value="Ampara">Ampara</option>
+                            <option value="Trincomalee">Trincomalee</option>
+                            <option value="Kurunegala">Kurunegala</option>
+                            <option value="Puttalam">Puttalam</option>
+                            <option value="Anuradhapura">Anuradhapura</option>
+                            <option value="Polonnaruwa">Polonnaruwa</option>
+                            <option value="Badulla">Badulla</option>
+                            <option value="Monaragala">Monaragala</option>
+                            <option value="Ratnapura">Ratnapura</option>
+                            <option value="Kegalle">Kegalle</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label>Province</label>
+                        <input type="text" id="province" style="width: 100%; padding: 3px;" placeholder="Province" readonly required>
+                    </div>
+
+                    <script>
+                        function updateProvince() {
+                            const districtToProvince = {
+                                "Colombo": "Western",
+                                "Gampaha": "Western",
+                                "Kalutara": "Western",
+                                "Kandy": "Central",
+                                "Matale": "Central",
+                                "Nuwara Eliya": "Central",
+                                "Galle": "Southern",
+                                "Matara": "Southern",
+                                "Hambantota": "Southern",
+                                "Jaffna": "Northern",
+                                "Kilinochchi": "Northern",
+                                "Mannar": "Northern",
+                                "Vavuniya": "Northern",
+                                "Mullaitivu": "Northern",
+                                "Batticaloa": "Eastern",
+                                "Ampara": "Eastern",
+                                "Trincomalee": "Eastern",
+                                "Kurunegala": "North Western",
+                                "Puttalam": "North Western",
+                                "Anuradhapura": "North Central",
+                                "Polonnaruwa": "North Central",
+                                "Badulla": "Uva",
+                                "Monaragala": "Uva",
+                                "Ratnapura": "Sabaragamuwa",
+                                "Kegalle": "Sabaragamuwa"
+                            };
+
+                            let district = document.getElementById("dist").value;
+                            let province = districtToProvince[district] || "";
+                            document.getElementById("province").value = province;
+                        }
+                    </script>
+
+                    <div>
+                        <label>Zip Code</label>
+                        <input type="text" id="zipCode" style="width: 100%; padding: 3px;" placeholder="Enter zip code" required>
+                    </div>
+
+                    <div style="grid-column: span 2; margin-top: 10px;">
+                        <label style="font-weight: bold; margin-bottom: 5px;">Do you have any of the following?</label>
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between">
+                            <label><input type="checkbox" name="health_conditions" value="Diabetes"> Diabetes</label>
+                            <label><input type="checkbox" name="health_conditions" value="Heart Problem"> Heart Problem</label>
+                            <label><input type="checkbox" name="health_conditions" value="Low Pressure"> Low Pressure</label>
+                            <label><input type="checkbox" name="health_conditions" value="High Pressure"> High Pressure</label>
+                            <label><input type="checkbox" name="health_conditions" value="Social Issues"> Social Issues</label>
+                            <label><input type="checkbox" name="health_conditions" value="Tattoos"> Tattoos</label>
+                            <label><input type="checkbox" name="health_conditions" value="Other"> Other</label>
                         </div>
-                        <div class="author-info">
-                            <h4>Robert Smith</h4>
-                            <p>Regular Donor, 5 Years</p>
-                        </div>
+                    </div>
+
+                    <div style="grid-column: span 2; text-align: center;">
+                        <button onclick="registerdonor(event)" style="padding: 8px 16px; background: green; color: white; border: none; cursor: pointer; margin-left: 360px; margin-top: 5px">Register</button>
                     </div>
                 </div>
-                <div class="testimonial-card slide-in-right">
-                    <div class="testimonial-text">
-                        "After my sister needed blood transfusions during her cancer treatment, I decided to become a regular donor. The process is quick, easy, and the team at Blood AI makes it a pleasant experience every time."
-                    </div>
-                    <div class="testimonial-author">
-                        <div class="author-img">
-                            <img src="/api/placeholder/100/100" alt="Testimonial Author">
-                        </div>
-                        <div class="author-info">
-                            <h4>Lisa Johnson</h4>
-                            <p>Regular Donor, 3 Years</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    &lt;!&ndash; Contact Section &ndash;&gt;
-    <section id="contact" class="section">
-        <div class="container-contact">
-            <div class="section-title">
-                <h2>Contact Us</h2>
             </div>
-            <div class="contact-container">
-                <div class="contact-form slide-in-left">
-                    <h3>Send Us a Message</h3>
-                    <form>
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Your Name">
-                        </div>
-                        <div class="form-group">
-                            <input type="email" class="form-control" placeholder="Your Email">
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Subject">
-                        </div>
-                        <div class="form-group">
-                            <textarea class="form-control" placeholder="Your Message"></textarea>
-                        </div>
-                        <button type="submit" class="btn">Send Message</button>
+
+            <!-- Hospital Registration Form -->
+            <div class="registration-form1" id="hospitalForm" >
+                <h3>Hospital Registration</h3>
+                <div style="display: flex; flex-direction: row;justify-content: center; ">
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr ; width: 500px; gap: 10px; font-size: 12px; padding: 10px; background-color: #f9f9f9; border-radius: 8px; border: 1px solid #ddd;">
+                        <!-- Basic Information (Column 1) -->
+                        <h3 style="grid-column: span 2; font-size: 18px; text-align: center; color: #4CAF50;">1. Basic Information</h3>
+
+                        <label style="font-size: 14px;">Hospital Name</label>
+                        <input type="text" required placeholder="Enter Hospital Name" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd;">
+
+                        <label style="font-size: 14px;">Type of Hospital</label>
+                        <select required style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd;">
+                            <option value="">Select Type</option>
+                            <option value="Private">Private</option>
+                            <option value="Government">Government</option>
+                            <option value="Specialized">Specialized</option>
+                        </select>
+
+                        <label style="font-size: 14px;">Registration Number</label>
+                        <input type="text" placeholder="Enter Registration Number" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd;">
+
+                        <label style="font-size: 14px;">Year of Establishment</label>
+                        <input type="number" min="1900" max="2025" required placeholder="Enter Year of Establishment" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd;">
+
+                        <!-- Location Details (Column 2) -->
+                        <h3 style="grid-column: span 2; font-size: 18px; text-align: center; color: #4CAF50;">2. Location Details</h3>
+
+                        <label style="font-size: 14px;">Address</label>
+                        <input type="text" required placeholder="Enter Hospital Address" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd;">
+
+                        <label style="font-size: 14px;">City</label>
+                        <input type="text" required placeholder="Enter City" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd;">
+
+                        <label style="font-size: 14px;">District</label>
+                        <input type="text" required placeholder="Enter District" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd;">
+
+                        <label style="font-size: 14px;">Province</label>
+                        <input type="text" required placeholder="Enter Province" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd;">
+
+                        <label style="font-size: 14px;">Zip Code</label>
+                        <input type="text" required placeholder="Enter Zip Code" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd;">
+
+                    </div>
+
+                    <form style="display: grid; grid-template-columns: 1fr 1fr ; width: 500px; gap: 10px; font-size: 12px; padding: 10px; background-color: #f9f9f9; border-radius: 8px; border: 1px solid #ddd;">
+                        <!-- Contact Information (Column 1) -->
+                        <h3 style="grid-column: span 2; font-size: 18px; text-align: center; color: #4CAF50;">3. Contact Information</h3>
+
+                        <label style="font-size: 14px;">Official Email Address</label>
+                        <input type="email" required placeholder="Enter Official Email Address" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd; height: 45px">
+
+                        <label style="font-size: 14px;">Contact Number</label>
+                        <input type="tel" required placeholder="Enter Contact Number" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd; height: 45px">
+
+                        <label style="font-size: 14px;">Emergency Contact Number</label>
+                        <input type="tel" required placeholder="Enter Emergency Contact Number" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd; height: 45px">
+
+                        <label style="font-size: 14px;">Website (If available)</label>
+                        <input type="url" placeholder="Enter Website URL" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd; height: 45px">
+
+                        <!-- Blood Bank Information (Column 2) -->
+                        <h3 style="grid-column: span 2; font-size: 18px; text-align: center; color: #4CAF50;">4. Blood Bank Information</h3>
+
+                        <label style="font-size: 14px;">Does the hospital have a blood bank?</label>
+                        <select required style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd; height: 45px">
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+
+                        <label style="font-size: 14px;">Blood Bank Contact Person’s Name</label>
+                        <input type="text" placeholder="Enter Contact Person's Name" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd; height: 45px">
+
+                        <label style="font-size: 14px;">Blood Bank Contact Number</label>
+                        <input type="tel" placeholder="Enter Contact Number" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd; height: 45px">
+
+                        <label style="font-size: 14px;">Blood Groups Available</label>
+                        <input type="text" placeholder="A+, A-, B+, etc." style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd; height: 45px">
+
                     </form>
+
+                    <form style="display: grid; grid-template-columns: 1fr 1fr ; width: 500px; gap: 10px; font-size: 12px; padding: 10px; background-color: #f9f9f9; border-radius: 8px; border: 1px solid #ddd;">
+
+                        <!-- Licensing & Approvals (Column 1) -->
+                        <h3 style="grid-column: span 2; font-size: 18px; text-align: center; color: #4CAF50;">5. Licensing & Approvals</h3>
+
+                        <label style="font-size: 14px;">Blood Bank License Number</label>
+                        <input type="text" placeholder="Enter License Number" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd; height: 45px">
+
+                        <label style="font-size: 14px;">Health Ministry Approval Certificate</label>
+                        <input type="file" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd; height: 45px">
+
+                        <!-- Services & Facilities (Column 2) -->
+                        <h3 style="grid-column: span 2; font-size: 18px; text-align: center; color: #4CAF50;">6. Services & Facilities</h3>
+
+                        <label style="font-size: 14px;">24/7 Emergency Blood Services Available?</label>
+                        <select required style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd; height: 45px">
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+
+                        <label style="font-size: 14px;">Blood Donation Camp Facilities?</label>
+                        <select required style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd; height: 45px">
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+
+                        <label style="font-size: 14px;">Number of Blood Storage Units</label>
+                        <input type="number" min="0" placeholder="Enter Number of Units" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd; height: 45px">
+                    </form>
+
                 </div>
-                <div class="contact-info slide-in-right">
-                    <h3>Our Information</h3>
-                    <div class="contact-item">
-                        <div class="contact-icon">
-                            <i class="fas fa-map-marker-alt"></i>
-                        </div>
-                        <div class="contact-text">
-                            <h4>Location</h4>
-                            <p>123 Medical Drive, Healthville, CA 90210</p>
-                        </div>
+
+                <div style="grid-column: span 2; text-align: center; margin-top: 8px;">
+                    <button type="submit" style="padding: 8px 16px; background: green; color: white; border: none; cursor: pointer; margin-left: 1250px; margin-top: 8px">Register</button>
+                </div>
+            </div>
+
+            <!-- Camp Registration Form -->
+            <div class="registration-form" id="campForm">
+                <h3>Blood Donation Camp Registration</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px">
+                    <div>
+                        <label for="hospitalDropdown">Select Hospital:</label>
+                        <select id="hospitalDropdown" style="width: 100%; padding: 3px;" required></select>
+<!--
+                        <option value="" disabled selected>Select a hospital</option>
+-->
+                        </select>
                     </div>
-                    <div class="contact-item">
-                        <div class="contact-icon">
-                            <i class="fas fa-phone"></i>
-                        </div>
-                        <div class="contact-text">
-                            <h4>Phone</h4>
-                            <p>+1 (555) 123-4567</p>
-                        </div>
+
+
+                    <div>
+                        <label>Camp Date</label>
+                        <input id="campDate" type="date" style="width: 100%; padding: 3px;" required>
                     </div>
-                    <div class="contact-item">
-                        <div class="contact-icon">
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <div class="contact-text">
-                            <h4>Email</h4>
-                            <p>info@bloodai.org</p>
-                        </div>
+
+                    <div style="margin-top: 15px">
+                        <label>Camp Name</label>
+                        <input id="campName" type="text" style="width: 100%; padding: 3px;" placeholder="Enter camp name" required>
                     </div>
-                    <div class="contact-item">
-                        <div class="contact-icon">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                        <div class="contact-text">
-                            <h4>Opening Hours</h4>
-                            <p>Monday - Friday: 8:00-->
+                    <div style="margin-top: 15px">
+                        <label>Contact Number</label>
+                        <input id ="contactNumber" type="tel" style="width: 100%; padding: 3px;" placeholder="Enter contact number" required>
+                    </div>
+                    <div>
+                        <label>Email Address</label>
+                        <input id="email-camp" type="email" style="width: 100%; padding: 3px;" placeholder="Enter email address" required>
+                    </div>
+                    <div>
+                        <label>Camp Location</label>
+                        <textarea id="campLocation" style="width: 100%; padding: 3px; height: 33px" rows="2" placeholder="Enter camp location" required></textarea>
+                    </div>
+                    <div>
+                        <label>City</label>
+                        <input id="city2" type="text" style="width: 100%; padding: 3px;" placeholder="Enter city" required>
+                    </div>
+                    <div>
+                        <label>District</label>
+                        <select id="districtDropdown" style="width: 100%; padding: 3px;" required onchange="updateProvince1()">
+                            <option value="">Select District</option>
+                            <option value="Colombo">Colombo</option>
+                            <option value="Gampaha">Gampaha</option>
+                            <option value="Kalutara">Kalutara</option>
+                            <option value="Kandy">Kandy</option>
+                            <option value="Matale">Matale</option>
+                            <option value="Nuwara Eliya">Nuwara Eliya</option>
+                            <option value="Galle">Galle</option>
+                            <option value="Matara">Matara</option>
+                            <option value="Hambantota">Hambantota</option>
+                            <option value="Jaffna">Jaffna</option>
+                            <option value="Kilinochchi">Kilinochchi</option>
+                            <option value="Mannar">Mannar</option>
+                            <option value="Vavuniya">Vavuniya</option>
+                            <option value="Mullaitivu">Mullaitivu</option>
+                            <option value="Batticaloa">Batticaloa</option>
+                            <option value="Ampara">Ampara</option>
+                            <option value="Trincomalee">Trincomalee</option>
+                            <option value="Kurunegala">Kurunegala</option>
+                            <option value="Puttalam">Puttalam</option>
+                            <option value="Anuradhapura">Anuradhapura</option>
+                            <option value="Polonnaruwa">Polonnaruwa</option>
+                            <option value="Badulla">Badulla</option>
+                            <option value="Monaragala">Monaragala</option>
+                            <option value="Ratnapura">Ratnapura</option>
+                            <option value="Kegalle">Kegalle</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label>Province</label>
+                        <input type="text" id="campprovince" style="width: 100%; padding: 3px;" placeholder="Province" readonly required>
+                    </div>
+
+                    <script>
+                        function updateProvince1() {
+                            const districtToProvince = {
+                                "Colombo": "Western",
+                                "Gampaha": "Western",
+                                "Kalutara": "Western",
+                                "Kandy": "Central",
+                                "Matale": "Central",
+                                "Nuwara Eliya": "Central",
+                                "Galle": "Southern",
+                                "Matara": "Southern",
+                                "Hambantota": "Southern",
+                                "Jaffna": "Northern",
+                                "Kilinochchi": "Northern",
+                                "Mannar": "Northern",
+                                "Vavuniya": "Northern",
+                                "Mullaitivu": "Northern",
+                                "Batticaloa": "Eastern",
+                                "Ampara": "Eastern",
+                                "Trincomalee": "Eastern",
+                                "Kurunegala": "North Western",
+                                "Puttalam": "North Western",
+                                "Anuradhapura": "North Central",
+                                "Polonnaruwa": "North Central",
+                                "Badulla": "Uva",
+                                "Monaragala": "Uva",
+                                "Ratnapura": "Sabaragamuwa",
+                                "Kegalle": "Sabaragamuwa"
+                            };
+
+                            let district = document.getElementById("districtDropdown").value; // Corrected ID
+                            let province = districtToProvince[district] || "";
+                            document.getElementById("campprovince").value = province; // Corrected ID
+                        }
+                    </script>
+                    <div>
+                        <label>Zip Code</label>
+                        <input id="zipCode-camp" type="text" style="width: 100%; padding: 3px;" placeholder="Enter zip code" required>
+                    </div>
+
+                    <div style="grid-column: span 2; text-align: center;">
+                        <button onclick="campRegister(event)" style="padding: 8px 16px; background: green; color: white; border: none; cursor: pointer; margin-left: 360px; margin-top: 15px; margin-bottom: 15px">Register</button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+    <script>
+        // Get elements
+        const ctaBox = document.querySelector('.cta-box');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const modalClose = document.getElementById('modalClose');
+        const modalClose1 = document.getElementById('modalClose1');
+        const selectionMenu = document.getElementById('selectionMenu');
+        const selectionOptions = document.querySelectorAll('.selection-option');
+        const modalTitle = document.getElementById('modalTitle');
+
+        // Get forms
+        const donorForm = document.getElementById('donorForm');
+        const hospitalForm = document.getElementById('hospitalForm');
+        const campForm = document.getElementById('campForm');
+
+        // Get back buttons
+        const donorBackBtn = document.getElementById('donorBackBtn');
+        const hospitalBackBtn = document.getElementById('hospitalBackBtn');
+        const campBackBtn = document.getElementById('campBackBtn');
+
+        // Get submit buttons
+        const donorSubmitBtn = document.getElementById('donorSubmitBtn');
+        const hospitalSubmitBtn = document.getElementById('hospitalSubmitBtn');
+        const campSubmitBtn = document.getElementById('campSubmitBtn');
+
+        // Function to show modal
+        function showModal() {
+            modalOverlay.style.display = 'flex';
+        }
+
+        // Function to hide modal
+        function hideModal() {
+            modalOverlay.style.display = 'none';
+            // Reset to selection menu
+            resetToSelectionMenu();
+        }
+
+        // Function to show a specific form
+        function showForm(formType) {
+            // Hide selection menu
+            selectionMenu.style.display = 'none';
+
+            // Show appropriate form
+            if (formType === 'donor') {
+                donorForm.style.display = 'block';
+                modalTitle.textContent = 'Donor Registration';
+            } else if (formType === 'hospital') {
+                hospitalForm.style.display = 'block';
+                modalTitle.textContent = 'Hospital Registration';
+            } else if (formType === 'camp') {
+                campForm.style.display = 'block';
+                modalTitle.textContent = 'Camp Registration';
+            }
+        }
+
+        // Function to reset to selection menu
+        function resetToSelectionMenu() {
+            // Hide all forms
+            donorForm.style.display = 'none';
+            hospitalForm.style.display = 'none';
+            campForm.style.display = 'none';
+
+            // Show selection menu
+            selectionMenu.style.display = 'flex';
+            modalTitle.textContent = 'Select Registration Type';
+        }
+
+        // Event: Click on CTA box
+        ctaBox.addEventListener('click', showModal);
+
+        // Event: Click on close button
+        modalClose.addEventListener('click', hideModal);
+        modalClose1.addEventListener('click', hideModal);
+
+        // Event: Click outside modal to close
+        modalOverlay.addEventListener('click', function(e) {
+            if (e.target === modalOverlay) {
+                hideModal();
+            }
+        });
+
+        // Event: Click on selection options
+        selectionOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                const type = this.getAttribute('data-type');
+                showForm(type);
+            });
+        });
+
+        // Event: Click on back buttons
+        donorBackBtn.addEventListener('click', resetToSelectionMenu);
+        hospitalBackBtn.addEventListener('click', resetToSelectionMenu);
+        campBackBtn.addEventListener('click', resetToSelectionMenu);
+
+        // Event: Form submissions
+        donorSubmitBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Donor registration submitted successfully!');
+            hideModal();
+            // Here you would normally handle the form data submission
+        });
+
+        hospitalSubmitBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Hospital registration submitted successfully!');
+            hideModal();
+            // Here you would normally handle the form data submission
+        });
+
+        campSubmitBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Camp registration submitted successfully!');
+            hideModal();
+            // Here you would normally handle the form data submission
+        });
+
+        function hideAllForms() {
+            donorForm.style.display = 'none';
+            hospitalForm.style.display = 'none';
+            campForm.style.display = 'none';
+        }
+        // Close modalOverlay when clicking the close button
+        modalClose.addEventListener('click', () => {
+            modalOverlay.style.display = 'none';
+        });
+
+        // Close modal1 when clicking the close button
+        modalClose1.addEventListener('click', () => {
+            modal1.style.display = 'none';
+            hideAllForms(); // Optional: hide forms when closing modal1
+        });
+
+        // Initially hide modal1 and all forms
+        modal1.style.display = 'none';
+        hideAllForms();
+
+    </script>
+<!--
+<script>
+    document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const name = document.getElementById('name').value;
+        const rating = document.querySelector('input[name="rating"]:checked').value;
+        const strengths = document.getElementById('strengths').value;
+        const improvements = document.getElementById('improvements').value;
+        const additional = document.getElementById('additional').value;
+        const recommendation = document.getElementById('recommendation').value;
+
+        const feedbackDiv = document.createElement('div');
+        feedbackDiv.style.cssText = `
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    `;
+        feedbackDiv.innerHTML = `
+        <p style="margin: 0 0 10px; color: #333; font-weight: 500; font-size: 1rem;">${name}</p>
+        <p style="margin: 0 0 10px; color: #555; font-size: 0.9rem;">Rating: ${'★'.repeat(rating)}${'☆'.repeat(5 - rating)}</p>
+        <p style="margin: 0 0 10px; color: #555; font-size: 0.9rem;"><strong>Liked:</strong> ${strengths}</p>
+        <p style="margin: 0 0 10px; color: #555; font-size: 0.9rem;"><strong>Improvements:</strong> ${improvements}</p>
+        ${additional ? `<p style="margin: 0 0 10px; color: #555; font-size: 0.9rem;"><strong>Additional:</strong> ${additional}</p>` : ''}
+        <p style="margin: 0; color: #555; font-size: 0.9rem;"><strong>Recommend:</strong> ${recommendation.charAt(0).toUpperCase() + recommendation.slice(1)}</p>
+    `;
+
+        const feedbackCards = document.getElementById('feedbackCards');
+        feedbackCards.insertBefore(feedbackDiv, feedbackCards.firstChild);
+
+        this.reset();
+    });
+
+    // Add hover effect for stars
+    const ratingLabels = document.querySelectorAll('label[for^="star"]');
+    ratingLabels.forEach((label, index) => {
+        label.addEventListener('mouseover', () => {
+            for (let i = 0; i <= index; i++) {
+                ratingLabels[i].style.color = '#f5c518';
+            }
+        });
+        label.addEventListener('mouseout', () => {
+            for (let i = 0; i <= index; i++) {
+                if (!ratingLabels[i].previousElementSibling.checked) {
+                    ratingLabels[i].style.color = '#ddd';
+                }
+            }
+        });
+        label.addEventListener('click', () => {
+            ratingLabels.forEach(l => l.style.color = '#ddd');
+            for (let i = 0; i <= index; i++) {
+                ratingLabels[i].style.color = '#f5c518';
+            }
+        });
+    });
+</script>
+-->
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const feedbackForm = document.getElementById("feedbackForm");
+        const feedbackCards = document.getElementById("feedbackCards");
+
+        feedbackForm.addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent page reload
+
+            // Get input values
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const rating = document.querySelector('input[name="rating"]:checked');
+            const strengths = document.getElementById("strengths").value;
+            const improvements = document.getElementById("improvements").value;
+            const recommendation = document.getElementById("recommendation").value;
+
+            if (!rating) {
+                alert("Please select a rating.");
+                return;
+            }
+
+            // Get current date
+            const date = new Date().toLocaleDateString();
+
+            // Create feedback card
+            const feedbackCard = document.createElement("div");
+            feedbackCard.style.backgroundColor = "#fff";
+            feedbackCard.style.padding = "20px";
+            feedbackCard.style.borderRadius = "10px";
+            feedbackCard.style.boxShadow = "0 4px 20px rgba(0,0,0,0.1)";
+            feedbackCard.style.marginBottom = "20px";
+
+            // Generate star rating
+            let stars = "★".repeat(rating.value) + "☆".repeat(5 - rating.value);
+
+            feedbackCard.innerHTML = `
+            <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                <div style="font-size: 1.2rem; color: #ff1e1e; margin-right: 10px;">${stars}</div>
+                <div style="font-weight: 500; color: #333;">${name}</div>
+            </div>
+            <p style="color: #555; font-size: 1rem; margin-bottom: 10px;">"${strengths}"</p>
+            <p style="color: #777; font-size: 0.9rem;">${date}</p>
+        `;
+
+            // Append feedback card
+            feedbackCards.prepend(feedbackCard);
+
+            // Clear form fields
+            feedbackForm.reset();
+        });
+    });
+
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="../JS/donor_register.js"></script>
+<script src="../JS/camp.js"></script>
+</body>
+</html>
+
+

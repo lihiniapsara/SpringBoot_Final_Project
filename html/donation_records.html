@@ -1,0 +1,1973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Donation Records</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+        /* Blood Donation Records CSS */
+        :root {
+            --primary-color: #d81e5b;
+            --primary-light: #f6e7ec;
+            --primary-dark: #a41846;
+            --secondary-color: #2c3e50;
+            --accent-color: #3498db;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --text-primary: #2c3e50;
+            --text-secondary: #7f8c8d;
+            --text-light: #ecf0f1;
+            --bg-color: #f5f7fa;
+            --card-bg: #ffffff;
+            --border-color: #dfe6e9;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --border-radius: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        /* Base Styles */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header & Navigation */
+        .donation-header {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 16px 24px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo {
+            height: 48px;
+            width: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .app-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        /* Dashboard Metrics */
+        .metrics-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .metric-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: var(--primary-light);
+        }
+
+        .metric-card.a-pos::after { background-color: #e74c3c; }
+        .metric-card.a-neg::after { background-color: #c0392b; }
+        .metric-card.b-pos::after { background-color: #3498db; }
+        .metric-card.b-neg::after { background-color: #2980b9; }
+        .metric-card.ab-pos::after { background-color: #9b59b6; }
+        .metric-card.ab-neg::after { background-color: #8e44ad; }
+        .metric-card.o-pos::after { background-color: #27ae60; }
+        .metric-card.o-neg::after { background-color: #16a085; }
+
+        .metric-title {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .metric-trend {
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+            color: var(--success-color);
+        }
+
+        .metric-trend.up { color: var(--success-color); }
+        .metric-trend.down { color: var(--danger-color); }
+
+        /* Donor Records Table */
+        .records-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .search-container {
+            padding: 16px 24px;
+            background-color: #fafafa;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .search-field {
+            flex: 1;
+            min-width: 200px;
+            display: flex;
+            align-items: center;
+            background-color: white;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+        }
+
+        .search-icon {
+            margin-right: 8px;
+            color: var(--text-secondary);
+        }
+
+        .search-input {
+            border: none;
+            outline: none;
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .filter-dropdown {
+            min-width: 150px;
+        }
+
+        .donor-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .donor-table th,
+        .donor-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .donor-table th {
+            font-weight: 600;
+            color: var(--text-secondary);
+            background-color: #fafafa;
+            white-space: nowrap;
+        }
+
+        .donor-table tr:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        .donor-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .blood-type {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            color: white;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .blood-a-pos { background-color: #e74c3c; }
+        .blood-a-neg { background-color: #c0392b; }
+        .blood-b-pos { background-color: #3498db; }
+        .blood-b-neg { background-color: #2980b9; }
+        .blood-ab-pos { background-color: #9b59b6; }
+        .blood-ab-neg { background-color: #8e44ad; }
+        .blood-o-pos { background-color: #27ae60; }
+        .blood-o-neg { background-color: #16a085; }
+
+        .donor-status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: #27ae60;
+        }
+
+        .status-ineligible {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+        }
+
+        .status-pending {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: #f39c12;
+        }
+
+        .donor-name {
+            font-weight: 500;
+        }
+
+        .donor-info {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .action-cell {
+            white-space: nowrap;
+        }
+
+        .btn-icon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            color: var(--text-secondary);
+            transition: var(--transition);
+        }
+
+        .btn-icon:hover {
+            background-color: #f5f5f5;
+            color: var(--primary-color);
+        }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .form-control,
+        .form-select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px var(--primary-light);
+            outline: none;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #1e2b38;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .btn-outline:hover {
+            background-color: #f5f5f5;
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #219653;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        .btn-icon-right {
+            margin-left: 8px;
+        }
+
+        .btn-icon-left {
+            margin-right: 8px;
+        }
+
+        /* Donor Detail Panel */
+        .donor-detail {
+            padding: 24px;
+        }
+
+        .donor-header {
+            display: flex;
+            margin-bottom: 24px;
+            gap: 20px;
+        }
+
+        .donor-avatar {
+            width: 80px;
+            height: 80px;
+            background-color: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 32px;
+            font-weight: 600;
+        }
+
+        .donor-profile {
+            flex: 1;
+        }
+
+        .donor-name-lg {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0 0 8px 0;
+        }
+
+        .donor-meta {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 8px;
+        }
+
+        .donor-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .donor-blood-lg {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .donor-blood-type {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .donor-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+
+        .donor-tab {
+            padding: 12px 24px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+
+        .donor-tab.active {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .donation-history {
+            margin-top: 24px;
+        }
+
+        .history-item {
+            display: flex;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .history-date {
+            width: 120px;
+            font-weight: 500;
+        }
+
+        .history-details {
+            flex: 1;
+        }
+
+        .history-location {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .history-meta {
+            display: flex;
+            gap: 24px;
+            margin-top: 8px;
+        }
+
+        .history-meta-item {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .history-status {
+            width: 100px;
+            text-align: right;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .page-info {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .page-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .page-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            background-color: transparent;
+            color: var(--text-secondary);
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .page-btn:hover {
+            border-color: var(--border-color);
+        }
+
+        .page-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .page-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Statistics Section */
+        .stats-section {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .stats-card {
+            background-color: #fafafa;
+            border-radius: var(--border-radius);
+            padding: 16px;
+        }
+
+        .stats-header {
+            margin-bottom: 16px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .chart-container {
+            height: 200px;
+            position: relative;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .donation-header {
+                flex-direction: column;
+                gap: 16px;
+                align-items: flex-start;
+            }
+
+            .search-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .card-header {
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
+            }
+
+            .donor-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .donor-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .donor-meta {
+                flex-direction: column;
+                gap: 8px;
+                align-items: center;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-title {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 1010;
+        }
+
+        .toast {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            padding: 16px;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            min-width: 300px;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .toast-icon {
+            margin-right: 12px;
+            font-size: 20px;
+        }
+
+        .toast-success .toast-icon {
+            color: var(--success-color);
+        }
+
+        .toast-error .toast-icon {
+            color: var(--danger-color);
+        }
+
+        .toast-warning .toast-icon {
+            color: var(--warning-color);
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .toast-message {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header & Navigation -->
+    <header class="donation-header">
+        <div class="logo-container">
+            <div class="logo">B</div>
+            <div class="app-title">Blood Donation Records</div>
+        </div>
+        <div class="nav-actions">
+            <button class="btn btn-outline">
+                <i class="fas fa-bell btn-icon-left"></i>
+                Notifications
+            </button>
+            <button class="btn btn-primary">
+                <i class="fas fa-plus btn-icon-left"></i>
+                Add Donor
+            </button>
+        </div>
+    </header>
+
+    <!-- Dashboard Metrics -->
+    <div class="metrics-container">
+        <div class="metric-card a-pos">
+            <div class="metric-title">A+ Blood Stock</div>
+            <div class="metric-value">85 units</div>
+            <div class="metric-trend up">
+                <i class="fas fa-arrow-up btn-icon-left"></i>
+                12% this week
+            </div>
+        </div>
+        <div class="metric-card a-neg">
+            <div class="metric-title">A- Blood Stock</div>
+            <div class="metric-value">32 units</div>
+            <div class="metric-trend down">
+                <i class="fas fa-arrow-down btn-icon-left"></i>
+                5% this week
+            </div>
+        </div>
+        <div class="metric-card o-pos">
+            <div class="metric-title">O+ Blood Stock</div>
+            <div class="metric-value">120 units</div>
+            <div class="metric-trend up">
+                <i class="fas fa-arrow-up btn-icon-left"></i>
+                8% this week
+            </div>
+        </div>
+        <div class="metric-card o-neg">
+            <div class="metric-title">O- Blood Stock</div>
+            <div class="metric-value">45 units</div>
+            <div class="metric-trend up">
+                <i class="fas fa-arrow-up btn-icon-left"></i>
+                3% this week
+            </div>
+        </div>
+    </div>
+
+    <!-- Donor Records Table -->
+    <div class="records-card">
+        <div class="card-header">
+            <h2 class="card-title">Donor Records</h2>
+            <div class="action-buttons">
+                <button class="btn btn-outline btn-sm">
+                    <i class="fas fa-filter btn-icon-left"></i>
+                    Filter
+                </button>
+                <button class="btn btn-outline btn-sm">
+                    <i class="fas fa-download btn-icon-left"></i>
+                    Export
+                </button>
+                <button class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus btn-icon-left"></i>
+                    Add Donor
+                </button>
+            </div>
+        </div>
+
+        <div class="search-container">
+            <div class="search-field">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search donors...">
+            </div>
+            <select class="form-select filter-dropdown">
+                <option>All Blood Types</option>
+                <option>A+</option>
+                <option>A-</option>
+                <option>B+</option>
+                <option>B-</option>
+                <option>AB+</option>
+                <option>AB-</option>
+                <option>O+</option>
+                <option>O-</option>
+            </select>
+            <select class="form-select filter-dropdown">
+                <option>All Status</option>
+                <option>Active</option>
+                <option>Ineligible</option>
+                <option>Pending</option>
+            </select>
+        </div>
+
+        <table class="donor-table">
+            <thead>
+            <tr>
+                <th>Donor</th>
+                <th>Blood Type</th>
+                <th>Last Donation</th>
+                <th>Total Donations</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>
+                    <div class="donor-name">John Smith</div>
+                    <div class="donor-info">ID: DON-1024 | 32 years</div>
+                </td>
+                <td>
+                    <div class="blood-type blood-a-pos">A+</div>
+                </td>
+                <td>Mar 15, 2025</td>
+                <td>8 times</td>
+                <td>
+                    <span class="donor-status status-active">Active</span>
+                </td>
+                <td class="action-cell">
+                    <button class="btn-icon">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn-icon">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="donor-name">Sarah Johnson</div>
+                    <div class="donor-info">ID: DON-2048 | 28 years</div>
+                </td>
+                <td>
+                    <div class="blood-type blood-o-neg">O-</div>
+                </td>
+                <td>Jan 10, 2025</td>
+                <td>12 times</td>
+                <td>
+                    <span class="donor-status status-active">Active</span>
+                </td>
+                <td class="action-cell">
+                    <button class="btn-icon">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn-icon">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="donor-name">Michael Chen</div>
+                    <div class="donor-info">ID: DON-3072 | 45 years</div>
+                </td>
+                <td>
+                    <div class="blood-type blood-b-pos">B+</div>
+                </td>
+                <td>Feb 28, 2025</td>
+                <td>5 times</td>
+                <td>
+                    <span class="donor-status status-ineligible">Ineligible</span>
+                </td>
+                <td class="action-cell">
+                    <button class="btn-icon">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn-icon">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="donor-name">Emily Rodriguez</div>
+                    <div class="donor-info">ID: DON-4096 | 29 years</div>
+                </td>
+                <td>
+                    <div class="blood-type blood-ab-pos">AB+</div>
+                </td>
+                <td>Mar 5, 2025</td>
+                <td>3 times</td>
+                <td>
+                    <span class="donor-status status-pending">Pending</span>
+                </td>
+                <td class="action-cell">
+                    <button class="btn-icon">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn-icon">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="pagination">
+            <div class="page-info">
+                Showing 1-4 of 24 donors
+            </div>
+            <div class="page-controls">
+                <button class="page-btn disabled">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <button class="page-btn">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Section -->
+    <div class="stats-section">
+        <h2 class="card-title" style="margin-bottom: 24px;">Donation Statistics</h2>
+        <div class="stats-grid">
+            <div class="stats-card">
+                <div class="stats-header">Monthly Donations</div>
+                <div class="chart-container">
+                    <!-- Chart would be inserted here with JavaScript -->
+                    <div style="height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-secondary);">
+                        Monthly Donation Chart
+                    </div>
+                </div>
+            </div>
+            <div class="stats-card">
+                <div class="stats-header">Blood Type Distribution</div>
+                <div class="chart-container">
+                    <!-- Chart would be inserted here with JavaScript -->
+                    <div style="height: 100%; display: flex; align-items: center; justify-content: center; color: var(--text-secondary);">
+                        Blood Type Distribution Chart
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Donor Detail Panel (Hidden by default, would be shown when a donor is clicked) -->
+    <div class="records-card" style="display: none;">
+        <div class="donor-detail">
+            <div class="donor-header">
+                <div class="donor-avatar">JS</div>
+                <div class="donor-profile">
+                    <h2 class="donor-name-lg">John Smith</h2>
+                    <div class="donor-meta">
+                        <div class="donor-meta-item">
+                            <i class="fas fa-id-card"></i>
+                            DON-1024
+                        </div>
+                        <div class="donor-meta-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            32 years old
+                        </div>
+                        <div class="donor-meta-item">
+                            <i class="fas fa-phone"></i>
+                            +1 (555) 123-4567
+                        </div>
+                    </div>
+                    <div class="donor-blood-lg">
+                        <div class="donor-blood-type blood-a-pos">A+</div>
+                        <span>Blood Type: A Positive</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="donor-tabs">
+                <div class="donor-tab active">Donation History</div>
+                <div class="donor-tab">Medical Info</div>
+                <div class="donor-tab">Personal Details</div>
+            </div>
+
+            <div class="donation-history">
+                <div class="history-item">
+                    <div class="history-date">Mar 15, 2025</div>
+                    <div class="history-details">
+                        <div>Whole Blood Donation</div>
+                        <div class="history-location">City Hospital Blood Bank</div>
+                        <div class="history-meta">
+                                <span class="history-meta-item">
+                                    <i class="fas fa-tint"></i>
+                                    450ml
+                                </span>
+                            <span class="history-meta-item">
+                                    <i class="fas fa-user-md"></i>
+                                    Dr. Williams
+                                </span>
+                        </div>
+                    </div>
+                    <div class="history-status">
+                        <span class="donor-status status-active">Complete</span>
+                    </div>
+                </div>
+                <div class="history-item">
+                    <div class="history-date">Dec 10, 2024</div>
+                    <div class="history-details">
+                        <div>Whole Blood Donation</div>
+                        <div class="history-location">Red Cross Mobile Drive</div>
+                        <div class="history-meta">
+                                <span class="history-meta-item">
+                                    <i class="fas fa-tint"></i>
+                                    450ml
+                                </span>
+                            <span class="history-meta-item">
+                                    <i class="fas fa-user-md"></i>
+                                    Dr. Martinez
+                                </span>
+                        </div>
+                    </div>
+                    <div class="history-status">
+                        <span class="donor-status status-active">Complete</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Example (Hidden by default) -->
+    <div class="modal-overlay" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Donor</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-control" placeholder="Enter donor's full name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Blood Type</label>
+                    <select class="form-select">
+                        <option>Select blood type</option>
+                        <option>A+</option>
+                        <option>A-</option>
+                        <option>B+</option>
+                        <option>B-</option>
+                        <option>AB+</option>
+                        <option>AB-</option>
+                        <option>O+</option>
+                        <option>O-</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Date of Birth</label>
+                    <input type="date" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" class="form-control" placeholder="Enter phone number">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-control" placeholder="Enter email address">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Address</label>
+                    <textarea class="form-control" placeholder="Enter address" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline">Cancel</button>
+                <button class="btn btn-primary">Save Donor</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Example (Hidden by default) -->
+    <div class="toast-container" style="display: none;">
+        <div class="toast toast-success">
+            <div class="toast-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="toast-content">
+                <div class="toast-title">Success</div>
+                <div class="toast-message">Donor was added successfully.</div>
+            </div>
+            <button class="toast-close">&times;</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // JavaScript would be added here to handle interactions
+    // Such as showing/hiding modals, handling form submissions, etc.
+</script>
+</body>
+</html>
+
+
+
+<!--
+/* Blood Donation Records CSS */
+:root {
+&#45;&#45;primary-color: #d81e5b;
+&#45;&#45;primary-light: #f6e7ec;
+&#45;&#45;primary-dark: #a41846;
+&#45;&#45;secondary-color: #2c3e50;
+&#45;&#45;accent-color: #3498db;
+&#45;&#45;success-color: #27ae60;
+&#45;&#45;warning-color: #f39c12;
+&#45;&#45;danger-color: #e74c3c;
+&#45;&#45;text-primary: #2c3e50;
+&#45;&#45;text-secondary: #7f8c8d;
+&#45;&#45;text-light: #ecf0f1;
+&#45;&#45;bg-color: #f5f7fa;
+&#45;&#45;card-bg: #ffffff;
+&#45;&#45;border-color: #dfe6e9;
+&#45;&#45;shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+&#45;&#45;border-radius: 8px;
+&#45;&#45;transition: all 0.3s ease;
+}
+
+/* Base Styles */
+body {
+font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+background-color: var(&#45;&#45;bg-color);
+color: var(&#45;&#45;text-primary);
+line-height: 1.6;
+margin: 0;
+padding: 0;
+}
+
+.container {
+max-width: 1440px;
+margin: 0 auto;
+padding: 20px;
+}
+
+/* Header & Navigation */
+.donation-header {
+background-color: var(&#45;&#45;card-bg);
+border-radius: var(&#45;&#45;border-radius);
+box-shadow: var(&#45;&#45;shadow);
+padding: 16px 24px;
+margin-bottom: 24px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.logo-container {
+display: flex;
+align-items: center;
+gap: 16px;
+}
+
+.logo {
+height: 48px;
+width: 48px;
+display: flex;
+align-items: center;
+justify-content: center;
+background-color: var(&#45;&#45;primary-color);
+color: white;
+border-radius: 50%;
+font-size: 24px;
+font-weight: bold;
+}
+
+.app-title {
+font-size: 20px;
+font-weight: 600;
+color: var(&#45;&#45;secondary-color);
+}
+
+.nav-actions {
+display: flex;
+gap: 16px;
+align-items: center;
+}
+
+/* Dashboard Metrics */
+.metrics-container {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+gap: 16px;
+margin-bottom: 24px;
+}
+
+.metric-card {
+background-color: var(&#45;&#45;card-bg);
+border-radius: var(&#45;&#45;border-radius);
+box-shadow: var(&#45;&#45;shadow);
+padding: 20px;
+display: flex;
+flex-direction: column;
+position: relative;
+overflow: hidden;
+}
+
+.metric-card::after {
+content: '';
+position: absolute;
+bottom: 0;
+left: 0;
+width: 100%;
+height: 4px;
+background-color: var(&#45;&#45;primary-light);
+}
+
+.metric-card.a-pos::after { background-color: #e74c3c; }
+.metric-card.a-neg::after { background-color: #c0392b; }
+.metric-card.b-pos::after { background-color: #3498db; }
+.metric-card.b-neg::after { background-color: #2980b9; }
+.metric-card.ab-pos::after { background-color: #9b59b6; }
+.metric-card.ab-neg::after { background-color: #8e44ad; }
+.metric-card.o-pos::after { background-color: #27ae60; }
+.metric-card.o-neg::after { background-color: #16a085; }
+
+.metric-title {
+font-size: 14px;
+color: var(&#45;&#45;text-secondary);
+margin-bottom: 8px;
+}
+
+.metric-value {
+font-size: 28px;
+font-weight: 700;
+margin-bottom: 8px;
+}
+
+.metric-trend {
+display: flex;
+align-items: center;
+font-size: 13px;
+color: var(&#45;&#45;success-color);
+}
+
+.metric-trend.up { color: var(&#45;&#45;success-color); }
+.metric-trend.down { color: var(&#45;&#45;danger-color); }
+
+/* Donor Records Table */
+.records-card {
+background-color: var(&#45;&#45;card-bg);
+border-radius: var(&#45;&#45;border-radius);
+box-shadow: var(&#45;&#45;shadow);
+margin-bottom: 24px;
+overflow: hidden;
+}
+
+.card-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 16px 24px;
+border-bottom: 1px solid var(&#45;&#45;border-color);
+}
+
+.card-title {
+margin: 0;
+font-size: 18px;
+font-weight: 600;
+color: var(&#45;&#45;text-primary);
+}
+
+.action-buttons {
+display: flex;
+gap: 12px;
+}
+
+.search-container {
+padding: 16px 24px;
+background-color: #fafafa;
+border-bottom: 1px solid var(&#45;&#45;border-color);
+display: flex;
+flex-wrap: wrap;
+gap: 16px;
+align-items: center;
+}
+
+.search-field {
+flex: 1;
+min-width: 200px;
+display: flex;
+align-items: center;
+background-color: white;
+border-radius: 4px;
+border: 1px solid var(&#45;&#45;border-color);
+padding: 8px 12px;
+}
+
+.search-icon {
+margin-right: 8px;
+color: var(&#45;&#45;text-secondary);
+}
+
+.search-input {
+border: none;
+outline: none;
+flex: 1;
+font-size: 14px;
+}
+
+.filter-dropdown {
+min-width: 150px;
+}
+
+.donor-table {
+width: 100%;
+border-collapse: collapse;
+}
+
+.donor-table th,
+.donor-table td {
+padding: 12px 16px;
+text-align: left;
+border-bottom: 1px solid var(&#45;&#45;border-color);
+}
+
+.donor-table th {
+font-weight: 600;
+color: var(&#45;&#45;text-secondary);
+background-color: #fafafa;
+white-space: nowrap;
+}
+
+.donor-table tr:hover {
+background-color: rgba(0, 0, 0, 0.02);
+}
+
+.donor-table tr:last-child td {
+border-bottom: none;
+}
+
+.blood-type {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+width: 32px;
+height: 32px;
+border-radius: 4px;
+color: white;
+font-weight: 600;
+font-size: 13px;
+}
+
+.blood-a-pos { background-color: #e74c3c; }
+.blood-a-neg { background-color: #c0392b; }
+.blood-b-pos { background-color: #3498db; }
+.blood-b-neg { background-color: #2980b9; }
+.blood-ab-pos { background-color: #9b59b6; }
+.blood-ab-neg { background-color: #8e44ad; }
+.blood-o-pos { background-color: #27ae60; }
+.blood-o-neg { background-color: #16a085; }
+
+.donor-status {
+display: inline-block;
+padding: 4px 8px;
+border-radius: 12px;
+font-size: 12px;
+font-weight: 500;
+}
+
+.status-active {
+background-color: rgba(39, 174, 96, 0.1);
+color: #27ae60;
+}
+
+.status-ineligible {
+background-color: rgba(231, 76, 60, 0.1);
+color: #e74c3c;
+}
+
+.status-pending {
+background-color: rgba(243, 156, 18, 0.1);
+color: #f39c12;
+}
+
+.donor-name {
+font-weight: 500;
+}
+
+.donor-info {
+color: var(&#45;&#45;text-secondary);
+font-size: 13px;
+}
+
+.action-cell {
+white-space: nowrap;
+}
+
+.btn-icon {
+background: none;
+border: none;
+cursor: pointer;
+padding: 8px;
+border-radius: 4px;
+color: var(&#45;&#45;text-secondary);
+transition: var(&#45;&#45;transition);
+}
+
+.btn-icon:hover {
+background-color: #f5f5f5;
+color: var(&#45;&#45;primary-color);
+}
+
+/* Form Controls */
+.form-group {
+margin-bottom: 16px;
+}
+
+.form-label {
+display: block;
+margin-bottom: 6px;
+font-size: 14px;
+color: var(&#45;&#45;text-secondary);
+}
+
+.form-control,
+.form-select {
+width: 100%;
+padding: 10px 12px;
+border: 1px solid var(&#45;&#45;border-color);
+border-radius: 4px;
+font-size: 14px;
+transition: var(&#45;&#45;transition);
+}
+
+.form-control:focus,
+.form-select:focus {
+border-color: var(&#45;&#45;primary-color);
+box-shadow: 0 0 0 2px var(&#45;&#45;primary-light);
+outline: none;
+}
+
+/* Buttons */
+.btn {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+padding: 10px 16px;
+border-radius: 4px;
+font-size: 14px;
+font-weight: 500;
+border: none;
+cursor: pointer;
+transition: var(&#45;&#45;transition);
+}
+
+.btn-primary {
+background-color: var(&#45;&#45;primary-color);
+color: white;
+}
+
+.btn-primary:hover {
+background-color: var(&#45;&#45;primary-dark);
+}
+
+.btn-secondary {
+background-color: var(&#45;&#45;secondary-color);
+color: white;
+}
+
+.btn-secondary:hover {
+background-color: #1e2b38;
+}
+
+.btn-outline {
+background-color: transparent;
+border: 1px solid var(&#45;&#45;border-color);
+color: var(&#45;&#45;text-secondary);
+}
+
+.btn-outline:hover {
+background-color: #f5f5f5;
+}
+
+.btn-success {
+background-color: var(&#45;&#45;success-color);
+color: white;
+}
+
+.btn-success:hover {
+background-color: #219653;
+}
+
+.btn-danger {
+background-color: var(&#45;&#45;danger-color);
+color: white;
+}
+
+.btn-danger:hover {
+background-color: #c0392b;
+}
+
+.btn-sm {
+padding: 6px 12px;
+font-size: 12px;
+}
+
+.btn-icon-right {
+margin-left: 8px;
+}
+
+.btn-icon-left {
+margin-right: 8px;
+}
+
+/* Donor Detail Panel */
+.donor-detail {
+padding: 24px;
+}
+
+.donor-header {
+display: flex;
+margin-bottom: 24px;
+gap: 20px;
+}
+
+.donor-avatar {
+width: 80px;
+height: 80px;
+background-color: var(&#45;&#45;primary-light);
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+color: var(&#45;&#45;primary-color);
+font-size: 32px;
+font-weight: 600;
+}
+
+.donor-profile {
+flex: 1;
+}
+
+.donor-name-lg {
+font-size: 24px;
+font-weight: 600;
+margin: 0 0 8px 0;
+}
+
+.donor-meta {
+display: flex;
+gap: 24px;
+margin-bottom: 8px;
+}
+
+.donor-meta-item {
+display: flex;
+align-items: center;
+gap: 8px;
+color: var(&#45;&#45;text-secondary);
+font-size: 14px;
+}
+
+.donor-blood-lg {
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+.donor-blood-type {
+width: 48px;
+height: 48px;
+border-radius: 8px;
+background-color: var(&#45;&#45;primary-color);
+color: white;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 20px;
+font-weight: 600;
+}
+
+.donor-tabs {
+display: flex;
+border-bottom: 1px solid var(&#45;&#45;border-color);
+margin-bottom: 24px;
+}
+
+.donor-tab {
+padding: 12px 24px;
+font-weight: 500;
+color: var(&#45;&#45;text-secondary);
+cursor: pointer;
+border-bottom: 2px solid transparent;
+}
+
+.donor-tab.active {
+color: var(&#45;&#45;primary-color);
+border-bottom: 2px solid var(&#45;&#45;primary-color);
+}
+
+.donation-history {
+margin-top: 24px;
+}
+
+.history-item {
+display: flex;
+padding: 16px 0;
+border-bottom: 1px solid var(&#45;&#45;border-color);
+}
+
+.history-date {
+width: 120px;
+font-weight: 500;
+}
+
+.history-details {
+flex: 1;
+}
+
+.history-location {
+color: var(&#45;&#45;text-secondary);
+font-size: 13px;
+margin-top: 4px;
+}
+
+.history-meta {
+display: flex;
+gap: 24px;
+margin-top: 8px;
+}
+
+.history-meta-item {
+font-size: 13px;
+color: var(&#45;&#45;text-secondary);
+}
+
+.history-status {
+width: 100px;
+text-align: right;
+}
+
+/* Pagination */
+.pagination {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 16px 24px;
+border-top: 1px solid var(&#45;&#45;border-color);
+}
+
+.page-info {
+color: var(&#45;&#45;text-secondary);
+font-size: 14px;
+}
+
+.page-controls {
+display: flex;
+gap: 8px;
+}
+
+.page-btn {
+width: 36px;
+height: 36px;
+display: flex;
+align-items: center;
+justify-content: center;
+border-radius: 4px;
+background-color: transparent;
+color: var(&#45;&#45;text-secondary);
+border: 1px solid transparent;
+cursor: pointer;
+transition: var(&#45;&#45;transition);
+}
+
+.page-btn:hover {
+border-color: var(&#45;&#45;border-color);
+}
+
+.page-btn.active {
+background-color: var(&#45;&#45;primary-color);
+color: white;
+border-color: var(&#45;&#45;primary-color);
+}
+
+.page-btn.disabled {
+opacity: 0.5;
+cursor: not-allowed;
+}
+
+/* Statistics Section */
+.stats-section {
+background-color: var(&#45;&#45;card-bg);
+border-radius: var(&#45;&#45;border-radius);
+box-shadow: var(&#45;&#45;shadow);
+padding: 24px;
+margin-bottom: 24px;
+}
+
+.stats-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+gap: 24px;
+}
+
+.stats-card {
+background-color: #fafafa;
+border-radius: var(&#45;&#45;border-radius);
+padding: 16px;
+}
+
+.stats-header {
+margin-bottom: 16px;
+color: var(&#45;&#45;text-secondary);
+font-size: 14px;
+font-weight: 500;
+}
+
+.chart-container {
+height: 200px;
+position: relative;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+.donation-header {
+flex-direction: column;
+gap: 16px;
+align-items: flex-start;
+}
+
+.search-container {
+flex-direction: column;
+align-items: stretch;
+}
+
+.card-header {
+flex-direction: column;
+gap: 12px;
+align-items: flex-start;
+}
+
+.donor-table {
+display: block;
+overflow-x: auto;
+}
+
+.donor-header {
+flex-direction: column;
+align-items: center;
+text-align: center;
+}
+
+.donor-meta {
+flex-direction: column;
+gap: 8px;
+align-items: center;
+}
+}
+
+/* Animation */
+@keyframes fadeIn {
+from { opacity: 0; }
+to { opacity: 1; }
+}
+
+.fade-in {
+animation: fadeIn 0.3s ease-in;
+}
+
+/* Modal Styles */
+.modal-overlay {
+position: fixed;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background-color: rgba(0, 0, 0, 0.5);
+display: flex;
+align-items: center;
+justify-content: center;
+z-index: 1000;
+}
+
+.modal {
+background-color: var(&#45;&#45;card-bg);
+border-radius: var(&#45;&#45;border-radius);
+box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+width: 90%;
+max-width: 600px;
+max-height: 90vh;
+overflow-y: auto;
+animation: fadeIn 0.3s ease-in;
+}
+
+.modal-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 16px 24px;
+border-bottom: 1px solid var(&#45;&#45;border-color);
+}
+
+.modal-title {
+margin: 0;
+font-size: 18px;
+font-weight: 600;
+}
+
+.modal-close {
+background: none;
+border: none;
+font-size: 24px;
+cursor: pointer;
+color: var(&#45;&#45;text-secondary);
+}
+
+.modal-body {
+padding: 24px;
+}
+
+.modal-footer {
+display: flex;
+justify-content: flex-end;
+gap: 12px;
+padding: 16px 24px;
+border-top: 1px solid var(&#45;&#45;border-color);
+}
+
+/* Toast Notifications */
+.toast-container {
+position: fixed;
+bottom: 24px;
+right: 24px;
+z-index: 1010;
+}
+
+.toast {
+background-color: var(&#45;&#45;card-bg);
+border-radius: var(&#45;&#45;border-radius);
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+padding: 16px;
+margin-top: 8px;
+display: flex;
+align-items: center;
+min-width: 300px;
+animation: fadeIn 0.3s ease-in;
+}
+
+.toast-icon {
+margin-right: 12px;
+font-size: 20px;
+}
+
+.toast-success .toast-icon {
+color: var(&#45;&#45;success-color);
+}
+
+.toast-error .toast-icon {
+color: var(&#45;&#45;danger-color);
+}
+
+.toast-warning .toast-icon {
+color: var(&#45;&#45;warning-color);
+}
+
+.toast-content {
+flex: 1;
+}
+
+.toast-title {
+font-weight: 600;
+margin-bottom: 4px;
+}
+
+.toast-message {
+font-size: 14px;
+color: var(&#45;&#45;text-secondary);
+}
+
+.toast-close {
+background: none;
+border: none;
+color: var(&#45;&#45;text-secondary);
+cursor: pointer;
+font-size: 16px;
+}
+-->

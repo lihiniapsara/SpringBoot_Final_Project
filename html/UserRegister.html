@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Donation Registration</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+
+    <style>
+        body {
+            background-image: url('../Assest/images/donar-register.png');
+            background-size: cover; /* Ensures the image covers the whole screen */
+            background-position: center center; /* Centers the image */
+            background-repeat: no-repeat; /* Prevents the image from repeating */
+            opacity: 1.8; /* Adjusts the transparency of the whole body */
+            height: 93.1vh; /* Sets the height to cover the full viewport */
+
+        }
+        .card {
+            background-color: rgba(255, 255, 255, 0.06); /* Semi-transparent background */
+            backdrop-filter: blur(8px); /* Blur effect */
+            max-width: 500px; /* Adjust width */
+            margin: auto; /* Center the card */
+            position: relative;
+            left: 80px; /* Move left (adjust as needed) */
+        }
+
+        .btn-outline-primary {
+            border-color: #b70e0e;
+            color: #ff0303;
+        }
+        .btn-outline-primary:hover {
+            background-color: #ff0303;
+            color: white;
+        }
+        h3 {
+            color: black;
+            font-weight: bold;
+        }
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        #terms:checked + .form-check-label {
+            color: rgba(176, 176, 176, 0.24); /* Ash color for the label when the checkbox is checked */
+        }
+
+        #terms {
+            border-color: rgba(176, 176, 176, 0.29); /* Ash color for the checkbox border */
+        }
+
+        .form-check-label {
+            color: #0a0a0a; /* Default ash color for the label */
+        }
+
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="card shadow-lg p-4">
+        <h2 class="text-center text-danger mb-4" style="margin-top: 20px;">User Registration</h2>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Username</label>
+                    <input type="text" class="form-control" placeholder="Choose a username" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-control" placeholder="Enter your email" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="Choose a password" required>
+                </div>
+
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="terms" required>
+                <label class="form-check-label" for="terms">
+                    I agree to all <a href="terms&condition.html" target="_blank" style="color: red; text-decoration: none;">terms and conditions</a>
+                </label>
+            </div>
+
+            <div class="text-center button-group">
+                <button id="register" class="btn btn-outline-primary btn-lg" onclick="registerUser(event)">Register</button>
+                <a href="login.html">
+                    <button type="button" class="btn btn-outline-primary btn-lg">Login</button>
+                </a>
+            </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="../JS/user_register.js"></script>
+</body>
+</html>

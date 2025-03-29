@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Donor Management</title>
+    <style>
+        .admin-dashboard {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input, .filter-select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .add-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            margin: 0;
+            font-size: 16px;
+            color: #555;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0 0;
+            color: #333;
+        }
+
+        .donors-table-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+
+        .donors-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .donors-table th, .donors-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .donors-table th {
+            background-color: #f8f8f8;
+            font-weight: bold;
+        }
+
+        .donors-table tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .action-btn {
+            padding: 5px 10px;
+            margin-right: 5px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .view-btn {
+            background: #2196F3;
+            color: white;
+        }
+
+        .edit-btn {
+            background: #FFC107;
+            color: black;
+        }
+
+        .delete-btn {
+            background: #F44336;
+            color: white;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .page-btn {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+        }
+
+        .page-btn.active {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        /* Modal Styles */
+        .donation-date-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .donation-date-modal > div {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .donation-date-modal input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .donation-date-modal .save-donation-date {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .donation-date-modal .cancel-donation-date {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="admin-dashboard">
+    <div class="dashboard-header">
+        <h2>Donor Management Dashboard</h2>
+        <div class="dashboard-actions">
+            <input type="text" placeholder="Search donors..." class="search-input">
+            <select class="filter-select">
+                <option value="">Filter by Blood Group</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <h3>Total Donors</h3>
+            <p class="stat-number">1,285</p>
+        </div>
+        <div class="stat-card">
+            <h3>Donations This Month</h3>
+            <p class="stat-number">156</p>
+        </div>
+        <div class="stat-card">
+            <h3>Critical Blood Types</h3>
+            <p class="stat-number">O-, AB-</p>
+        </div>
+        <div class="stat-card">
+            <h3>Next Donation Drive</h3>
+            <p class="stat-number">Mar 30, 2025</p>
+        </div>
+    </div>
+
+    <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+        <button id="getall" onclick="showAllDonors(event)" style="background-color: #24e024">View All</button>
+    </div>
+
+    <div class="donors-table-container">
+        <table class="donors-table">
+            <thead>
+            <tr>
+                <th>Full Name </th>
+                <th>NIC</th>
+                <th>Date of Birth</th>
+                <th>Gender</th>
+                <th>Blood Group</th>
+                <th>Contact</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>City</th>
+                <th>District</th>
+                <th>Province</th>
+                <th>Zip Code</th>
+                <th>Health Conditions</th>
+                <th>Last Donation</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>John Smith </td>
+                <td>1992-05-15</td>
+                <td>Male</td>
+                <td>O+</td>
+                <td>+94 77 1234567</td>
+                <td>john.smith@email.com</td>
+                <td>123 Main Street</td>
+                <td>Colombo</td>
+                <td>Colombo</td>
+                <td>Western</td>
+                <td>10000</td>
+                <td>Diabetes, High Pressure</td>
+                <td>15 Feb 2025</td>
+                <td>
+                    <button class="action-btn edit-btn">Edit</button>
+                    <button class="action-btn delete-btn">Delete</button>
+                </td>
+            </tr>
+            <tr>
+                <td>Maria Fernando</td>
+                <td>1996-08-20</td>
+                <td>Female</td>
+                <td>A-</td>
+                <td>+94 76 9876543</td>
+                <td>maria.fernando@email.com</td>
+                <td>456 Lake Road</td>
+                <td>Kandy</td>
+                <td>Kandy</td>
+                <td>Central</td>
+                <td>20000</td>
+                <td>Low Pressure</td>
+                <td>3 Mar 2025</td>
+                <td>
+                    <button class="action-btn edit-btn">Edit</button>
+                    <button class="action-btn delete-btn">Delete</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination">
+        <button class="page-btn">&laquo;</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <button class="page-btn">4</button>
+        <button class="page-btn">5</button>
+        <button class="page-btn">&raquo;</button>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // DOM Elements
+        const searchInput = document.querySelector('.search-input');
+        const filterSelect = document.querySelector('.filter-select');
+        const donorsTableBody = document.querySelector('.donors-table tbody');
+        const addDonorBtn = document.createElement('button');
+        addDonorBtn.textContent = 'Add Donor';
+        addDonorBtn.className = 'add-btn';
+        document.querySelector('.dashboard-actions').appendChild(addDonorBtn);
+
+        // Donor Data Management
+        let donorData = [
+            {
+                id: 'D001',
+                fullName: 'John Smith',
+                nic: '972345678V',
+                dob: '1992-05-15',
+                gender: 'Male',
+                bloodGroup: 'O+',
+                contact: '+94 77 1234567',
+                email: 'john.smith@email.com',
+                address: '123 Main Street',
+                city: 'Colombo',
+                district: 'Colombo',
+                province: 'Western',
+                zipCode: '10000',
+                healthConditions: ['Diabetes', 'High Pressure'],
+                lastDonation: '2025-02-15'
+            },
+            {
+                id: 'D002',
+                fullName: 'Maria Fernando',
+                nic: '890123456V',
+                dob: '1996-08-20',
+                gender: 'Female',
+                bloodGroup: 'A-',
+                contact: '+94 76 9876543',
+                email: 'maria.fernando@email.com',
+                address: '456 Lake Road',
+                city: 'Kandy',
+                district: 'Kandy',
+                province: 'Central',
+                zipCode: '20000',
+                healthConditions: ['Low Pressure'],
+                lastDonation: '2025-03-03'
+            }
+        ];
+
+        // Helper Functions
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric'
+            });
+        }
+
+        function createDonorRow(donor) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+            <td>${donor.fullName} </td>
+            <td>${donor.nic}</td>
+            <td>${donor.dob}</td>
+            <td>${donor.gender}</td>
+            <td>${donor.bloodGroup}</td>
+            <td>${donor.contact}</td>
+            <td>${donor.email}</td>
+            <td>${donor.address}</td>
+            <td>${donor.city}</td>
+            <td>${donor.district}</td>
+            <td>${donor.province}</td>
+            <td>${donor.zipCode}</td>
+            <td>${donor.healthConditions.join(', ')}</td>
+            <td>
+                ${formatDate(donor.lastDonation)}
+            </td>
+            <td>
+                <button style="background-color: #ffde00; margin-bottom: 10px;"  class="action-btn edit-donation-date" data-id="${donor.id}">Edit Date</button>
+            </td>
+        `;
+            return row;
+        }
+
+        function renderDonors(donors = donorData) {
+            donorsTableBody.innerHTML = '';
+            donors.forEach(donor => {
+                donorsTableBody.appendChild(createDonorRow(donor));
+            });
+            attachEventListeners();
+        }
+
+        function attachEventListeners() {
+            // Edit Donation Date
+            document.querySelectorAll('.edit-donation-date').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const donorId = this.getAttribute('data-id');
+                    openEditDonationDateModal(donorId);
+                });
+            });
+
+            // Rest of the previous event listeners remain the same...
+            // (Edit, Delete, View buttons' event listeners)
+        }
+
+        function openEditDonationDateModal(donorId) {
+            const donor = donorData.find(d => d.id === donorId);
+            if (!donor) return;
+
+            const modal = document.createElement('div');
+            modal.className = 'donation-date-modal';
+            modal.innerHTML = `
+            <div>
+                <h2>Edit Last Donation Date</h2>
+                <p>Donor: ${donor.fullName}</p>
+                <form id="edit-donation-date-form">
+                    <input type="hidden" name="id" value="${donor.id}">
+                    <label>Last Donation Date:
+                        <input type="date" name="lastDonation" value="${donor.lastDonation || ''}" required>
+                    </label>
+                    <div class="modal-actions">
+                        <button type="submit" class="save-donation-date">Save Date</button>
+                        <button type="button" class="cancel-donation-date">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        `;
+
+            document.body.appendChild(modal);
+
+            // Cancel button
+            modal.querySelector('.cancel-donation-date').addEventListener('click', () => {
+                document.body.removeChild(modal);
+            });
+
+            // Form submission
+            modal.querySelector('#edit-donation-date-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                const donorId = formData.get('id');
+                const newLastDonationDate = formData.get('lastDonation');
+
+                // Update donor's last donation date
+                const index = donorData.findIndex(d => d.id === donorId);
+                if (index !== -1) {
+                    donorData[index].lastDonation = newLastDonationDate;
+                    renderDonors();
+                    document.body.removeChild(modal);
+                    alert('Donation date updated successfully!');
+                }
+            });
+        }
+
+        // Rest of the code remains the same as in the original script...
+        // (Add Donor, Search, Filter functionalities)
+
+        // Initial render
+        renderDonors();
+    });
+</script>
+<!--
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // DOM Elements
+        const searchInput = document.querySelector('.search-input');
+        const filterSelect = document.querySelector('.filter-select');
+        const tableRows = document.querySelectorAll('.donors-table tbody tr');
+        const editBtns = document.querySelectorAll('.edit-btn');
+        const deleteBtns = document.querySelectorAll('.delete-btn');
+        const pageBtns = document.querySelectorAll('.page-btn');
+
+        // Sample donor data
+        const donorData = [
+            {
+                id: 'D001',
+                fullName: 'John Smith',
+                age: 32,
+                gender: 'Male',
+                bloodGroup: 'O+',
+                contactNumber: '+94 77 1234567',
+                city: 'Colombo',
+                healthConditions: [],
+                lastDonation: '2025-02-15'
+            },
+            {
+                id: 'D002',
+                fullName: 'Maria Fernando',
+                age: 28,
+                gender: 'Female',
+                bloodGroup: 'A-',
+                contactNumber: '+94 76 9876543',
+                city: 'Kandy',
+                healthConditions: ['Low Pressure'],
+                lastDonation: '2025-03-03'
+            }
+        ];
+
+        // Create a modal for editing donation date
+        function createDonationDateModal(donor) {
+            // Create modal container
+            const modal = document.createElement('div');
+            modal.className = 'donation-date-modal';
+
+            // Create modal content
+            const modalContent = document.createElement('div');
+
+            // Modal HTML
+            modalContent.innerHTML = `
+            <h3>Edit Donation Date</h3>
+            <p>Donor: ${donor.fullName}</p>
+            <label for="donation-date">Last Donation Date:</label>
+            <input type="date" id="donation-date" class="donation-date-input"
+                   value="${donor.lastDonation !== 'Not Eligible' ? donor.lastDonation : ''}"
+                   ${donor.lastDonation === 'Not Eligible' ? 'placeholder="Select Date"' : ''}>
+            <div style="display: flex; justify-content: space-between; margin-top: 15px;">
+                <button class="save-donation-date">Save</button>
+                <button class="cancel-donation-date">Cancel</button>
+            </div>
+        `;
+
+            // Append content to modal
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+
+            // Save button functionality
+            const saveButton = modalContent.querySelector('.save-donation-date');
+            const cancelButton = modalContent.querySelector('.cancel-donation-date');
+            const dateInput = modalContent.querySelector('.donation-date-input');
+
+            // Save donation date
+            saveButton.addEventListener('click', function() {
+                const newDate = dateInput.value;
+
+                // Find and update the donor in donorData
+                const donorToUpdate = donorData.find(d => d.fullName === donor.fullName);
+                if (donorToUpdate) {
+                    donorToUpdate.lastDonation = newDate;
+
+                    // Update the table row
+                    const rows = document.querySelectorAll('.donors-table tbody tr');
+                    rows.forEach(row => {
+                        if (row.cells[0].textContent.includes(donor.fullName)) {
+                            row.cells[12].textContent = formatDate(newDate);
+                        }
+                    });
+                }
+
+                // Remove modal
+                document.body.removeChild(modal);
+
+                // Show a success message
+                alert(`Donation date updated for ${donor.fullName}`);
+            });
+
+            // Cancel button functionality
+            cancelButton.addEventListener('click', function() {
+                document.body.removeChild(modal);
+            });
+
+            // Close modal if clicked outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    document.body.removeChild(modal);
+                }
+            });
+        }
+
+        // Helper function to format dates
+        function formatDate(dateString) {
+            if (!dateString || dateString === 'Not Eligible') return dateString;
+
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric'
+            });
+        }
+
+        // Find donor by name
+        function findDonorByName(name) {
+            return donorData.find(donor => donor.fullName === name);
+        }
+
+        // Attach edit button event listeners
+        editBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const donorName = this.closest('tr').cells[0].textContent.split('<')[0].trim();
+                const donor = findDonorByName(donorName);
+
+                if (donor) {
+                    createDonationDateModal(donor);
+                }
+            });
+        });
+
+        // Delete functionality
+        deleteBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const donorName = this.closest('tr').cells[0].textContent.split('<')[0].trim();
+                const donor = findDonorByName(donorName);
+
+                if (donor && confirm(`Are you sure you want to delete ${donor.fullName}?`)) {
+                    alert(`Donor ${donor.fullName} would be deleted from database`);
+
+                    // Remove the row from the table
+                    const row = this.closest('tr');
+                    row.remove();
+                }
+            });
+        });
+
+        // Search functionality
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const bloodGroup = filterSelect.value;
+
+            tableRows.forEach(row => {
+                const name = row.cells[0].textContent.toLowerCase();
+                const rowBloodGroup = row.cells[3].textContent;
+
+                const matchesSearch = name.includes(searchTerm);
+                const matchesBloodGroup = bloodGroup === '' || rowBloodGroup === bloodGroup;
+
+                if (matchesSearch && matchesBloodGroup) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // Blood group filter
+        filterSelect.addEventListener('change', function() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const bloodGroup = this.value;
+
+            tableRows.forEach(row => {
+                const name = row.cells[0].textContent.toLowerCase();
+                const rowBloodGroup = row.cells[3].textContent;
+
+                const matchesSearch = name.includes(searchTerm);
+                const matchesBloodGroup = bloodGroup === '' || rowBloodGroup === bloodGroup;
+
+                if (matchesSearch && matchesBloodGroup) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // Pagination (basic functionality)
+        pageBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (!this.classList.contains('active')) {
+                    document.querySelector('.page-btn.active').classList.remove('active');
+                    this.classList.add('active');
+                }
+            });
+        });
+    });
+
+    // Placeholder function for View All button
+    function showAllDonors(event) {
+        event.preventDefault();
+        alert('Show all donors functionality to be implemented');
+    }
+</script>
+-->
+</body>
+</html>

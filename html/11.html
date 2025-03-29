@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Bank Management System</title>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            height: 100vh;
+        }
+
+        .dashboard {
+            display: flex;
+            height: 100%;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            height: 100%;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            padding: 20px 15px;
+            font-size: 20px;
+            font-weight: bold;
+            border-bottom: 1px solid #34495e;
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+        }
+
+        .logo-icon {
+            margin-right: 10px;
+            font-size: 24px;
+        }
+
+        .nav-item {
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: #34495e;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .nav-icon {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .alert-badge {
+            position: absolute;
+            right: 15px;
+            background-color: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            height: 100%;
+            overflow-y: auto;
+            background-color: #f5f7fa;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e1e5eb;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            border-radius: 4px;
+            padding: 8px 15px;
+            width: 300px;
+            border: 1px solid #e74c3c;
+        }
+
+        .search-input {
+            border: none;
+            outline: none;
+            width: 100%;
+            margin-left: 10px;
+            font-size: 14px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 35px;
+            height: 35px;
+            background-color: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Card Styles */
+        .card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e1e5eb;
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
+        }
+
+        .btn-outline:hover {
+            background-color: #fff5f5;
+        }
+
+        .btn-danger {
+            background-color: #c0392b;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #a93226;
+        }
+
+        /* Table Styles */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th, .table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e1e5eb;
+            vertical-align: top;
+        }
+
+        .table th {
+            font-weight: 600;
+            color: white;
+            background-color: #e74c3c;
+        }
+
+        .table tbody tr:hover {
+            background-color: #fff5f5;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background-color: white;
+            border-radius: 8px;
+            width: 700px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e1e5eb;
+            background: #e74c3c;
+            color: white;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #e1e5eb;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #e74c3c;
+        }
+
+        .form-control, .form-select {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #e74c3c;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #c0392b;
+            outline: none;
+        }
+
+        .blood-stock-inputs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .blood-stock-inputs input {
+            width: 80px;
+            padding: 6px;
+            border: 1px solid #e74c3c;
+            border-radius: 4px;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 5px;
+        }
+
+        .page-item {
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background-color: #fff;
+            border: 1px solid #e74c3c;
+        }
+
+        .page-item:hover, .page-item.active {
+            background-color: #e74c3c;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="dashboard">
+        <div class="sidebar">
+            <div class="nav-menu">
+                <div class="logo">
+                    <span class="logo-icon">❤️</span>
+                    <span>BloodBank</span>
+                </div>
+                <a href="dashboard.html" class="nav-item"><span class="nav-icon">📊</span><span>Dashboard</span></a>
+                <a href="blood-bank.html" class="nav-item active"><span class="nav-icon">🏥</span><span>Blood Bank</span></a>
+                <a href="inventory.html" class="nav-item"><span class="nav-icon">📦</span><span>Inventory</span></a>
+                <a href="expiry-management.html" class="nav-item"><span class="nav-icon">⏰</span><span>Expiry Management</span></a>
+                <a href="donation-records.html" class="nav-item"><span class="nav-icon">📝</span><span>Donation Records</span></a>
+                <a href="emergency-alerts.html" class="nav-item"><span class="nav-icon">🚨</span><span>Emergency Alerts</span><span class="alert-badge">3</span></a>
+                <a href="notifications.html" class="nav-item"><span class="nav-icon">🔔</span><span>Notifications</span><span class="alert-badge">7</span></a>
+                <a href="donors.html" class="nav-item"><span class="nav-icon">🧍</span><span>Donors</span></a>
+                <a href="hospitals.html" class="nav-item"><span class="nav-icon">🏥</span><span>Hospitals</span></a>
+                <a href="blood-transport.html" class="nav-item"><span class="nav-icon">🚚</span><span>Blood Transport</span></a>
+                <a href="settings.html" class="nav-item"><span class="nav-icon">⚙️</span><span>Settings</span></a>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="header">
+                <div class="search-bar">
+                    <span>🔍</span>
+                    <input type="text" class="search-input" placeholder="Search blood banks..." onkeyup="searchBloodBanks()">
+                </div>
+                <div class="user-info">
+                    <span>🔔</span>
+                    <div class="avatar">A</div>
+                    <span>Admin</span>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Blood Bank Management</h2>
+                    <button class="btn btn-primary" onclick="showAddModal()">Add New Blood Bank</button>
+                </div>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Location</th>
+                        <th>Contact Details</th>
+                        <th>Blood Stock Levels</th>
+                        <th>Storage Capacity</th>
+                        <th>Last Update</th>
+                        <th>Managed By</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody id="bloodBankTableBody"></tbody>
+                </table>
+                <div class="pagination">
+                    <div class="page-item" onclick="prevPage()">Prev</div>
+                    <div class="page-item active" id="page1">1</div>
+                    <div class="page-item" id="page2" onclick="goToPage(2)">2</div>
+                    <div class="page-item" onclick="nextPage()">Next</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Blood Bank Modal -->
+    <div class="modal-overlay" id="addModal" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Blood Bank</h3>
+                <button class="close-btn" onclick="hideAddModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="addForm">
+
+                    <div class="form-group">
+                        <label class="form-label">HospitalName</label>
+                        <input type="text" class="form-control" id="addName" placeholder="Enter Blood Bank Name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Location</label>
+                        <input type="text" class="form-control" id="addLocation" placeholder="Enter Location">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Contact Details</label>
+                        <input type="text" class="form-control" id="addContact" placeholder="Enter Contact Details">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Blood Stock Levels (Units)</label>
+                        <div class="blood-stock-inputs">
+                            <input type="number" id="addA+" placeholder="A+" min="0">
+                            <input type="number" id="addA-" placeholder="A-" min="0">
+                            <input type="number" id="addB+" placeholder="B+" min="0">
+                            <input type="number" id="addB-" placeholder="B-" min="0">
+                            <input type="number" id="addAB+" placeholder="AB+" min="0">
+                            <input type="number" id="addAB-" placeholder="AB-" min="0">
+                            <input type="number" id="addO+" placeholder="O+" min="0">
+                            <input type="number" id="addO-" placeholder="O-" min="0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Storage Capacity (Units)</label>
+                        <input type="number" class="form-control" id="addStorageCapacity" placeholder="Enter Storage Capacity" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Last Stock Update Date</label>
+                        <input type="date" class="form-control" id="addLastUpdate">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Managed By</label>
+                        <select class="form-select" id="addManagedBy">
+                            <option value="" disabled selected>Select Management Type</option>
+                            <option value="Government">Government</option>
+                            <option value="Private">Private</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="hideAddModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="addBloodBank()">Add Blood Bank</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Blood Bank Modal -->
+    <div class="modal-overlay" id="editModal" style="display: none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Blood Bank</h3>
+                <button class="close-btn" onclick="hideEditModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <div class="form-group">
+                        <label class="form-label">Blood Bank ID</label>
+                        <input type="text" class="form-control" id="editBloodBankId" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control" id="editName">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Location</label>
+                        <input type="text" class="form-control" id="editLocation">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Contact Details</label>
+                        <input type="text" class="form-control" id="editContact">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Blood Stock Levels (Units)</label>
+                        <div class="blood-stock-inputs">
+                            <input type="number" id="editA+" placeholder="A+" min="0">
+                            <input type="number" id="editA-" placeholder="A-" min="0">
+                            <input type="number" id="editB+" placeholder="B+" min="0">
+                            <input type="number" id="editB-" placeholder="B-" min="0">
+                            <input type="number" id="editAB+" placeholder="AB+" min="0">
+                            <input type="number" id="editAB-" placeholder="AB-" min="0">
+                            <input type="number" id="editO+" placeholder="O+" min="0">
+                            <input type="number" id="editO-" placeholder="O-" min="0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Storage Capacity (Units)</label>
+                        <input type="number" class="form-control" id="editStorageCapacity" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Last Stock Update Date</label>
+                        <input type="date" class="form-control" id="editLastUpdate">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Managed By</label>
+                        <select class="form-select" id="editManagedBy">
+                            <option value="Government">Government</option>
+                            <option value="Private">Private</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="hideEditModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveEdit()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    let bloodBanks = [];
+    let currentEditIndex = -1;
+    let currentPage = 1;
+    const itemsPerPage = 5;
+
+    function addBloodBank() {
+        const bloodBank = {
+            id: document.getElementById("addBloodBankId").value,
+            name: document.getElementById("addName").value,
+            location: document.getElementById("addLocation").value,
+            contact: document.getElementById("addContact").value,
+            stock: {
+                "A+": document.getElementById("addA+").value || 0,
+                "A-": document.getElementById("addA-").value || 0,
+                "B+": document.getElementById("addB+").value || 0,
+                "B-": document.getElementById("addB-").value || 0,
+                "AB+": document.getElementById("addAB+").value || 0,
+                "AB-": document.getElementById("addAB-").value || 0,
+                "O+": document.getElementById("addO+").value || 0,
+                "O-": document.getElementById("addO-").value || 0
+            },
+            capacity: document.getElementById("addStorageCapacity").value,
+            lastUpdate: document.getElementById("addLastUpdate").value,
+            managedBy: document.getElementById("addManagedBy").value
+        };
+
+        if (bloodBank.id && bloodBank.name && bloodBank.location && bloodBank.contact && bloodBank.capacity && bloodBank.lastUpdate && bloodBank.managedBy) {
+            bloodBanks.push(bloodBank);
+            hideAddModal();
+            clearAddForm();
+            renderTable();
+        } else {
+            alert("Please fill all fields!");
+        }
+    }
+
+    function showEditModal(index) {
+        currentEditIndex = index;
+        const bank = bloodBanks[index];
+        document.getElementById("editBloodBankId").value = bank.id;
+        document.getElementById("editName").value = bank.name;
+        document.getElementById("editLocation").value = bank.location;
+        document.getElementById("editContact").value = bank.contact;
+        document.getElementById("editA+").value = bank.stock["A+"];
+        document.getElementById("editA-").value = bank.stock["A-"];
+        document.getElementById("editB+").value = bank.stock["B+"];
+        document.getElementById("editB-").value = bank.stock["B-"];
+        document.getElementById("editAB+").value = bank.stock["AB+"];
+        document.getElementById("editAB-").value = bank.stock["AB-"];
+        document.getElementById("editO+").value = bank.stock["O+"];
+        document.getElementById("editO-").value = bank.stock["O-"];
+        document.getElementById("editStorageCapacity").value = bank.capacity;
+        document.getElementById("editLastUpdate").value = bank.lastUpdate;
+        document.getElementById("editManagedBy").value = bank.managedBy;
+        document.getElementById("editModal").style.display = "flex";
+    }
+
+    function saveEdit() {
+        const updatedBank = {
+            id: document.getElementById("editBloodBankId").value,
+            name: document.getElementById("editName").value,
+            location: document.getElementById("editLocation").value,
+            contact: document.getElementById("editContact").value,
+            stock: {
+                "A+": document.getElementById("editA+").value || 0,
+                "A-": document.getElementById("editA-").value || 0,
+                "B+": document.getElementById("editB+").value || 0,
+                "B-": document.getElementById("editB-").value || 0,
+                "AB+": document.getElementById("editAB+").value || 0,
+                "AB-": document.getElementById("editAB-").value || 0,
+                "O+": document.getElementById("editO+").value || 0,
+                "O-": document.getElementById("editO-").value || 0
+            },
+            capacity: document.getElementById("editStorageCapacity").value,
+            lastUpdate: document.getElementById("editLastUpdate").value,
+            managedBy: document.getElementById("editManagedBy").value
+        };
+
+        if (updatedBank.name && updatedBank.location && updatedBank.contact && updatedBank.capacity && updatedBank.lastUpdate && updatedBank.managedBy) {
+            bloodBanks[currentEditIndex] = updatedBank;
+            hideEditModal();
+            renderTable();
+        } else {
+            alert("Please fill all fields!");
+        }
+    }
+
+    function showDeleteModal(index) {
+        currentEditIndex = index;
+        const bank = bloodBanks[index];
+        document.getElementById("deleteBloodBankName").textContent = bank.name;
+        document.getElementById("deleteBloodBankId").textContent = bank.id;
+        document.getElementById("deleteModal").style.display = "flex";
+    }
+
+    function deleteBloodBank() {
+        bloodBanks.splice(currentEditIndex, 1);
+        hideDeleteModal();
+        renderTable();
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById("bloodBankTableBody");
+        tbody.innerHTML = "";
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        const paginatedBanks = bloodBanks.slice(start, end);
+
+        if (bloodBanks.length === 0) {
+            tbody.innerHTML = "<tr><td colspan='9'>No blood banks added yet.</td></tr>";
+        } else {
+            paginatedBanks.forEach((bank, index) => {
+                const stockSummary = Object.entries(bank.stock)
+                    .map(([type, units]) => `${type}: ${units}`)
+                    .join("<br>");
+                const row = `
+          <tr>
+            <td>${bank.id}</td>
+            <td>${bank.name}</td>
+            <td>${bank.location}</td>
+            <td>${bank.contact}</td>
+            <td>${stockSummary}</td>
+            <td>${bank.capacity} units</td>
+            <td>${bank.lastUpdate}</td>
+            <td>${bank.managedBy}</td>
+            <td>
+              <div class="action-buttons">
+                <button class="action-btn edit-btn" onclick="showEditModal(${start + index})">✏️ Edit</button>
+                <button class="action-btn delete-btn" onclick="showDeleteModal(${start + index})">🗑️ Delete</button>
+              </div>
+            </td>
+          </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+        updatePagination();
+    }
+
+    function searchBloodBanks() {
+        const query = document.querySelector(".search-input").value.toLowerCase();
+        const filteredBanks = bloodBanks.filter(bank =>
+            bank.name.toLowerCase().includes(query) ||
+            bank.id.toLowerCase().includes(query) ||
+            bank.location.toLowerCase().includes(query)
+        );
+        bloodBanks = filteredBanks;
+        currentPage = 1;
+        renderTable();
+    }
+
+    function updatePagination() {
+        const totalPages = Math.ceil(bloodBanks.length / itemsPerPage);
+        document.getElementById("page1").classList.toggle("active", currentPage === 1);
+        document.getElementById("page2").style.display = totalPages > 1 ? "block" : "none";
+        document.getElementById("page2").classList.toggle("active", currentPage === 2);
+    }
+
+    function prevPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            renderTable();
+        }
+    }
+
+    function nextPage() {
+        const totalPages = Math.ceil(bloodBanks.length / itemsPerPage);
+        if (currentPage < totalPages) {
+            currentPage++;
+            renderTable();
+        }
+    }
+
+    function goToPage(page) {
+        currentPage = page;
+        renderTable();
+    }
+
+    function clearAddForm() {
+        document.getElementById("addForm").reset();
+    }
+
+    function showAddModal() { document.getElementById("addModal").style.display = "flex"; }
+    function hideAddModal() { document.getElementById("addModal").style.display = "none"; }
+    function hideEditModal() { document.getElementById("editModal").style.display = "none"; }
+    function hideDeleteModal() { document.getElementById("deleteModal").style.display = "none"; }
+
+    renderTable();
+</script>
+</body>
+</html>

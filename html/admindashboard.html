@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blood Bank Management System</title>
+  <style>
+    :root {
+      --primary: #d32f2f;
+      --primary-light: #ff6659;
+      --primary-dark: #9a0007;
+      --secondary: #b71c1c;
+      --text-on-primary: #ffffff;
+      --text-primary: #212121;
+      --text-secondary: #757575;
+      --background: #f5f5f5;
+      --card-bg: #ffffff;
+      --success: #4caf50;
+      --warning: #ff9800;
+      --danger: #f44336;
+      --info: #2196f3;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      background-color: var(--background);
+      color: var(--text-primary);
+    }
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .dashboard {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 20px;
+      min-height: 100vh;
+    }
+    /* Sidebar */
+    .sidebar {
+      background-color: var(--primary);
+      color: var(--text-on-primary);
+      border-radius: 8px;
+      padding: 20px;
+      position: sticky;
+      top: 20px;
+      height: calc(100vh - 40px);
+      overflow-y: auto;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      margin-bottom: 40px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .logo-icon {
+      margin-right: 10px;
+      font-size: 28px;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .nav-item:hover, .nav-item.active {
+      background-color: var(--primary-light);
+    }
+    .nav-icon {
+      margin-right: 10px;
+      width: 24px;
+      text-align: center;
+    }
+    /* Main Content */
+    .main-content {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+    }
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--secondary);
+      color: var(--text-on-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    .search-bar {
+      display: flex;
+      background-color: var(--card-bg);
+      border-radius: 8px;
+      padding: 10px 15px;
+      width: 300px;
+    }
+    .search-input {
+      border: none;
+      outline: none;
+      width: 100%;
+      margin-left: 10px;
+    }
+    .alert-badge {
+      background-color: var(--danger);
+      color: white;
+      border-radius: 50%;
+      min-width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      margin-left: 5px;
+    }
+    /* Dashboard Stats */
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    .stat-card {
+      background-color: var(--card-bg);
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .stat-title {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    .stat-value {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .stat-change {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      color: var(--success);
+    }
+    .stat-change.negative {
+      color: var(--danger);
+    }
+    /* Content Area */
+    .content-area {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+    }
+    .card {
+      background-color: var(--card-bg);
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    .card-title {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    /* Tables */
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .table th, .table td {
+      text-align: left;
+      padding: 12px 15px;
+      border-bottom: 1px solid #eee;
+    }
+    .table tr:last-child td {
+      border-bottom: none;
+    }
+    .table th {
+      font-weight: bold;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+    /* Blood Type Tags */
+    .blood-type {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 4px;
+      background-color: rgba(211, 47, 47, 0.1);
+      color: var(--primary);
+      font-weight: bold;
+    }
+    /* Status Tags */
+    .status-tag {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 12px;
+    }
+    .status-tag.available {
+      background-color: rgba(76, 175, 80, 0.1);
+      color: var(--success);
+    }
+    .status-tag.low {
+      background-color: rgba(255, 152, 0, 0.1);
+      color: var(--warning);
+    }
+    .status-tag.critical {
+      background-color: rgba(244, 67, 54, 0.1);
+      color: var(--danger);
+    }
+    /* Emergency Alerts */
+    .alert-card {
+      background-color: rgba(244, 67, 54, 0.1);
+      border-left: 4px solid var(--danger);
+      padding: 15px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+    }
+    .alert-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: var(--danger);
+    }
+    .alert-time {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+    }
+    /* Buttons */
+    .btn {
+      padding: 8px 15px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+    }
+    .btn-outline:hover {
+      background-color: var(--primary);
+      color: white;
+    }
+    /* Notification */
+    .notification-item {
+      padding: 15px 0;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .notification-item:last-child {
+      border-bottom: none;
+    }
+    .notification-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: rgba(33, 150, 243, 0.1);
+      color: var(--info);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .notification-content {
+      flex: 1;
+    }
+    .notification-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .notification-time {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .stats-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .content-area {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 768px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="dashboard">
+    <!-- Sidebar -->
+<!--
+    <div class="sidebar">
+      <div class="nav-menu">
+        <div class="logo">
+          <span class="logo-icon">❤️</span>
+          <span>BloodBank</span>
+        </div>
+        <a href="dashboard.html" class="nav-item active">
+          <span class="nav-icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="blood-bank.html" class="nav-item">
+          <span class="nav-icon">🏥</span>
+          <span>Blood Bank</span>
+        </a>
+        <a href="inventory.html" class="nav-item">
+          <span class="nav-icon">📦</span>
+          <span>Inventory</span>
+        </a>
+        <a href="expiry-management.html" class="nav-item">
+          <span class="nav-icon">⏰</span>
+          <span>Expiry Management</span>
+        </a>
+        <a href="donation-records.html" class="nav-item">
+          <span class="nav-icon">📝</span>
+          <span>Donation Records</span>
+        </a>
+        <a href="emergency-alerts.html" class="nav-item">
+          <span class="nav-icon">🚨</span>
+          <span>Emergency Alerts</span>
+          <span class="alert-badge">3</span>
+        </a>
+        <a href="notifications.html" class="nav-item">
+          <span class="nav-icon">🔔</span>
+          <span>Notifications</span>
+          <span class="alert-badge">7</span>
+        </a>
+        <a href="donors.html" class="nav-item">
+          <span class="nav-icon">🧍</span>
+          <span>Donors</span>
+        </a>
+        <a href="hospitals.html" class="nav-item">
+          <span class="nav-icon">🏥</span>
+          <span>Hospitals</span>
+        </a>
+        <a href="blood-transport.html" class="nav-item">
+          <span class="nav-icon">🚚</span>
+          <span>Blood Transport</span>
+        </a>
+        <a href="settings.html" class="nav-item">
+          <span class="nav-icon">⚙️</span>
+          <span>Settings</span>
+        </a>
+      </div>
+    </div>
+-->
+    <!-- Main Content -->
+    <div class="main-content">
+      <!-- Header -->
+      <div class="header">
+        <div class="search-bar">
+          <span>🔍</span>
+          <input type="text" class="search-input" placeholder="Search...">
+        </div>
+        <div class="user-info">
+          <span>🔔</span>
+          <div class="avatar">A</div>
+          <span>Admin</span>
+        </div>
+      </div>
+      <!-- Stats -->
+      <div class="stats-container">
+        <div class="stat-card">
+          <div class="stat-title">Total Blood Units</div>
+          <div class="stat-value">427</div>
+          <div class="stat-change">+12 from yesterday</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Critical Blood Types</div>
+          <div class="stat-value">2</div>
+          <div class="stat-change negative">O-, AB-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Donations This Month</div>
+          <div class="stat-value">78</div>
+          <div class="stat-change">+23% from last month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Expiring Soon</div>
+          <div class="stat-value">18</div>
+          <div class="stat-change negative">within 7 days</div>
+        </div>
+      </div>
+      <!-- Content Area -->
+      <div class="content-area">
+        <!-- Blood Inventory -->
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">Blood Inventory Status</h2>
+              <button class="btn btn-outline">View All</button>
+            </div>
+            <table class="table">
+              <thead>
+              <tr>
+                <th>Blood Type</th>
+                <th>Units Available</th>
+                <th>Status</th>
+                <th>Last Updated</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td><span class="blood-type">A+</span></td>
+                <td>87</td>
+                <td><span class="status-tag available">Available</span></td>
+                <td>10 mins ago</td>
+              </tr>
+              <tr>
+                <td><span class="blood-type">A-</span></td>
+                <td>32</td>
+                <td><span class="status-tag available">Available</span></td>
+                <td>10 mins ago</td>
+              </tr>
+              <tr>
+                <td><span class="blood-type">B+</span></td>
+                <td>65</td>
+                <td><span class="status-tag available">Available</span></td>
+                <td>10 mins ago</td>
+              </tr>
+              <tr>
+                <td><span class="blood-type">B-</span></td>
+                <td>14</td>
+                <td><span class="status-tag low">Low</span></td>
+                <td>10 mins ago</td>
+              </tr>
+              <tr>
+                <td><span class="blood-type">AB+</span></td>
+                <td>28</td>
+                <td><span class="status-tag available">Available</span></td>
+                <td>10 mins ago</td>
+              </tr>
+              <tr>
+                <td><span class="blood-type">AB-</span></td>
+                <td>5</td>
+                <td><span class="status-tag critical">Critical</span></td>
+                <td>10 mins ago</td>
+              </tr>
+              <tr>
+                <td><span class="blood-type">O+</span></td>
+                <td>75</td>
+                <td><span class="status-tag available">Available</span></td>
+                <td>10 mins ago</td>
+              </tr>
+              <tr>
+                <td><span class="blood-type">O-</span></td>
+                <td>8</td>
+                <td><span class="status-tag critical">Critical</span></td>
+                <td>10 mins ago</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- Expiring Blood Units -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">Blood Expiry Management</h2>
+              <button class="btn btn-outline">View All</button>
+            </div>
+            <table class="table">
+              <thead>
+              <tr>
+                <th>Unit ID</th>
+                <th>Blood Type</th>
+                <th>Collection Date</th>
+                <th>Expiry Date</th>
+                <th>Status</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>BU-2025-1423</td>
+                <td><span class="blood-type">A+</span></td>
+                <td>06 Mar, 2025</td>
+                <td>20 Mar, 2025</td>
+                <td><span class="status-tag critical">Critical</span></td>
+              </tr>
+              <tr>
+                <td>BU-2025-1424</td>
+                <td><span class="blood-type">O+</span></td>
+                <td>06 Mar, 2025</td>
+                <td>20 Mar, 2025</td>
+                <td><span class="status-tag critical">Critical</span></td>
+              </tr>
+              <tr>
+                <td>BU-2025-1425</td>
+                <td><span class="blood-type">B+</span></td>
+                <td>06 Mar, 2025</td>
+                <td>20 Mar, 2025</td>
+                <td><span class="status-tag critical">Critical</span></td>
+              </tr>
+              <tr>
+                <td>BU-2025-1426</td>
+                <td><span class="blood-type">AB+</span></td>
+                <td>07 Mar, 2025</td>
+                <td>21 Mar, 2025</td>
+                <td><span class="status-tag critical">Critical</span></td>
+              </tr>
+              <tr>
+                <td>BU-2025-1427</td>
+                <td><span class="blood-type">A-</span></td>
+                <td>08 Mar, 2025</td>
+                <td>22 Mar, 2025</td>
+                <td><span class="status-tag low">Expiring Soon</span></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- Sidebar Content -->
+        <div>
+          <!-- Emergency Alerts -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">Emergency Alerts</h2>
+              <button class="btn btn-outline">View All</button>
+            </div>
+            <div class="alert-card">
+              <div class="alert-title">Urgent: O- Blood Required</div>
+              <div class="alert-time">10 mins ago</div>
+              <p>Central Hospital requires 5 units of O- blood for emergency surgery.</p>
+              <button class="btn btn-primary" style="margin-top: 10px;">Respond</button>
+            </div>
+            <div class="alert-card">
+              <div class="alert-title">Urgent: AB- Blood Required</div>
+              <div class="alert-time">45 mins ago</div>
+              <p>Memorial Hospital requires 3 units of AB- blood for a scheduled surgery.</p>
+              <button class="btn btn-primary" style="margin-top: 10px;">Respond</button>
+            </div>
+            <div class="alert-card">
+              <div class="alert-title">Critical Level Alert: O-</div>
+              <div class="alert-time">2 hours ago</div>
+              <p>O- blood type has reached critical level. Schedule donation drive.</p>
+              <button class="btn btn-primary" style="margin-top: 10px;">Schedule Drive</button>
+            </div>
+          </div>
+          <!-- Recent Donations -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">Recent Donations</h2>
+              <button class="btn btn-outline">View All</button>
+            </div>
+            <table class="table">
+              <thead>
+              <tr>
+                <th>Donor</th>
+                <th>Blood Type</th>
+                <th>Date</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>John Doe</td>
+                <td><span class="blood-type">A+</span></td>
+                <td>20 Mar, 2025</td>
+              </tr>
+              <tr>
+                <td>Jane Smith</td>
+                <td><span class="blood-type">O+</span></td>
+                <td>19 Mar, 2025</td>
+              </tr>
+              <tr>
+                <td>Robert Johnson</td>
+                <td><span class="blood-type">B-</span></td>
+                <td>19 Mar, 2025</td>
+              </tr>
+              <tr>
+                <td>Sarah Williams</td>
+                <td><span class="blood-type">AB+</span></td>
+                <td>18 Mar, 2025</td>
+              </tr>
+              <tr>
+                <td>Michael Brown</td>
+                <td><span class="blood-type">O-</span></td>
+                <td>18 Mar, 2025</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- Notifications -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">Notifications</h2>
+              <button class="btn btn-outline">View All</button>
+            </div>
+            <div class="notification-item">
+              <div class="notification-icon">🔔</div>
+              <div class="notification-content">
+                <div class="notification-title">Donation Request Approved</div>
+                <p>Memorial Hospital's request for 5 units of A+ blood has been approved.</p>
+                <div class="notification-time">15 mins ago</div>
+              </div>
+            </div>
+            <div class="notification-item">
+              <div class="notification-icon">📦</div>
+              <div class="notification-content">
+                <div class="notification-title">Blood Transport Scheduled</div>
+                <p>5 units of B+ blood scheduled for transport to Central Hospital.</p>
+                <div class="notification-time">1 hour ago</div>
+              </div>
+            </div>
+            <div class="notification-item">
+              <div class="notification-icon">⏰</div>
+              <div class="notification-content">
+                <div class="notification-title">Expiry Alert</div>
+                <p>12 units of blood will expire in the next 7 days.</p>
+                <div class="notification-time">2 hours ago</div>
+              </div>
+            </div>
+            <div class="notification-item">
+              <div class="notification-icon">🏥</div>
+              <div class="notification-content">
+                <div class="notification-title">New Hospital Registration</div>
+                <p>Riverside Medical Center has been added to your network.</p>
+                <div class="notification-time">5 hours ago</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+<script>
+  // Show Dashboard content and set active state
+  function showDashboard(event) {
+    event.preventDefault();
+
+    // Remove active class from all nav items
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
+
+    // Add active class to Dashboard
+    event.currentTarget.classList.add('active');
+
+    // Ensure main content is visible
+    const mainContent = document.getElementById('mainContent');
+    mainContent.style.display = 'block';
+  }
+
+  // Handle other navigation items
+  function handleNavigation(event, section) {
+    event.preventDefault();
+
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => item.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+
+    // For now, keep dashboard visible; modify this for other content
+    const mainContent = document.getElementById('mainContent');
+    mainContent.style.display = 'block';
+    console.log(`Clicked: ${section}`);
+    // Future: Load different content here, e.g., mainContent.innerHTML = getSectionContent(section);
+  }
+
+  // Set initial state
+  document.addEventListener('DOMContentLoaded', () => {
+    const dashboardNav = document.querySelector('.nav-item.active');
+    if (dashboardNav) {
+      dashboardNav.classList.add('active');
+    }
+  });
+</script>
+</html>
