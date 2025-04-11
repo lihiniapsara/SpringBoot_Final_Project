@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hospital Blood Inventory System</title>
+    <title>Hospital List - Table View</title>
     <style>
         * {
             margin: 0;
@@ -11,271 +11,405 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+
         body {
-            background-color: #f5f5f5;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
         }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
-        header {
-            background-color: #1a365d;
-            color: white;
-            padding: 15px 20px;
+
+        .filter-section {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-        nav ul {
+
+        .filter-group {
             display: flex;
-            list-style: none;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
         }
-        nav ul li {
-            margin-left: 20px;
+
+        .filter-select {
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            outline: none;
         }
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-        }
-        .card {
+
+        .table-container {
             background-color: white;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
             margin-bottom: 20px;
         }
-        .card h2 {
-            color: #1a365d;
-            margin-bottom: 15px;
-            font-size: 1.3rem;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-        }
-        table {
+
+        .hospitals-table {
             width: 100%;
             border-collapse: collapse;
         }
-        th, td {
-            padding: 10px 15px;
+
+        .hospitals-table th,
+        .hospitals-table td {
+            padding: 12px 15px;
             text-align: left;
-            border-bottom: 1px solid #eee;
         }
-        th {
-            background-color: #f9fafb;
+
+        .hospitals-table th {
+            background-color: #f8f8f8;
             font-weight: 600;
+            color: #555;
+            position: sticky;
+            top: 0;
         }
-        tr:hover {
+
+        .hospitals-table tr {
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+
+        .hospitals-table tr:hover {
             background-color: #f5f5f5;
         }
-        .status {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.85rem;
+
+        .hospitals-table tr:last-child {
+            border-bottom: none;
         }
-        .status-critical {
-            background-color: #fed7d7;
-            color: #e53e3e;
+
+        .table-responsive {
+            overflow-x: auto;
+            width: 100%;
         }
-        .status-low {
-            background-color: #feebc8;
-            color: #dd6b20;
+
+        .hospital-type {
+            background-color: #e6f7ff;
+            color: #1890ff;
+            padding: 2px 8px;
+            border-radius: 15px;
+            font-size: 12px;
+            white-space: nowrap;
         }
-        .status-ok {
-            background-color: #c6f6d5;
-            color: #38a169;
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
         }
-        .filters {
+
+        .status-active {
+            background-color: #52c41a;
+        }
+
+        .status-inactive {
+            background-color: #ff4d4f;
+        }
+
+        .blood-groups {
             display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 4px;
         }
-        .filter-select {
-            padding: 8px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
+
+        .blood-group {
+            background-color: #fff1f0;
+            color: #d2232a;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 500;
         }
-        .btn {
-            padding: 8px 15px;
+
+        .load-more {
+            display: block;
+            width: max-content;
+            margin: 20px auto;
+            padding: 10px 25px;
+            background-color: #d2232a;
+            color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             font-weight: 500;
+            transition: background-color 0.2s ease;
         }
-        .btn-blue {
-            background-color: #3182ce;
-            color: white;
+
+        .load-more:hover {
+            background-color: #b81c23;
         }
-        .btn-blue:hover {
-            background-color: #2c5282;
+
+        .no-results {
+            text-align: center;
+            padding: 40px 0;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .filter-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .hospital-type, .blood-group {
+                font-size: 10px;
+                padding: 2px 4px;
+            }
+
+            .hospitals-table th,
+            .hospitals-table td {
+                padding: 8px 10px;
+                font-size: 14px;
+            }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-<header>
-    <div class="logo">National Blood Inventory System</div>
-    <nav>
-        <ul>
-            <li><a href="#">Dashboard</a></li>
-            <li><a href="#">Hospitals</a></li>
-            <li><a href="#">Reports</a></li>
-            <li><a href="#">Settings</a></li>
-        </ul>
-    </nav>
-</header>
+<h2 style="margin-left: 20px">Hospital Management Dashboard</h2>
 
-<div class="container">
-    <div class="card">
-        <h2>Hospital Blood Inventory</h2>
-        <div class="filters">
-            <select class="filter-select">
-                <option>All Districts</option>
-                <option>Colombo</option>
-                <option>Gampaha</option>
-                <option>Kandy</option>
-                <option>Galle</option>
-                <option>Jaffna</option>
+<main class="container">
+    <div class="filter-section">
+        <div class="filter-group" style="margin-top: 20px">
+            <select id="filter-district" class="filter-select">
+                <option value="">All Districts</option>
+                <option value="Ampara">Ampara</option>
+                <option value="Anuradhapura">Anuradhapura</option>
+                <option value="Badulla">Badulla</option>
+                <option value="Batticaloa">Batticaloa</option>
+                <option value="Colombo">Colombo</option>
+                <option value="Galle">Galle</option>
+                <option value="Gampaha">Gampaha</option>
+                <option value="Hambantota">Hambantota</option>
+                <option value="Jaffna">Jaffna</option>
+                <option value="Kalutara">Kalutara</option>
+                <option value="Kandy">Kandy</option>
+                <option value="Kegalle">Kegalle</option>
+                <option value="Kilinochchi">Kilinochchi</option>
+                <option value="Kurunegala">Kurunegala</option>
+                <option value="Mannar">Mannar</option>
+                <option value="Matale">Matale</option>
+                <option value="Matara">Matara</option>
+                <option value="Monaragala">Monaragala</option>
+                <option value="Mullaitivu">Mullaitivu</option>
+                <option value="Nuwara Eliya">Nuwara Eliya</option>
+                <option value="Polonnaruwa">Polonnaruwa</option>
+                <option value="Puttalam">Puttalam</option>
+                <option value="Ratnapura">Ratnapura</option>
+                <option value="Trincomalee">Trincomalee</option>
+                <option value="Vavuniya">Vavuniya</option>
             </select>
-            <select class="filter-select">
-                <option>All Blood Types</option>
-                <option>A+</option>
-                <option>A-</option>
-                <option>B+</option>
-                <option>B-</option>
-                <option>O+</option>
-                <option>O-</option>
-                <option>AB+</option>
-                <option>AB-</option>
+
+            <select id="filter-type" class="filter-select">
+                <option value="">All Hospital Types</option>
+                <option value="Government">Government</option>
+                <option value="Private">Private</option>
+                <option value="Semi-Government">Semi-Government</option>
             </select>
-            <button class="btn btn-blue">Search</button>
+
+            <select id="filter-blood-bank" class="filter-select">
+                <option value="">All Hospitals</option>
+                <option value="true">With Blood Bank</option>
+                <option value="false">Without Blood Bank</option>
+            </select>
         </div>
-        <table>
-            <thead>
-            <tr>
-                <th>Hospital Name</th>
-                <th>Location</th>
-                <th>A+</th>
-                <th>A-</th>
-                <th>B+</th>
-                <th>B-</th>
-                <th>O+</th>
-                <th>O-</th>
-                <th>AB+</th>
-                <th>AB-</th>
-                <th>Last Updated</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>National Hospital Colombo</td>
-                <td>Colombo</td>
-                <td><span class="status status-ok">45</span></td>
-                <td><span class="status status-low">12</span></td>
-                <td><span class="status status-ok">38</span></td>
-                <td><span class="status status-low">8</span></td>
-                <td><span class="status status-ok">56</span></td>
-                <td><span class="status status-low">15</span></td>
-                <td><span class="status status-critical">4</span></td>
-                <td><span class="status status-critical">2</span></td>
-                <td>22-Mar-2025 09:15</td>
-            </tr>
-            <tr>
-                <td>Kandy Teaching Hospital</td>
-                <td>Kandy</td>
-                <td><span class="status status-ok">32</span></td>
-                <td><span class="status status-low">10</span></td>
-                <td><span class="status status-ok">29</span></td>
-                <td><span class="status status-critical">5</span></td>
-                <td><span class="status status-ok">41</span></td>
-                <td><span class="status status-low">12</span></td>
-                <td><span class="status status-critical">3</span></td>
-                <td><span class="status status-critical">1</span></td>
-                <td>22-Mar-2025 08:45</td>
-            </tr>
-            <tr>
-                <td>Jaffna Teaching Hospital</td>
-                <td>Jaffna</td>
-                <td><span class="status status-ok">28</span></td>
-                <td><span class="status status-low">9</span></td>
-                <td><span class="status status-ok">25</span></td>
-                <td><span class="status status-low">7</span></td>
-                <td><span class="status status-ok">35</span></td>
-                <td><span class="status status-low">11</span></td>
-                <td><span class="status status-critical">5</span></td>
-                <td><span class="status status-critical">2</span></td>
-                <td>21-Mar-2025 18:30</td>
-            </tr>
-            <tr>
-                <td>Galle General Hospital</td>
-                <td>Galle</td>
-                <td><span class="status status-ok">30</span></td>
-                <td><span class="status status-low">8</span></td>
-                <td><span class="status status-ok">27</span></td>
-                <td><span class="status status-critical">4</span></td>
-                <td><span class="status status-ok">38</span></td>
-                <td><span class="status status-low">9</span></td>
-                <td><span class="status status-critical">2</span></td>
-                <td><span class="status status-critical">0</span></td>
-                <td>22-Mar-2025 07:20</td>
-            </tr>
-            <tr>
-                <td>Ragama Teaching Hospital</td>
-                <td>Gampaha</td>
-                <td><span class="status status-ok">26</span></td>
-                <td><span class="status status-low">7</span></td>
-                <td><span class="status status-ok">24</span></td>
-                <td><span class="status status-low">6</span></td>
-                <td><span class="status status-ok">31</span></td>
-                <td><span class="status status-low">10</span></td>
-                <td><span class="status status-critical">3</span></td>
-                <td><span class="status status-critical">1</span></td>
-                <td>21-Mar-2025 16:45</td>
-            </tr>
-            <tr>
-                <td>Kurunegala General Hospital</td>
-                <td>Kurunegala</td>
-                <td><span class="status status-ok">24</span></td>
-                <td><span class="status status-critical">5</span></td>
-                <td><span class="status status-ok">21</span></td>
-                <td><span class="status status-critical">3</span></td>
-                <td><span class="status status-ok">29</span></td>
-                <td><span class="status status-low">8</span></td>
-                <td><span class="status status-critical">1</span></td>
-                <td><span class="status status-critical">0</span></td>
-                <td>22-Mar-2025 08:10</td>
-            </tr>
-            <tr>
-                <td>Anuradhapura General Hospital</td>
-                <td>Anuradhapura</td>
-                <td><span class="status status-ok">20</span></td>
-                <td><span class="status status-critical">4</span></td>
-                <td><span class="status status-low">18</span></td>
-                <td><span class="status status-critical">2</span></td>
-                <td><span class="status status-ok">25</span></td>
-                <td><span class="status status-low">7</span></td>
-                <td><span class="status status-critical">2</span></td>
-                <td><span class="status status-critical">0</span></td>
-                <td>21-Mar-2025 14:30</td>
-            </tr>
-            </tbody>
-        </table>
     </div>
-</div>
+    <div class="table-container">
+        <div class="table-responsive">
+            <table class="hospitals-table" id="hospitals-table">
+                <thead>
+                <tr>
+                    <th>Hospital Name</th>
+                    <th>Type</th>
+                    <th>Location</th>
+                    <th>Contact</th>
+                    <th>Blood Bank</th>
+                    <th>Available Blood Groups</th>
+                    <th>Emergency Service</th>
+                </tr>
+                </thead>
+                <tbody id="hospitals-data">
+                <!-- Hospital data rows will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="no-results" class="no-results" style="display: none;">
+        <i class="fas fa-search" style="font-size: 48px; color: #ddd; margin-bottom: 20px;"></i>
+        <h3>No hospitals found</h3>
+        <p>Try adjusting your search criteria or check the backend connection</p>
+    </div>
+
+    <button class="load-more" id="load-more-btn">Load More</button>
+</main>
 
 <script>
-    // Simple JavaScript to simulate a real application
-    document.addEventListener('DOMContentLoaded', function() {
-        // Add click handlers to buttons
-        const buttons = document.querySelectorAll('.btn');
-        buttons.forEach(button => {
-            button.addEventListener('click', function() {
-                alert('Search filters applied.');
-            });
+    // State variables for pagination and filtering
+    let currentPage = 1;
+    const itemsPerPage = 10;
+    let allHospitals = []; // Full dataset from backend
+    let filteredHospitals = []; // Filtered dataset
+
+    // Function to fetch hospital data from backend
+    function fetchHospitals() {
+        $.ajax({
+            url: 'http://localhost:8080/api/v1/hospitals/getAll',
+            type: 'GET',
+            contentType: "application/json",
+            dataType: "json",
+            headers: {
+                Authorization: "Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoidXNlciIsInN1YiI6InVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDM5MjE2MTQsImV4cCI6MTc0NDk1ODQxNH0.39sBbE25H79CxXFwPxuniNn_prGRRBgox29lX74MfomMjyNBn3dv6dVR6-vwUgWtyEp73xHmcVmK3IRHJjN6Ag"
+            },
+            success: function (response) {
+                console.log("Hospital data fetched:", response.data);
+                allHospitals = response.data; // Store the full dataset
+                filteredHospitals = [...allHospitals]; // Initialize filtered data
+                renderHospitalRows(filteredHospitals, currentPage); // Render initial data
+            },
+
+            error: function (xhr, status, error) {
+                console.error("Error loading data:", xhr.responseText);
+                document.getElementById('no-results').style.display = 'block';
+                document.getElementById('no-results').querySelector('h3').textContent = 'Failed to load hospitals';
+                document.getElementById('no-results').querySelector('p').textContent = 'Please check your backend connection.';
+            }
         });
+    }
+
+    // Function to render hospital rows
+    function renderHospitalRows(hospitals, page = 1) {
+        const tableBody = document.getElementById('hospitals-data');
+        const noResultsElement = document.getElementById('no-results');
+        const loadMoreBtn = document.getElementById('load-more-btn');
+
+        // Clear table body if it's the first page
+        if (page === 1) {
+            tableBody.innerHTML = '';
+        }
+
+        // Calculate start and end indices for pagination
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = Math.min(startIndex + itemsPerPage, hospitals.length);
+
+        // Check if there are no hospitals to display
+        if (hospitals.length === 0) {
+            tableBody.innerHTML = '';
+            noResultsElement.style.display = 'block';
+            loadMoreBtn.style.display = 'none';
+            console.log('No hospitals found after filtering');
+            return;
+        }
+
+        // Hide no results message if there are hospitals
+        noResultsElement.style.display = 'none';
+
+        // Display the hospitals for the current page
+        for (let i = startIndex; i < endIndex; i++) {
+            const hospital = hospitals[i];
+
+            const row = document.createElement('tr');
+            row.setAttribute('data-id', hospital.hospitalid || hospital.hospitalName); // Use hospitalid if available
+
+            row.innerHTML = `
+                    <td><strong>${hospital.hospitalName}</strong></td>
+                    <td><span class="hospital-type">${hospital.typeOfHospital}</span></td>
+                    <td>${hospital.address}<br>${hospital.city || ''}, ${hospital.district}</td>
+                    <td>${hospital.contactNumber}<br><small>${hospital.emergencyContactNumber || 'N/A'} (Emergency)</small></td>
+                    <td>
+                        <span class="status-indicator ${hospital.hasBloodBank ? 'status-active' : 'status-inactive'}"></span>
+                        ${hospital.hasBloodBank ? 'Available' : 'Not Available'}
+                    </td>
+                    <td>
+                        <div class="blood-groups">
+                            ${hospital.hasBloodBank && hospital.availableBloodGroups && hospital.availableBloodGroups.length > 0
+                ? hospital.availableBloodGroups.map(group => `<span class="blood-group">${group}</span>`).join('')
+                : 'N/A'}
+                        </div>
+                    </td>
+                    <td>
+                        <span class="status-indicator ${hospital.emergencyBloodServiceAvailable ? 'status-active' : 'status-inactive'}"></span>
+                        ${hospital.emergencyBloodServiceAvailable ? 'Available' : 'Not Available'}
+                    </td>
+                `;
+
+            row.addEventListener('click', function() {
+                console.log(`Navigate to hospital details: ${hospital.hospitalid || hospital.hospitalName}`);
+                alert(`Viewing details for ${hospital.hospitalName}`);
+            });
+
+            tableBody.appendChild(row);
+        }
+
+        // Show or hide load more button
+        loadMoreBtn.style.display = endIndex < hospitals.length ? 'block' : 'none';
+        console.log(`Rendered ${endIndex - startIndex} hospitals on page ${page}`);
+    }
+
+    // Function to filter hospitals
+    function filterHospitals() {
+        const district = document.getElementById("filter-district").value;
+        const type = document.getElementById("filter-type").value;
+        const bloodBank = document.getElementById("filter-blood-bank").value;
+
+        console.log(`Filtering with: District=${district}, Type=${type}, BloodBank=${bloodBank}`);
+
+        // Start with the full dataset
+        filteredHospitals = [...allHospitals];
+
+        // Apply filters
+        if (district) {
+            filteredHospitals = filteredHospitals.filter(hospital => hospital.district === district);
+            console.log(`After district filter: ${filteredHospitals.length} hospitals`);
+        }
+        if (type) {
+            filteredHospitals = filteredHospitals.filter(hospital => hospital.typeOfHospital === type);
+            console.log(`After type filter: ${filteredHospitals.length} hospitals`);
+        }
+        if (bloodBank !== "") {
+            const bloodBankBool = bloodBank === "true";
+            filteredHospitals = filteredHospitals.filter(hospital => hospital.hasBloodBank === bloodBankBool);
+            console.log(`After blood bank filter: ${filteredHospitals.length} hospitals`);
+        }
+
+        // Reset to page 1 and render the filtered results
+        currentPage = 1;
+        renderHospitalRows(filteredHospitals, currentPage);
+    }
+
+    // Initialize the UI
+    document.addEventListener('DOMContentLoaded', function() {
+        // Fetch initial data from backend
+        fetchHospitals();
+
+        // Set up load more button
+        document.getElementById('load-more-btn').addEventListener('click', function() {
+            currentPage++;
+            renderHospitalRows(filteredHospitals, currentPage);
+        });
+
+        // Set up filters
+        const districtFilter = document.getElementById('filter-district');
+        const typeFilter = document.getElementById('filter-type');
+        const bloodBankFilter = document.getElementById('filter-blood-bank');
+
+        districtFilter.addEventListener('change', filterHospitals);
+        typeFilter.addEventListener('change', filterHospitals);
+        bloodBankFilter.addEventListener('change', filterHospitals);
+
+        console.log('Event listeners added to filters');
     });
 </script>
 </body>

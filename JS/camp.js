@@ -48,19 +48,14 @@ function campRegister(event) {
         url: "http://localhost:8080/api/v1/camp/register", // Replace with your API URL
         type: "POST",
         contentType: "application/json",
+        dataType: "json", // Expect JSON response
         data: JSON.stringify(campData),
         headers: {
-            Authorization: "Bearer " +"eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoidXNlciIsInN1YiI6ImFwc2FyYWxpaGluaTExQGdtYWlsLmNvbSIsImlhdCI6MTc0Mjg3ODY0MywiZXhwIjoxNzQzOTE1NDQzfQ.-ZP780TCw3ozJQcq3ti5n1YfaJCfLt0LjYHffrtX4Pu-Lm9MjP387bSZHqfaQnQWY8Vo7sU_MY59dDPRjRb7eg"
+            Authorization: "Bearer " +"eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoidXNlciIsInN1YiI6InVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDM5MjE2MTQsImV4cCI6MTc0NDk1ODQxNH0.39sBbE25H79CxXFwPxuniNn_prGRRBgox29lX74MfomMjyNBn3dv6dVR6-vwUgWtyEp73xHmcVmK3IRHJjN6Ag"
         },
         success: function (response) {
             console.log("Camp Registered:", response);
-
-            if (response.code === 201) {
-                alert("Camp Registered Successfully!");
-                $("#campRegisterForm")[0].reset(); // Clear form
-            } else {
-                alert("Error: " + response.message);
-            }
+            clearForm();
         },
         error: function (xhr, status, error) {
             console.error("Error registering camp:", error);
@@ -68,4 +63,15 @@ function campRegister(event) {
         }
     });
 }
-
+function clearForm() {
+    $("#campDate").val("");
+    $("#campName").val("");
+    $("#contactNumber").val("");
+    $("#email-camp").val("");
+    $("#campLocation").val("");
+    $("#city2").val("");
+    $("#districtDropdown").val("");
+    $("#campprovince").val("");
+    $("#zipCode-camp").val("");
+    $("#hospitalDropdown").val("");
+}

@@ -7,9 +7,22 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../Assest/css/style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <style>
+            /* Hide the default date picker */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            display: none;
+        }
+
+        /* Style the input to look like a plain text field */
+        input[type="date"] {
+            border: 1px solid #ccc;
+            padding: 8px;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+            background-color: #f9f9f9; /* Optional: Make it look readonly */
+        }
 
         input[type="radio"]:checked + label,
         input[type="radio"]:hover + label {
@@ -72,7 +85,7 @@
         .modal-header1 {
             background-color: rgba(252, 61, 61, 0.74);
             color: white;
-            padding: 15px 20px;
+            padding: 1px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -94,7 +107,7 @@
         }
 
         .modal-content1 {
-            padding: 20px;
+            padding: 10px;
         }
 
         .selection-container {
@@ -170,6 +183,19 @@
             background-color: #6c757d !important;
             margin-right: 10px;
         }
+
+            .request-section { padding: 20px; }
+            .container { max-width: 1200px; margin: 0 auto; }
+            .request-container { display: flex; gap: 20px; }
+            .current-requests, .request-appointment { flex: 1; padding: 20px; background: #f9f9f9; border-radius: 8px; }
+            .request-title { font-size: 24px; margin-bottom: 20px; }
+            .request-list { list-style: none; padding: 0; }
+            .request-item { display: flex; align-items: center; padding: 10px; margin-bottom: 10px; background: #fff; border: 1px solid #ddd; border-radius: 4px; }
+            .request-icon { margin-right: 10px; color: #e74c3c; }
+            .form-group { margin-bottom: 15px; }
+            .form-control { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
+            .submit-btn:hover { background-color: #45a049; }
+            .view:hover { background-color: #e6c700; }
     </style>
 </head>
 <body>
@@ -454,33 +480,13 @@
         </div>
 
         <div class="campaign-container">
-            <div class="campaign-card">
-                <img src="../Assest/img/c1(1).png" alt="Blood Donation Camp">
-                <div class="campaign-info">
-                    <p><i class="fas fa-calendar-alt"></i> 13 February, 2022</p>
-                    <h3>Blood Donation Camp</h3>
-                    <p>Lorem ipsum dolor sit consectetur adipiscing elit, sed do incididunt et dolore magna aliqua.</p>
-                    <p><i class="fas fa-clock"></i> 10.00 - 4.00 <i class="fas fa-map-marker-alt"></i> Brooklyn 40, USA</p>
-                </div>
-            </div>
-            <div class="campaign-card">
-                <img src="../Assest/img/c2(1).png" alt="Free Group Checking">
-                <div class="campaign-info">
-                    <p><i class="fas fa-calendar-alt"></i> 13 February, 2022</p>
-                    <h3>Free Group Checking</h3>
-                    <p>Lorem ipsum dolor sit consectetur adipiscing elit, sed do incididunt et dolore magna aliqua.</p>
-                    <p><i class="fas fa-clock"></i> 10.00 - 4.00 <i class="fas fa-map-marker-alt"></i> Brooklyn 40, USA</p>
-                </div>
-            </div>
+            <!-- Campaign cards will be inserted here dynamically -->
         </div>
         <div class="dots">
-            <span class="dot active"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
+            <!-- Dots will be inserted here dynamically -->
         </div>
     </div>
 </section>
-
 <!-- Testimonials Section -->
 <!-- Testimonials Section -->
 <!-- Testimonials Section -->
@@ -572,57 +578,23 @@
             <!-- Current Blood Requests -->
             <div class="current-requests">
                 <h3 class="request-title">Current Blood Request</h3>
-                <ul class="request-list">
-                    <li class="request-item">
-                        <div class="request-icon">
-                            <i class="fas fa-tint"></i>
-                        </div>
-                        <div class="request-info">
-                            <div class="request-type">O+ Positive</div>
-                            <div class="request-date">12-03-2023</div>
-                        </div>
-                    </li>
-                    <li class="request-item">
-                        <div class="request-icon">
-                            <i class="fas fa-tint"></i>
-                        </div>
-                        <div class="request-info">
-                            <div class="request-type">B+ Positive</div>
-                            <div class="request-date">09-03-2023</div>
-                        </div>
-                    </li>
-                    <li class="request-item">
-                        <div class="request-icon">
-                            <i class="fas fa-tint"></i>
-                        </div>
-                        <div class="request-info">
-                            <div class="request-type">AB+ Positive</div>
-                            <div class="request-date">07-03-2023</div>
-                        </div>
-                    </li>
-                    <li class="request-item">
-                        <div class="request-icon">
-                            <i class="fas fa-tint"></i>
-                        </div>
-                        <div class="request-info">
-                            <div class="request-type">A- Negative</div>
-                            <div class="request-date">04-03-2023</div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Request Appointment Form -->
+                <ul class="request-list" id="requestList"></ul>
+            </div>            <!-- Request Appointment Form -->
             <div class="request-appointment" id="request">
                 <h3 class="request-title">Current Blood Request</h3>
                 <form>
+                    <div class="form-group">
+                        <label for="hospitalDropdown">Select Hospital:</label>
+                        <select id="hospitalDropdown1" style="width: 100%; padding: 3px; height: 50px;" required></select>
+                    </div>
+
                     <div class="form-group">
                         <label for="fullName" class="form-label">Full Name</label>
                         <input type="text" id="fullName" class="form-control" placeholder="Enter your full name">
                     </div>
                     <div class="form-group">
                         <label for="email" class="form-label">Email</label>
-                        <input type="email" id="email" class="form-control" placeholder="Enter your email">
+                        <input type="email" id="requestemail" class="form-control" placeholder="Enter your email">
                     </div>
                     <div class="form-group">
                         <label for="phone" class="form-label">Phone Number</label>
@@ -674,16 +646,27 @@
                             <option value="Vavuniya">Vavuniya</option>
                         </select>
                     </div>
+                    <!-- Request Date (Readonly, No Date Picker) -->
+                    <div class="form-group">
+                        <label for="requestDate" class="form-label">Request Date</label>
+                        <input type="date" id="requestDate" class="form-control" readonly>
+                    </div>
                     <div class="form-group">
                         <label for="message" class="form-label">Your Message</label>
                         <textarea id="message" class="form-control" rows="4" placeholder="Write your message here..."></textarea>
                     </div>
-                    <div class="form-group" style="display: flex; justify-content: flex-end;">
-                        <button type="submit" class="submit-btn">Request</button>
+
+                    <div class="form-group" style="display: flex; justify-content: flex-end; gap: 10px;">
+                        <a href="hospital_management.html" class="view" style="padding: 4px 8px; background-color: #ffde19; color: #333; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; text-align: center; text-decoration: none; display: inline-block;">
+                            View <span>Hospitals</span>
+                        </a>
+
+                        <button onclick="bloodRequest(event)" class="submit-btn" style="padding: 8px 8px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; text-align: center;">
+                            Request
+                        </button>
                     </div>
                 </form>
-            </div>
-        </div>
+            </div>        </div>
     </div>
 </section>
 
@@ -726,7 +709,7 @@
 
 <!-- Modal/Popup Overlay -->
 <div class="modal-overlay" id="modalOverlay">
-    <div class="modal">
+    <div class="modal" id="modal">
         <div class="modal-header">
             <h2 id="modalTitle">Select Registration Type</h2>
             <span class="modal-close" id="modalClose">&times;</span>
@@ -740,7 +723,7 @@
             </div>
         </div>
     </div>
-    <div class="modal1">
+    <div class="modal1" id="modal1">
         <div class="modal-header1">
             <span class="modal-close" id="modalClose1">&times;</span>
         </div>
@@ -901,7 +884,7 @@
             <!-- Hospital Registration Form -->
             <div class="registration-form1" id="hospitalForm" >
                 <h3>Hospital Registration</h3>
-                <div style="display: flex; flex-direction: row;justify-content: center; ">
+                <div style="display: flex;  flex-direction: row;justify-content: center; ">
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr ; width: 500px; gap: 10px; font-size: 12px; padding: 10px; background-color: #f9f9f9; border-radius: 8px; border: 1px solid #ddd;">
                         <!-- Basic Information (Column 1) -->
@@ -1016,7 +999,7 @@
                 </div>
 
                 <div style="grid-column: span 2; text-align: center; margin-top: 8px;">
-                    <button type="submit" style="padding: 8px 16px; background: green; color: white; border: none; cursor: pointer; margin-left: 1250px; margin-top: 8px">Register</button>
+                    <button type="submit" style="padding: 8px 16px; background: green; color: white; border: none; cursor: pointer; margin-left: 1181px; margin-top: 3px">Register</button>
                 </div>
             </div>
 
@@ -1030,7 +1013,6 @@
 <!--
                         <option value="" disabled selected>Select a hospital</option>
 -->
-                        </select>
                     </div>
 
 
@@ -1148,258 +1130,508 @@
     </div>
 </div>
 
-    <script>
-        // Get elements
-        const ctaBox = document.querySelector('.cta-box');
-        const modalOverlay = document.getElementById('modalOverlay');
-        const modalClose = document.getElementById('modalClose');
-        const modalClose1 = document.getElementById('modalClose1');
-        const selectionMenu = document.getElementById('selectionMenu');
-        const selectionOptions = document.querySelectorAll('.selection-option');
-        const modalTitle = document.getElementById('modalTitle');
+<script>
+    // Get elements
+    const ctaBox = document.querySelector('.cta-box');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const modal = document.getElementById('modal');
+    const modal1 = document.getElementById('modal1');
+    const selectionMenu = document.getElementById('selectionMenu');
+    const selectionOptions = document.querySelectorAll('.selection-option');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalClose = document.getElementById('modalClose');
+    const modalClose1 = document.getElementById('modalClose1');
 
-        // Get forms
-        const donorForm = document.getElementById('donorForm');
-        const hospitalForm = document.getElementById('hospitalForm');
-        const campForm = document.getElementById('campForm');
+    // Get forms
+    const donorForm = document.getElementById('donorForm');
+    const hospitalForm = document.getElementById('hospitalForm');
+    const campForm = document.getElementById('campForm');
 
-        // Get back buttons
-        const donorBackBtn = document.getElementById('donorBackBtn');
-        const hospitalBackBtn = document.getElementById('hospitalBackBtn');
-        const campBackBtn = document.getElementById('campBackBtn');
+    // Function to show modal and hide modal1
+    function showModal() {
+        modalOverlay.style.display = 'flex';
+        modal.style.display = 'block'; // Show modal
+        modal1.style.display = 'none'; // Hide modal1
+        resetToSelectionMenu(); // Reset to selection menu when opening
+    }
 
-        // Get submit buttons
-        const donorSubmitBtn = document.getElementById('donorSubmitBtn');
-        const hospitalSubmitBtn = document.getElementById('hospitalSubmitBtn');
-        const campSubmitBtn = document.getElementById('campSubmitBtn');
-
-        // Function to show modal
-        function showModal() {
-            modalOverlay.style.display = 'flex';
-        }
-
-        // Function to hide modal
-        function hideModal() {
-            modalOverlay.style.display = 'none';
-            // Reset to selection menu
-            resetToSelectionMenu();
-        }
-
-        // Function to show a specific form
-        function showForm(formType) {
-            // Hide selection menu
-            selectionMenu.style.display = 'none';
-
-            // Show appropriate form
-            if (formType === 'donor') {
-                donorForm.style.display = 'block';
-                modalTitle.textContent = 'Donor Registration';
-            } else if (formType === 'hospital') {
-                hospitalForm.style.display = 'block';
-                modalTitle.textContent = 'Hospital Registration';
-            } else if (formType === 'camp') {
-                campForm.style.display = 'block';
-                modalTitle.textContent = 'Camp Registration';
-            }
-        }
-
-        // Function to reset to selection menu
-        function resetToSelectionMenu() {
-            // Hide all forms
-            donorForm.style.display = 'none';
-            hospitalForm.style.display = 'none';
-            campForm.style.display = 'none';
-
-            // Show selection menu
-            selectionMenu.style.display = 'flex';
-            modalTitle.textContent = 'Select Registration Type';
-        }
-
-        // Event: Click on CTA box
-        ctaBox.addEventListener('click', showModal);
-
-        // Event: Click on close button
-        modalClose.addEventListener('click', hideModal);
-        modalClose1.addEventListener('click', hideModal);
-
-        // Event: Click outside modal to close
-        modalOverlay.addEventListener('click', function(e) {
-            if (e.target === modalOverlay) {
-                hideModal();
-            }
-        });
-
-        // Event: Click on selection options
-        selectionOptions.forEach(option => {
-            option.addEventListener('click', function() {
-                const type = this.getAttribute('data-type');
-                showForm(type);
-            });
-        });
-
-        // Event: Click on back buttons
-        donorBackBtn.addEventListener('click', resetToSelectionMenu);
-        hospitalBackBtn.addEventListener('click', resetToSelectionMenu);
-        campBackBtn.addEventListener('click', resetToSelectionMenu);
-
-        // Event: Form submissions
-        donorSubmitBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            alert('Donor registration submitted successfully!');
-            hideModal();
-            // Here you would normally handle the form data submission
-        });
-
-        hospitalSubmitBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            alert('Hospital registration submitted successfully!');
-            hideModal();
-            // Here you would normally handle the form data submission
-        });
-
-        campSubmitBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            alert('Camp registration submitted successfully!');
-            hideModal();
-            // Here you would normally handle the form data submission
-        });
-
-        function hideAllForms() {
-            donorForm.style.display = 'none';
-            hospitalForm.style.display = 'none';
-            campForm.style.display = 'none';
-        }
-        // Close modalOverlay when clicking the close button
-        modalClose.addEventListener('click', () => {
-            modalOverlay.style.display = 'none';
-        });
-
-        // Close modal1 when clicking the close button
-        modalClose1.addEventListener('click', () => {
-            modal1.style.display = 'none';
-            hideAllForms(); // Optional: hide forms when closing modal1
-        });
-
-        // Initially hide modal1 and all forms
+    // Function to hide both modals
+    function hideModal() {
+        modalOverlay.style.display = 'none';
+        modal.style.display = 'none';
         modal1.style.display = 'none';
+        hideAllForms(); // Hide all forms when closing
+    }
+
+
+    // Function to show a specific form in modal1
+    function showForm(formType) {
+        // Hide selection menu and modal
+        selectionMenu.style.display = 'none';
+        modal.style.display = 'none';
+
+        // Show modal1 with the selected form
+        modal1.style.display = 'block';
+        if (formType === 'donor') {
+            donorForm.style.display = 'block';
+            modalTitle.textContent = 'Donor Registration';
+        } else if (formType === 'hospital') {
+            hospitalForm.style.display = 'block';
+            modalTitle.textContent = 'Hospital Registration';
+        } else if (formType === 'camp') {
+            campForm.style.display = 'block';
+            modalTitle.textContent = 'Camp Registration';
+        }
+    }
+
+    // Function to reset to selection menu
+    function resetToSelectionMenu() {
         hideAllForms();
+        modal.style.display = 'block'; // Show modal with selection menu
+        modal1.style.display = 'none'; // Hide modal1
+        selectionMenu.style.display = 'flex';
+        modalTitle.textContent = 'Select Registration Type';
+    }
 
-    </script>
-<!--
-<script>
-    document.getElementById('feedbackForm').addEventListener('submit', function(e) {
-        e.preventDefault();
+    // Function to hide all forms
+    function hideAllForms() {
+        donorForm.style.display = 'none';
+        hospitalForm.style.display = 'none';
+        campForm.style.display = 'none';
+    }
 
-        const name = document.getElementById('name').value;
-        const rating = document.querySelector('input[name="rating"]:checked').value;
-        const strengths = document.getElementById('strengths').value;
-        const improvements = document.getElementById('improvements').value;
-        const additional = document.getElementById('additional').value;
-        const recommendation = document.getElementById('recommendation').value;
+    // Event: Click on CTA box
+    if (ctaBox) {
+        ctaBox.addEventListener('click', showModal);
+    }
 
-        const feedbackDiv = document.createElement('div');
-        feedbackDiv.style.cssText = `
-        background-color: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    `;
-        feedbackDiv.innerHTML = `
-        <p style="margin: 0 0 10px; color: #333; font-weight: 500; font-size: 1rem;">${name}</p>
-        <p style="margin: 0 0 10px; color: #555; font-size: 0.9rem;">Rating: ${'★'.repeat(rating)}${'☆'.repeat(5 - rating)}</p>
-        <p style="margin: 0 0 10px; color: #555; font-size: 0.9rem;"><strong>Liked:</strong> ${strengths}</p>
-        <p style="margin: 0 0 10px; color: #555; font-size: 0.9rem;"><strong>Improvements:</strong> ${improvements}</p>
-        ${additional ? `<p style="margin: 0 0 10px; color: #555; font-size: 0.9rem;"><strong>Additional:</strong> ${additional}</p>` : ''}
-        <p style="margin: 0; color: #555; font-size: 0.9rem;"><strong>Recommend:</strong> ${recommendation.charAt(0).toUpperCase() + recommendation.slice(1)}</p>
-    `;
+    // Event: Click on close button for modal
+    modalClose.addEventListener('click', hideModal);
 
-        const feedbackCards = document.getElementById('feedbackCards');
-        feedbackCards.insertBefore(feedbackDiv, feedbackCards.firstChild);
+    // Event: Click on close button for modal1
+    modalClose1.addEventListener('click', hideModal);
 
-        this.reset();
+    // Event: Click outside modal to close
+    modalOverlay.addEventListener('click', function(e) {
+        if (e.target === modalOverlay) {
+            hideModal();
+        }
     });
 
-    // Add hover effect for stars
-    const ratingLabels = document.querySelectorAll('label[for^="star"]');
-    ratingLabels.forEach((label, index) => {
-        label.addEventListener('mouseover', () => {
-            for (let i = 0; i <= index; i++) {
-                ratingLabels[i].style.color = '#f5c518';
-            }
-        });
-        label.addEventListener('mouseout', () => {
-            for (let i = 0; i <= index; i++) {
-                if (!ratingLabels[i].previousElementSibling.checked) {
-                    ratingLabels[i].style.color = '#ddd';
-                }
-            }
-        });
-        label.addEventListener('click', () => {
-            ratingLabels.forEach(l => l.style.color = '#ddd');
-            for (let i = 0; i <= index; i++) {
-                ratingLabels[i].style.color = '#f5c518';
-            }
+    // Event: Click on selection options
+    selectionOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            const type = this.getAttribute('data-type');
+            showForm(type);
         });
     });
+
+    // Initially hide modal1 and all forms
+    modal1.style.display = 'none';
+    hideAllForms();
+
 </script>
--->
-
+<!-- Add this script at the bottom of your existing scripts -->
+<!-- Replace your existing feedback script with this -->
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const feedbackForm = document.getElementById("feedbackForm");
-        const feedbackCards = document.getElementById("feedbackCards");
+    // Ensure DOM is fully loaded before running any code
+    document.addEventListener('DOMContentLoaded', () => {
+        // Function to save feedback to localStorage
+        function saveFeedback(feedback) {
+            let feedbacks = JSON.parse(localStorage.getItem('bloodAI_feedbacks')) || [];
+            feedbacks.unshift(feedback); // Add new feedback to the beginning
+            localStorage.setItem('bloodAI_feedbacks', JSON.stringify(feedbacks));
+        }
 
-        feedbackForm.addEventListener("submit", function (event) {
-            event.preventDefault(); // Prevent page reload
-
-            // Get input values
-            const name = document.getElementById("name").value;
-            const email = document.getElementById("email").value;
-            const rating = document.querySelector('input[name="rating"]:checked');
-            const strengths = document.getElementById("strengths").value;
-            const improvements = document.getElementById("improvements").value;
-            const recommendation = document.getElementById("recommendation").value;
-
-            if (!rating) {
-                alert("Please select a rating.");
+        // Function to load and display existing feedback
+        function loadFeedback() {
+            const feedbackCards = document.getElementById('feedbackCards');
+            if (!feedbackCards) {
+                console.error('Feedback cards container not found');
                 return;
             }
 
-            // Get current date
-            const date = new Date().toLocaleDateString();
+            // Clear existing cards
+            feedbackCards.innerHTML = '';
 
-            // Create feedback card
-            const feedbackCard = document.createElement("div");
-            feedbackCard.style.backgroundColor = "#fff";
-            feedbackCard.style.padding = "20px";
-            feedbackCard.style.borderRadius = "10px";
-            feedbackCard.style.boxShadow = "0 4px 20px rgba(0,0,0,0.1)";
-            feedbackCard.style.marginBottom = "20px";
+            // Get feedbacks from localStorage
+            let feedbacks = JSON.parse(localStorage.getItem('bloodAI_feedbacks')) || [];
 
-            // Generate star rating
-            let stars = "★".repeat(rating.value) + "☆".repeat(5 - rating.value);
+            // If no feedbacks exist, add sample data
+            if (feedbacks.length === 0) {
+                const sampleFeedbacks = [
+                    {
+                        name: "John Doe",
+                        rating: "5",
+                        strengths: "The team was incredibly supportive, and the process was smooth.",
+                        improvements: "",
+                        date: "March 20, 2025"
+                    },
+                    {
+                        name: "Jane Smith",
+                        rating: "4",
+                        strengths: "Great experience overall.",
+                        improvements: "The waiting time could be improved.",
+                        date: "March 19, 2025"
+                    }
+                ];
+                feedbacks = sampleFeedbacks;
+                localStorage.setItem('bloodAI_feedbacks', JSON.stringify(feedbacks));
+            }
 
-            feedbackCard.innerHTML = `
-            <div style="display: flex; align-items: center; margin-bottom: 15px;">
-                <div style="font-size: 1.2rem; color: #ff1e1e; margin-right: 10px;">${stars}</div>
-                <div style="font-weight: 500; color: #333;">${name}</div>
-            </div>
-            <p style="color: #555; font-size: 1rem; margin-bottom: 10px;">"${strengths}"</p>
-            <p style="color: #777; font-size: 0.9rem;">${date}</p>
+            // Display all feedbacks
+            feedbacks.forEach(feedback => addFeedbackCard(feedback));
+        }
+
+        // Function to add a single feedback card dynamically
+        function addFeedbackCard(feedback) {
+            const feedbackCards = document.getElementById('feedbackCards');
+            if (!feedbackCards) return;
+
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.className = 'feedback-card';
+            feedbackDiv.style.cssText = `
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
         `;
 
-            // Append feedback card
-            feedbackCards.prepend(feedbackCard);
+            const stars = '★'.repeat(parseInt(feedback.rating)) + '☆'.repeat(5 - parseInt(feedback.rating));
 
-            // Clear form fields
-            feedbackForm.reset();
-        });
+            feedbackDiv.innerHTML = `
+            <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                <div style="font-size: 1.2rem; color: #ff1e1e; margin-right: 10px;">${stars}</div>
+                <div style="font-weight: 500; color: #333;">${feedback.name}</div>
+            </div>
+            <p style="color: #555; font-size: 1rem; margin-bottom: 10px;">"${feedback.strengths}"</p>
+            ${feedback.improvements ? `<p style="color: #555; font-size: 0.9rem; margin-bottom: 10px;"><strong>Suggestions:</strong> ${feedback.improvements}</p>` : ''}
+            <p style="color: #777; font-size: 0.9rem;">${feedback.date}</p>
+        `;
+
+            // Add new feedback at the top
+            if (feedbackCards.firstChild) {
+                feedbackCards.insertBefore(feedbackDiv, feedbackCards.firstChild);
+            } else {
+                feedbackCards.appendChild(feedbackDiv);
+            }
+        }
+
+        // Handle feedback form submission
+        const feedbackForm = document.getElementById('feedbackForm');
+        if (feedbackForm) {
+            feedbackForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                // Create feedback object
+                const feedback = {
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    rating: document.querySelector('input[name="rating"]:checked')?.value || '0',
+                    strengths: document.getElementById('strengths').value,
+                    improvements: document.getElementById('improvements').value,
+                    recommendation: document.getElementById('recommendation').value,
+                    date: new Date().toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                    })
+                };
+
+                // Basic validation
+                if (!feedback.name || !feedback.rating || !feedback.strengths) {
+                    alert('Please fill in all required fields');
+                    return;
+                }
+
+                // Save and display feedback
+                saveFeedback(feedback);
+                addFeedbackCard(feedback);
+
+                // Reset form
+                feedbackForm.reset();
+                document.querySelectorAll('label[for^="star"]').forEach(label => {
+                    label.style.color = '#ddd';
+                });
+            });
+
+            // Star rating hover and click effects
+            document.querySelectorAll('input[type="radio"] + label').forEach(label => {
+                label.addEventListener('mouseover', function() {
+                    const rating = this.getAttribute('for').replace('star', '');
+                    highlightStars(rating);
+                });
+
+                label.addEventListener('mouseout', function() {
+                    const checked = document.querySelector('input[type="radio"]:checked');
+                    if (checked) {
+                        highlightStars(checked.value);
+                    } else {
+                        document.querySelectorAll('label[for^="star"]').forEach(l => {
+                            l.style.color = '#ddd';
+                        });
+                    }
+                });
+
+                label.addEventListener('click', function() {
+                    const rating = this.getAttribute('for').replace('star', '');
+                    highlightStars(rating);
+                });
+            });
+
+            function highlightStars(rating) {
+                document.querySelectorAll('label[for^="star"]').forEach((label, index) => {
+                    label.style.color = index < rating ? '#ff1e1e' : '#ddd';
+                });
+            }
+        } else {
+            console.error('Feedback form not found');
+        }
+
+        // Load existing feedback when page loads
+        loadFeedback();
     });
-
 </script>
+<script>
+    // Add this after your existing scripts
+    document.addEventListener('DOMContentLoaded', function() {
+        function loadCampDetails() {
+            const apiUrl = 'http://localhost:8080/api/v1/camp/getAll'; // Replace with your API endpoint
+
+            fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(camps => {
+                    console.log('Raw API Response:', camps); // Debug log
+                    const campaignContainer = document.querySelector('.campaign-container');
+                    const dotsContainer = document.querySelector('.dots');
+
+                    campaignContainer.innerHTML = '';
+                    dotsContainer.innerHTML = '';
+
+                    // Handle case where camps might be nested in a 'data' property or invalid
+                    let campArray = Array.isArray(camps) ? camps : (camps.data || []);
+
+                    if (!Array.isArray(campArray)) {
+                        campaignContainer.innerHTML = '<p>Invalid data format received from server.</p>';
+                        return;
+                    }
+
+                    if (campArray.length === 0) {
+                        campaignContainer.innerHTML = '<p>No campaigns available at the moment.</p>';
+                        return;
+                    }
+
+                    campArray.forEach((camp, index) => {
+                        const campaignCard = document.createElement('div');
+                        campaignCard.className = 'campaign-card';
+                        campaignCard.style.cssText = `
+                        background: white;
+                        border-radius: 10px;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                        overflow: hidden;
+                        margin: 15px;
+                        width: 300px;
+                        display: inline-block;
+                        vertical-align: top;
+                    `;
+
+                        campaignCard.innerHTML = `
+                        <div style="height: 200px; overflow: hidden;">
+                            <img src="${camp.imageUrl || '../../Assest/img/n1.jpg'}"
+                                 alt="${camp.campName}"
+                                 style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                        <div style="padding: 15px;">
+                            <h3 style="margin: 0 0 10px; color: #333; font-size: 1.2rem;">
+                                ${camp.campName}
+                            </h3>
+                            <p style="color: #666; margin: 0 0 10px;">
+                                Date: ${new Date(camp.campDate).toLocaleDateString()}
+                            </p>
+                            <p style="color: #666; margin: 0 0 10px;">
+                                Location: ${camp.campLocation}
+                            </p>
+                            <p style="color: #666; margin: 0;">
+                                Contact: ${camp.contactNumber}
+                            </p>
+                        </div>
+                    `;
+
+                        campaignContainer.appendChild(campaignCard);
+
+                        const dot = document.createElement('span');
+                        dot.className = 'dot';
+                        dot.dataset.index = index;
+                        dot.style.cssText = `
+                        height: 10px;
+                        width: 10px;
+                        background-color: ${index === 0 ? '#ff1e1e' : '#bbb'};
+                        border-radius: 50%;
+                        display: inline-block;
+                        margin: 0 5px;
+                        cursor: pointer;
+                    `;
+                        dotsContainer.appendChild(dot);
+                    });
+
+                    initializeCarousel();
+                })
+                .catch(error => {
+                    console.error('Error fetching camp details:', error);
+                    document.querySelector('.campaign-container').innerHTML =
+                        '<p>Error loading campaigns. Please try again later.</p>';
+                });
+        }
+
+        function initializeCarousel() {
+            const container = document.querySelector('.campaign-container');
+            const dots = document.querySelectorAll('.dot');
+            let currentIndex = 0;
+
+            function updateDots(index) {
+                dots.forEach(dot => dot.style.backgroundColor = '#bbb');
+                dots[index].style.backgroundColor = '#ff1e1e';
+            }
+
+            function scrollToCampaign(index) {
+                const cardWidth = container.querySelector('.campaign-card').offsetWidth + 30;
+                container.scrollTo({
+                    left: index * cardWidth,
+                    behavior: 'smooth'
+                });
+                currentIndex = index;
+                updateDots(index);
+            }
+
+            dots.forEach(dot => {
+                dot.addEventListener('click', () => {
+                    const index = parseInt(dot.dataset.index);
+                    scrollToCampaign(index);
+                });
+            });
+
+            let autoScroll = setInterval(() => {
+                currentIndex = (currentIndex + 1) % dots.length;
+                scrollToCampaign(currentIndex);
+            }, 5000);
+
+            container.addEventListener('mouseenter', () => clearInterval(autoScroll));
+            container.addEventListener('mouseleave', () => {
+                autoScroll = setInterval(() => {
+                    currentIndex = (currentIndex + 1) % dots.length;
+                    scrollToCampaign(currentIndex);
+                }, 5000);
+            });
+        }
+
+        const style = document.createElement('style');
+        style.textContent = `
+        .campaign-container {
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 20px 0;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+        .campaign-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        .campaign-container::-webkit-scrollbar-thumb {
+            background: #ff1e1e;
+            border-radius: 4px;
+        }
+        .dots {
+            text-align: center;
+            padding: 10px 0;
+        }
+    `;
+        document.head.appendChild(style);
+
+        loadCampDetails();
+    });
+</script>
+<script>
+    async function loadBloodRequests() {
+        try {
+            const response = await fetch('http://localhost:8080/api/v1/blood_request/getAll', {
+                method: 'GET',
+                headers: { 'Accept': 'application/json' }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error: ${response.status} ${response.statusText}`);
+            }
+
+            const requests = await response.json();
+            console.log('Parsed response:', requests);
+
+            if (!Array.isArray(requests)) {
+                console.error('Error: Response is not an array:', requests);
+                const requestList = document.getElementById('requestList');
+                if (requestList) {
+                    requestList.innerHTML = '<li>Invalid data format from server</li>';
+                }
+                return;
+            }
+
+            const requestList = document.getElementById('requestList');
+            if (!requestList) {
+                console.error('Error: requestList element not found');
+                return;
+            }
+            requestList.innerHTML = '';
+
+            if (requests.length === 0) {
+                requestList.innerHTML = '<li>No blood requests available</li>';
+                return;
+            }
+
+            requests.forEach(request => {
+                const hospitalName = request.hospital?.hospitalName || 'N/A'; // Access nested hospitalName safely
+                const listItem = document.createElement('li');
+                listItem.className = 'request-item';
+                listItem.innerHTML = `
+                <div class="request-icon">
+                    <i class="fas fa-tint"></i>
+                </div>
+                <div class="request-info">
+                    <div class="request-type">${request.bloodType || 'N/A'}</div>
+                    <div class="request-date">${request.requestDate || 'N/A'}</div>
+                    <div class="hospital-name">${hospitalName}</div>
+                </div>
+            `;
+                requestList.appendChild(listItem);
+            });
+        } catch (error) {
+            console.error('Fetch error:', error);
+            const requestList = document.getElementById('requestList');
+            if (requestList) {
+                requestList.innerHTML = `<li>Error: ${error.message}</li>`;
+            }
+        }
+    }
+
+    window.onload = function () {
+        loadBloodRequests();
+        const requestDateInput = document.getElementById('requestDate');
+        if (requestDateInput) {
+            requestDateInput.value = new Date().toISOString().split('T')[0];
+        } else {
+            console.error('Error: requestDate element not found');
+        }
+    };
+</script>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="../JS/donor_register.js"></script>
 <script src="../JS/camp.js"></script>
+<script src="../JS/blood_request.js"></script>
 </body>
 </html>
 

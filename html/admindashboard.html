@@ -3,710 +3,919 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blood Bank Management System</title>
+  <title>Blood Donation Management System</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
   <style>
-    :root {
-      --primary: #d32f2f;
-      --primary-light: #ff6659;
-      --primary-dark: #9a0007;
-      --secondary: #b71c1c;
-      --text-on-primary: #ffffff;
-      --text-primary: #212121;
-      --text-secondary: #757575;
-      --background: #f5f5f5;
-      --card-bg: #ffffff;
-      --success: #4caf50;
-      --warning: #ff9800;
-      --danger: #f44336;
-      --info: #2196f3;
-    }
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
+
     body {
-      background-color: var(--background);
-      color: var(--text-primary);
-    }
-    .container {
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .dashboard {
-      display: grid;
-      grid-template-columns: 250px 1fr;
-      gap: 20px;
-      min-height: 100vh;
-    }
-    /* Sidebar */
-    .sidebar {
-      background-color: var(--primary);
-      color: var(--text-on-primary);
-      border-radius: 8px;
-      padding: 20px;
-      position: sticky;
-      top: 20px;
-      height: calc(100vh - 40px);
-      overflow-y: auto;
-    }
-    .logo {
       display: flex;
-      align-items: center;
-      margin-bottom: 40px;
-      font-size: 24px;
-      font-weight: bold;
+      background-color: #f5f5f5;
     }
-    .logo-icon {
-      margin-right: 10px;
-      font-size: 28px;
+
+    .sidebar {
+      width: 250px;
+      height: 100vh;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 100;
     }
+
+    .logo {
+      padding: 20px;
+      text-align: center;
+      border-bottom: 1px solid #eee;
+    }
+
+    .logo img {
+      height: 50px;
+    }
+
+    .nav-menu {
+      padding: 10px;
+    }
+
     .nav-item {
       display: flex;
       align-items: center;
       padding: 12px 15px;
-      border-radius: 8px;
-      margin-bottom: 10px;
-      cursor: pointer;
-      transition: background-color 0.3s;
+      text-decoration: none;
+      color: #555;
+      margin: 5px 0;
+      border-radius: 5px;
+      position: relative;
     }
-    .nav-item:hover, .nav-item.active {
-      background-color: var(--primary-light);
+
+    .nav-item.active {
+      background-color: #f0f7ff;
+      color: #0d6efd;
+      font-weight: 500;
     }
+
+    .nav-item:hover {
+      background-color: #f8f9fa;
+    }
+
     .nav-icon {
       margin-right: 10px;
-      width: 24px;
-      text-align: center;
+      font-size: 18px;
     }
-    /* Main Content */
+
+    .alert-badge {
+      background-color: #dc3545;
+      color: white;
+      border-radius: 50%;
+      padding: 2px 6px;
+      font-size: 12px;
+      position: absolute;
+      right: 15px;
+    }
+
     .main-content {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+      margin-left: 35px;
+      width: calc(100% - 85px);
+      padding: 20px;
     }
+
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0 20px;
+      margin-bottom: 20px;
     }
-    .user-info {
+
+    .header h1 {
+      color: #333;
+      font-size: 24px;
+    }
+
+    .user-profile {
       display: flex;
       align-items: center;
-      gap: 10px;
     }
-    .avatar {
+
+    .user-profile img {
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      background-color: var(--secondary);
-      color: var(--text-on-primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
+      margin-right: 10px;
     }
-    .search-bar {
-      display: flex;
-      background-color: var(--card-bg);
-      border-radius: 8px;
-      padding: 10px 15px;
-      width: 300px;
-    }
-    .search-input {
-      border: none;
-      outline: none;
-      width: 100%;
-      margin-left: 10px;
-    }
-    .alert-badge {
-      background-color: var(--danger);
-      color: white;
-      border-radius: 50%;
-      min-width: 20px;
-      height: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      margin-left: 5px;
-    }
-    /* Dashboard Stats */
-    .stats-container {
+
+    .dashboard-stats {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
       gap: 20px;
+      margin-bottom: 20px;
     }
+
     .stat-card {
-      background-color: var(--card-bg);
+      background-color: #fff;
       border-radius: 8px;
       padding: 20px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
-    .stat-title {
-      color: var(--text-secondary);
+
+    .stat-card h3 {
       font-size: 14px;
+      color: #6c757d;
       margin-bottom: 10px;
     }
+
     .stat-value {
       font-size: 28px;
-      font-weight: bold;
+      font-weight: 600;
+      color: #333;
       margin-bottom: 5px;
     }
-    .stat-change {
-      display: flex;
-      align-items: center;
+
+    .stat-trend {
+      color: #28a745;
       font-size: 14px;
-      color: var(--success);
     }
-    .stat-change.negative {
-      color: var(--danger);
+
+    .stat-trend.down {
+      color: #dc3545;
     }
-    /* Content Area */
-    .content-area {
+
+    .blood-inventory {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .blood-group {
+      background-color: #fff;
+      border-radius: 8px;
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .blood-group h4 {
+      font-size: 24px;
+      color: #dc3545;
+      margin-bottom: 10px;
+    }
+
+    .blood-level {
+      height: 10px;
+      background-color: #e9ecef;
+      border-radius: 5px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+
+    .blood-level div {
+      height: 100%;
+      background-color: #dc3545;
+    }
+
+    .critical {
+      background-color: #dc3545 !important;
+    }
+
+    .low {
+      background-color: #ffc107 !important;
+    }
+
+    .sufficient {
+      background-color: #28a745 !important;
+    }
+
+    .dashboard-row {
       display: grid;
       grid-template-columns: 2fr 1fr;
       gap: 20px;
-    }
-    .card {
-      background-color: var(--card-bg);
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      padding: 20px;
       margin-bottom: 20px;
     }
-    .card-header {
+
+    .dashboard-charts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .chart-container {
+      background-color: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .recent-donations, .upcoming-donations, .emergency-requests {
+      background-color: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .section-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #eee;
+      margin-bottom: 15px;
     }
-    .card-title {
+
+    .section-header h2 {
       font-size: 18px;
-      font-weight: bold;
+      color: #333;
     }
-    /* Tables */
-    .table {
+
+    .view-all {
+      color: #0d6efd;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    table {
       width: 100%;
       border-collapse: collapse;
     }
-    .table th, .table td {
-      text-align: left;
+
+    th, td {
       padding: 12px 15px;
+      text-align: left;
       border-bottom: 1px solid #eee;
     }
-    .table tr:last-child td {
-      border-bottom: none;
+
+    th {
+      color: #6c757d;
+      font-weight: 500;
+      font-size: 14px;
     }
-    .table th {
-      font-weight: bold;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      font-size: 12px;
-    }
-    /* Blood Type Tags */
-    .blood-type {
-      display: inline-block;
+
+    .status {
       padding: 5px 10px;
-      border-radius: 4px;
-      background-color: rgba(211, 47, 47, 0.1);
-      color: var(--primary);
-      font-weight: bold;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
     }
-    /* Status Tags */
-    .status-tag {
-      display: inline-block;
-      padding: 5px 10px;
-      border-radius: 4px;
-      font-weight: bold;
+
+    .completed {
+      background-color: #e8f5e9;
+      color: #28a745;
+    }
+
+    .processing {
+      background-color: #fff8e1;
+      color: #ffc107;
+    }
+
+    .emergency {
+      background-color: #ffebee;
+      color: #dc3545;
+    }
+
+    .emergency-list {
+      margin-top: 10px;
+    }
+
+    .emergency-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .emergency-blood-type {
+      font-weight: 600;
+      color: #dc3545;
+      font-size: 18px;
+    }
+
+    .hospital-info {
+      flex-grow: 1;
+      margin: 0 15px;
+    }
+
+    .hospital-name {
+      font-weight: 500;
+      margin-bottom: 3px;
+    }
+
+    .emergency-time {
+      color: #6c757d;
       font-size: 12px;
     }
-    .status-tag.available {
-      background-color: rgba(76, 175, 80, 0.1);
-      color: var(--success);
-    }
-    .status-tag.low {
-      background-color: rgba(255, 152, 0, 0.1);
-      color: var(--warning);
-    }
-    .status-tag.critical {
-      background-color: rgba(244, 67, 54, 0.1);
-      color: var(--danger);
-    }
-    /* Emergency Alerts */
-    .alert-card {
-      background-color: rgba(244, 67, 54, 0.1);
-      border-left: 4px solid var(--danger);
-      padding: 15px;
-      border-radius: 4px;
-      margin-bottom: 15px;
-    }
-    .alert-title {
-      font-weight: bold;
-      margin-bottom: 5px;
-      color: var(--danger);
-    }
-    .alert-time {
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-bottom: 10px;
-    }
-    /* Buttons */
-    .btn {
-      padding: 8px 15px;
-      border-radius: 4px;
+
+    .respond-btn {
+      background-color: #dc3545;
+      color: white;
       border: none;
+      padding: 5px 12px;
+      border-radius: 4px;
       cursor: pointer;
-      font-weight: bold;
-      transition: background-color 0.3s;
+      font-size: 14px;
     }
-    .btn-primary {
-      background-color: var(--primary);
-      color: white;
+
+    .respond-btn:hover {
+      background-color: #c82333;
     }
-    .btn-primary:hover {
-      background-color: var(--primary-dark);
+
+    .small-charts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
     }
-    .btn-outline {
-      background-color: transparent;
-      border: 1px solid var(--primary);
-      color: var(--primary);
-    }
-    .btn-outline:hover {
-      background-color: var(--primary);
-      color: white;
-    }
-    /* Notification */
-    .notification-item {
-      padding: 15px 0;
-      border-bottom: 1px solid #eee;
+
+    .gauge-chart-container {
+      position: relative;
+      width: 100%;
+      height: 200px;
       display: flex;
-      align-items: flex-start;
-      gap: 10px;
-    }
-    .notification-item:last-child {
-      border-bottom: none;
-    }
-    .notification-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background-color: rgba(33, 150, 243, 0.1);
-      color: var(--info);
-      display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
     }
-    .notification-content {
-      flex: 1;
+
+    .gauge-percentage {
+      position: absolute;
+      font-size: 24px;
+      font-weight: 600;
+      color: #333;
     }
-    .notification-title {
-      font-weight: bold;
-      margin-bottom: 5px;
+
+    .gauge-label {
+      position: absolute;
+      bottom: 20px;
+      font-size: 14px;
+      color: #6c757d;
     }
-    .notification-time {
-      font-size: 12px;
-      color: var(--text-secondary);
-    }
-    /* Responsive */
-    @media (max-width: 1024px) {
-      .stats-container {
-        grid-template-columns: repeat(2, 1fr);
+
+    @media (max-width: 1200px) {
+      .dashboard-charts {
+        grid-template-columns: 1fr;
       }
-      .content-area {
+
+      .small-charts {
         grid-template-columns: 1fr;
       }
     }
+
+    @media (max-width: 992px) {
+      .dashboard-row {
+        grid-template-columns: 1fr;
+      }
+    }
+/*
     @media (max-width: 768px) {
-      .dashboard {
-        grid-template-columns: 1fr;
-      }
       .sidebar {
+        width: 70px;
+      }
+
+      .logo {
+        padding: 10px;
+      }
+
+      .nav-item span:not(.nav-icon):not(.alert-badge) {
         display: none;
       }
-    }
+
+      .nav-icon {
+        margin-right: 0;
+      }
+
+      .main-content {
+        margin-left: 70px;
+        width: calc(100% - 70px);
+      }
+    }*/
   </style>
 </head>
 <body>
-<div class="container">
-  <div class="dashboard">
-    <!-- Sidebar -->
 <!--
-    <div class="sidebar">
-      <div class="nav-menu">
-        <div class="logo">
-          <span class="logo-icon">❤️</span>
-          <span>BloodBank</span>
-        </div>
-        <a href="dashboard.html" class="nav-item active">
-          <span class="nav-icon">📊</span>
-          <span>Dashboard</span>
-        </a>
-        <a href="blood-bank.html" class="nav-item">
-          <span class="nav-icon">🏥</span>
-          <span>Blood Bank</span>
-        </a>
-        <a href="inventory.html" class="nav-item">
-          <span class="nav-icon">📦</span>
-          <span>Inventory</span>
-        </a>
-        <a href="expiry-management.html" class="nav-item">
-          <span class="nav-icon">⏰</span>
-          <span>Expiry Management</span>
-        </a>
-        <a href="donation-records.html" class="nav-item">
-          <span class="nav-icon">📝</span>
-          <span>Donation Records</span>
-        </a>
-        <a href="emergency-alerts.html" class="nav-item">
-          <span class="nav-icon">🚨</span>
-          <span>Emergency Alerts</span>
-          <span class="alert-badge">3</span>
-        </a>
-        <a href="notifications.html" class="nav-item">
-          <span class="nav-icon">🔔</span>
-          <span>Notifications</span>
-          <span class="alert-badge">7</span>
-        </a>
-        <a href="donors.html" class="nav-item">
-          <span class="nav-icon">🧍</span>
-          <span>Donors</span>
-        </a>
-        <a href="hospitals.html" class="nav-item">
-          <span class="nav-icon">🏥</span>
-          <span>Hospitals</span>
-        </a>
-        <a href="blood-transport.html" class="nav-item">
-          <span class="nav-icon">🚚</span>
-          <span>Blood Transport</span>
-        </a>
-        <a href="settings.html" class="nav-item">
-          <span class="nav-icon">⚙️</span>
-          <span>Settings</span>
-        </a>
+<div class="sidebar">
+  &lt;!&ndash;<div class="logo">
+    <img src="/api/placeholder/200/50" alt="Blood Donation Logo">
+  </div>&ndash;&gt;
+
+  <div class="nav-menu">
+    <a href="admindashboard.html" class="nav-item active"><span class="nav-icon">📊</span><span>Dashboard</span></a>
+    <a href="blood_bank.html" class="nav-item"><span class="nav-icon">🏥</span><span>Blood Bank</span></a>
+    <a href="blood_inventotry.html" class="nav-item"><span class="nav-icon">📦</span><span>Inventory</span></a>
+    <a href="expiry-management.html" class="nav-item"><span class="nav-icon">⏰</span><span>Expiry Management</span></a>
+    <a href="donation-records.html" class="nav-item"><span class="nav-icon">📝</span><span>Donation Records</span></a>
+    <a href="emergency-alerts.html" class="nav-item"><span class="nav-icon">🚨</span><span>Emergency Alerts</span><span class="alert-badge">3</span></a>
+    <a href="notifications.html" class="nav-item"><span class="nav-icon">🔔</span><span>Notifications</span><span class="alert-badge">7</span></a>
+    <a href="donors.html" class="nav-item"><span class="nav-icon">🧍</span><span>Donors</span></a>
+    <a href="hospitals.html" class="nav-item"><span class="nav-icon">🏥</span><span>Hospitals</span></a>
+    <a href="blood-transport.html" class="nav-item"><span class="nav-icon">🚚</span><span>Blood Transport</span></a>
+    <a href="settings.html" class="nav-item"><span class="nav-icon">⚙️</span><span>Settings</span></a>
+  </div>
+</div>
+-->
+
+<div class="main-content">
+  <div class="header">
+    <h1>Blood Donation Dashboard</h1>
+    <div class="user-profile">
+      <img src="/api/placeholder/40/40" alt="User Profile">
+      <div>
+        <div>Dr. Sarah Johnson</div>
+        <small>Blood Bank Manager</small>
       </div>
     </div>
--->
-    <!-- Main Content -->
-    <div class="main-content">
-      <!-- Header -->
-      <div class="header">
-        <div class="search-bar">
-          <span>🔍</span>
-          <input type="text" class="search-input" placeholder="Search...">
+  </div>
+
+  <div class="dashboard-stats">
+    <div class="stat-card">
+      <h3>TOTAL DONATIONS (THIS MONTH)</h3>
+      <div class="stat-value">248</div>
+      <div class="stat-trend">↑ 12% from last month</div>
+    </div>
+    <div class="stat-card">
+      <h3>BLOOD UNITS AVAILABLE</h3>
+      <div class="stat-value">524</div>
+      <div class="stat-trend">↑ 5% from last week</div>
+    </div>
+    <div class="stat-card">
+      <h3>CRITICAL SHORTAGE</h3>
+      <div class="stat-value">2</div>
+      <div class="stat-trend down">O- and AB-</div>
+    </div>
+    <div class="stat-card">
+      <h3>EXPIRING WITHIN 7 DAYS</h3>
+      <div class="stat-value">32</div>
+      <div class="stat-trend down">↑ 8 since yesterday</div>
+    </div>
+  </div>
+
+  <div class="dashboard-charts">
+    <div class="chart-container">
+      <div class="section-header">
+        <h2>Monthly Donations (Past 6 Months)</h2>
+      </div>
+      <canvas id="donationTrendChart"></canvas>
+    </div>
+    <div class="chart-container">
+      <div class="section-header">
+        <h2>Blood Type Distribution</h2>
+      </div>
+      <canvas id="bloodTypeChart"></canvas>
+    </div>
+  </div>
+
+  <h2 style="margin-bottom: 15px;">Blood Inventory Status</h2>
+  <div class="blood-inventory">
+    <div class="blood-group">
+      <h4>A+</h4>
+      <div>98 units</div>
+      <div class="blood-level">
+        <div class="sufficient" style="width: 85%;"></div>
+      </div>
+      <small>Sufficient</small>
+    </div>
+    <div class="blood-group">
+      <h4>A-</h4>
+      <div>45 units</div>
+      <div class="blood-level">
+        <div class="sufficient" style="width: 70%;"></div>
+      </div>
+      <small>Sufficient</small>
+    </div>
+    <div class="blood-group">
+      <h4>B+</h4>
+      <div>87 units</div>
+      <div class="blood-level">
+        <div class="sufficient" style="width: 75%;"></div>
+      </div>
+      <small>Sufficient</small>
+    </div>
+    <div class="blood-group">
+      <h4>B-</h4>
+      <div>38 units</div>
+      <div class="blood-level">
+        <div class="low" style="width: 40%;"></div>
+      </div>
+      <small>Low</small>
+    </div>
+    <div class="blood-group">
+      <h4>AB+</h4>
+      <div>42 units</div>
+      <div class="blood-level">
+        <div class="sufficient" style="width: 65%;"></div>
+      </div>
+      <small>Sufficient</small>
+    </div>
+    <div class="blood-group">
+      <h4>AB-</h4>
+      <div>12 units</div>
+      <div class="blood-level">
+        <div class="critical" style="width: 15%;"></div>
+      </div>
+      <small>Critical</small>
+    </div>
+    <div class="blood-group">
+      <h4>O+</h4>
+      <div>125 units</div>
+      <div class="blood-level">
+        <div class="sufficient" style="width: 90%;"></div>
+      </div>
+      <small>Sufficient</small>
+    </div>
+    <div class="blood-group">
+      <h4>O-</h4>
+      <div>8 units</div>
+      <div class="blood-level">
+        <div class="critical" style="width: 10%;"></div>
+      </div>
+      <small>Critical</small>
+    </div>
+  </div>
+
+  <div class="dashboard-charts">
+    <div class="chart-container">
+      <div class="section-header">
+        <h2>Donation Success Rate</h2>
+      </div>
+      <div class="small-charts">
+        <div>
+          <div class="gauge-chart-container">
+            <canvas id="donorRetentionChart"></canvas>
+            <div class="gauge-percentage">78%</div>
+            <div class="gauge-label">Donor Retention</div>
+          </div>
         </div>
-        <div class="user-info">
-          <span>🔔</span>
-          <div class="avatar">A</div>
-          <span>Admin</span>
+        <div>
+          <div class="gauge-chart-container">
+            <canvas id="successRateChart"></canvas>
+            <div class="gauge-percentage">95%</div>
+            <div class="gauge-label">Successful Donations</div>
+          </div>
         </div>
       </div>
-      <!-- Stats -->
-      <div class="stats-container">
-        <div class="stat-card">
-          <div class="stat-title">Total Blood Units</div>
-          <div class="stat-value">427</div>
-          <div class="stat-change">+12 from yesterday</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-title">Critical Blood Types</div>
-          <div class="stat-value">2</div>
-          <div class="stat-change negative">O-, AB-</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-title">Donations This Month</div>
-          <div class="stat-value">78</div>
-          <div class="stat-change">+23% from last month</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-title">Expiring Soon</div>
-          <div class="stat-value">18</div>
-          <div class="stat-change negative">within 7 days</div>
-        </div>
+    </div>
+    <div class="chart-container">
+      <div class="section-header">
+        <h2>Hospital Requests By Priority</h2>
       </div>
-      <!-- Content Area -->
-      <div class="content-area">
-        <!-- Blood Inventory -->
-        <div>
-          <div class="card">
-            <div class="card-header">
-              <h2 class="card-title">Blood Inventory Status</h2>
-              <button class="btn btn-outline">View All</button>
-            </div>
-            <table class="table">
-              <thead>
-              <tr>
-                <th>Blood Type</th>
-                <th>Units Available</th>
-                <th>Status</th>
-                <th>Last Updated</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr>
-                <td><span class="blood-type">A+</span></td>
-                <td>87</td>
-                <td><span class="status-tag available">Available</span></td>
-                <td>10 mins ago</td>
-              </tr>
-              <tr>
-                <td><span class="blood-type">A-</span></td>
-                <td>32</td>
-                <td><span class="status-tag available">Available</span></td>
-                <td>10 mins ago</td>
-              </tr>
-              <tr>
-                <td><span class="blood-type">B+</span></td>
-                <td>65</td>
-                <td><span class="status-tag available">Available</span></td>
-                <td>10 mins ago</td>
-              </tr>
-              <tr>
-                <td><span class="blood-type">B-</span></td>
-                <td>14</td>
-                <td><span class="status-tag low">Low</span></td>
-                <td>10 mins ago</td>
-              </tr>
-              <tr>
-                <td><span class="blood-type">AB+</span></td>
-                <td>28</td>
-                <td><span class="status-tag available">Available</span></td>
-                <td>10 mins ago</td>
-              </tr>
-              <tr>
-                <td><span class="blood-type">AB-</span></td>
-                <td>5</td>
-                <td><span class="status-tag critical">Critical</span></td>
-                <td>10 mins ago</td>
-              </tr>
-              <tr>
-                <td><span class="blood-type">O+</span></td>
-                <td>75</td>
-                <td><span class="status-tag available">Available</span></td>
-                <td>10 mins ago</td>
-              </tr>
-              <tr>
-                <td><span class="blood-type">O-</span></td>
-                <td>8</td>
-                <td><span class="status-tag critical">Critical</span></td>
-                <td>10 mins ago</td>
-              </tr>
-              </tbody>
-            </table>
+      <canvas id="requestPriorityChart"></canvas>
+    </div>
+  </div>
+
+  <div class="dashboard-row">
+    <div class="recent-donations">
+      <div class="section-header">
+        <h2>Recent Donations</h2>
+        <a href="donation-records.html" class="view-all">View All</a>
+      </div>
+      <table>
+        <thead>
+        <tr>
+          <th>Donor ID</th>
+          <th>Name</th>
+          <th>Blood Type</th>
+          <th>Date</th>
+          <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>D-7842</td>
+          <td>John Smith</td>
+          <td>A+</td>
+          <td>Apr 6, 2025</td>
+          <td><span class="status completed">Completed</span></td>
+        </tr>
+        <tr>
+          <td>D-7843</td>
+          <td>Emily Wilson</td>
+          <td>O+</td>
+          <td>Apr 5, 2025</td>
+          <td><span class="status completed">Completed</span></td>
+        </tr>
+        <tr>
+          <td>D-7844</td>
+          <td>Michael Brown</td>
+          <td>B-</td>
+          <td>Apr 5, 2025</td>
+          <td><span class="status processing">Processing</span></td>
+        </tr>
+        <tr>
+          <td>D-7845</td>
+          <td>Sarah Johnson</td>
+          <td>AB+</td>
+          <td>Apr 4, 2025</td>
+          <td><span class="status completed">Completed</span></td>
+        </tr>
+        <tr>
+          <td>D-7846</td>
+          <td>David Lee</td>
+          <td>O-</td>
+          <td>Apr 4, 2025</td>
+          <td><span class="status completed">Completed</span></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="emergency-requests">
+      <div class="section-header">
+        <h2>Emergency Requests</h2>
+        <a href="emergency-alerts.html" class="view-all">View All</a>
+      </div>
+      <div class="emergency-list">
+        <div class="emergency-item">
+          <div class="emergency-blood-type">O-</div>
+          <div class="hospital-info">
+            <div class="hospital-name">General Hospital</div>
+            <div class="emergency-time">30 minutes ago</div>
           </div>
-          <!-- Expiring Blood Units -->
-          <div class="card">
-            <div class="card-header">
-              <h2 class="card-title">Blood Expiry Management</h2>
-              <button class="btn btn-outline">View All</button>
-            </div>
-            <table class="table">
-              <thead>
-              <tr>
-                <th>Unit ID</th>
-                <th>Blood Type</th>
-                <th>Collection Date</th>
-                <th>Expiry Date</th>
-                <th>Status</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr>
-                <td>BU-2025-1423</td>
-                <td><span class="blood-type">A+</span></td>
-                <td>06 Mar, 2025</td>
-                <td>20 Mar, 2025</td>
-                <td><span class="status-tag critical">Critical</span></td>
-              </tr>
-              <tr>
-                <td>BU-2025-1424</td>
-                <td><span class="blood-type">O+</span></td>
-                <td>06 Mar, 2025</td>
-                <td>20 Mar, 2025</td>
-                <td><span class="status-tag critical">Critical</span></td>
-              </tr>
-              <tr>
-                <td>BU-2025-1425</td>
-                <td><span class="blood-type">B+</span></td>
-                <td>06 Mar, 2025</td>
-                <td>20 Mar, 2025</td>
-                <td><span class="status-tag critical">Critical</span></td>
-              </tr>
-              <tr>
-                <td>BU-2025-1426</td>
-                <td><span class="blood-type">AB+</span></td>
-                <td>07 Mar, 2025</td>
-                <td>21 Mar, 2025</td>
-                <td><span class="status-tag critical">Critical</span></td>
-              </tr>
-              <tr>
-                <td>BU-2025-1427</td>
-                <td><span class="blood-type">A-</span></td>
-                <td>08 Mar, 2025</td>
-                <td>22 Mar, 2025</td>
-                <td><span class="status-tag low">Expiring Soon</span></td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
+          <button class="respond-btn">Respond</button>
         </div>
-        <!-- Sidebar Content -->
-        <div>
-          <!-- Emergency Alerts -->
-          <div class="card">
-            <div class="card-header">
-              <h2 class="card-title">Emergency Alerts</h2>
-              <button class="btn btn-outline">View All</button>
-            </div>
-            <div class="alert-card">
-              <div class="alert-title">Urgent: O- Blood Required</div>
-              <div class="alert-time">10 mins ago</div>
-              <p>Central Hospital requires 5 units of O- blood for emergency surgery.</p>
-              <button class="btn btn-primary" style="margin-top: 10px;">Respond</button>
-            </div>
-            <div class="alert-card">
-              <div class="alert-title">Urgent: AB- Blood Required</div>
-              <div class="alert-time">45 mins ago</div>
-              <p>Memorial Hospital requires 3 units of AB- blood for a scheduled surgery.</p>
-              <button class="btn btn-primary" style="margin-top: 10px;">Respond</button>
-            </div>
-            <div class="alert-card">
-              <div class="alert-title">Critical Level Alert: O-</div>
-              <div class="alert-time">2 hours ago</div>
-              <p>O- blood type has reached critical level. Schedule donation drive.</p>
-              <button class="btn btn-primary" style="margin-top: 10px;">Schedule Drive</button>
-            </div>
+        <div class="emergency-item">
+          <div class="emergency-blood-type">AB-</div>
+          <div class="hospital-info">
+            <div class="hospital-name">City Medical Center</div>
+            <div class="emergency-time">1 hour ago</div>
           </div>
-          <!-- Recent Donations -->
-          <div class="card">
-            <div class="card-header">
-              <h2 class="card-title">Recent Donations</h2>
-              <button class="btn btn-outline">View All</button>
-            </div>
-            <table class="table">
-              <thead>
-              <tr>
-                <th>Donor</th>
-                <th>Blood Type</th>
-                <th>Date</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr>
-                <td>John Doe</td>
-                <td><span class="blood-type">A+</span></td>
-                <td>20 Mar, 2025</td>
-              </tr>
-              <tr>
-                <td>Jane Smith</td>
-                <td><span class="blood-type">O+</span></td>
-                <td>19 Mar, 2025</td>
-              </tr>
-              <tr>
-                <td>Robert Johnson</td>
-                <td><span class="blood-type">B-</span></td>
-                <td>19 Mar, 2025</td>
-              </tr>
-              <tr>
-                <td>Sarah Williams</td>
-                <td><span class="blood-type">AB+</span></td>
-                <td>18 Mar, 2025</td>
-              </tr>
-              <tr>
-                <td>Michael Brown</td>
-                <td><span class="blood-type">O-</span></td>
-                <td>18 Mar, 2025</td>
-              </tr>
-              </tbody>
-            </table>
+          <button class="respond-btn">Respond</button>
+        </div>
+        <div class="emergency-item">
+          <div class="emergency-blood-type">B-</div>
+          <div class="hospital-info">
+            <div class="hospital-name">Memorial Hospital</div>
+            <div class="emergency-time">2 hours ago</div>
           </div>
-          <!-- Notifications -->
-          <div class="card">
-            <div class="card-header">
-              <h2 class="card-title">Notifications</h2>
-              <button class="btn btn-outline">View All</button>
-            </div>
-            <div class="notification-item">
-              <div class="notification-icon">🔔</div>
-              <div class="notification-content">
-                <div class="notification-title">Donation Request Approved</div>
-                <p>Memorial Hospital's request for 5 units of A+ blood has been approved.</p>
-                <div class="notification-time">15 mins ago</div>
-              </div>
-            </div>
-            <div class="notification-item">
-              <div class="notification-icon">📦</div>
-              <div class="notification-content">
-                <div class="notification-title">Blood Transport Scheduled</div>
-                <p>5 units of B+ blood scheduled for transport to Central Hospital.</p>
-                <div class="notification-time">1 hour ago</div>
-              </div>
-            </div>
-            <div class="notification-item">
-              <div class="notification-icon">⏰</div>
-              <div class="notification-content">
-                <div class="notification-title">Expiry Alert</div>
-                <p>12 units of blood will expire in the next 7 days.</p>
-                <div class="notification-time">2 hours ago</div>
-              </div>
-            </div>
-            <div class="notification-item">
-              <div class="notification-icon">🏥</div>
-              <div class="notification-content">
-                <div class="notification-title">New Hospital Registration</div>
-                <p>Riverside Medical Center has been added to your network.</p>
-                <div class="notification-time">5 hours ago</div>
-              </div>
-            </div>
-          </div>
+          <button class="respond-btn">Respond</button>
         </div>
       </div>
     </div>
   </div>
+
+  <div class="upcoming-donations">
+    <div class="section-header">
+      <h2>Upcoming Donations</h2>
+      <a href="donation-schedules.html" class="view-all">View All</a>
+    </div>
+    <table>
+      <thead>
+      <tr>
+        <th>Donor ID</th>
+        <th>Name</th>
+        <th>Blood Type</th>
+        <th>Scheduled Date</th>
+        <th>Location</th>
+        <th>Status</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>D-7850</td>
+        <td>James Wilson</td>
+        <td>O-</td>
+        <td>Apr 7, 2025</td>
+        <td>Main Center</td>
+        <td><span class="status processing">Scheduled</span></td>
+      </tr>
+      <tr>
+        <td>D-7851</td>
+        <td>Sophia Martinez</td>
+        <td>AB-</td>
+        <td>Apr 7, 2025</td>
+        <td>Mobile Unit #3</td>
+        <td><span class="status processing">Scheduled</span></td>
+      </tr>
+      <tr>
+        <td>D-7852</td>
+        <td>Robert Johnson</td>
+        <td>B+</td>
+        <td>Apr 8, 2025</td>
+        <td>Main Center</td>
+        <td><span class="status processing">Scheduled</span></td>
+      </tr>
+      <tr>
+        <td>D-7853</td>
+        <td>Emma Davis</td>
+        <td>A-</td>
+        <td>Apr 8, 2025</td>
+        <td>South Branch</td>
+        <td><span class="status processing">Scheduled</span></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
-</body>
+
 <script>
-  // Show Dashboard content and set active state
-  function showDashboard(event) {
-    event.preventDefault();
+  // Monthly donations trend chart
+  const donationTrendCtx = document.getElementById('donationTrendChart').getContext('2d');
+  const donationTrendChart = new Chart(donationTrendCtx, {
+    type: 'line',
+    data: {
+      labels: ['November', 'December', 'January', 'February', 'March', 'April'],
+      datasets: [{
+        label: 'Monthly Donations',
+        data: [178, 196, 215, 198, 224, 248],
+        backgroundColor: 'rgba(220, 53, 69, 0.1)',
+        borderColor: 'rgba(220, 53, 69, 1)',
+        borderWidth: 2,
+        tension: 0.3,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              return context.parsed.y + ' donations';
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: false,
+          min: 150,
+          grid: {
+            drawBorder: false
+          },
+          ticks: {
+            stepSize: 50
+          }
+        },
+        x: {
+          grid: {
+            display: false
+          }
+        }
+      }
+    }
+  });
 
-    // Remove active class from all nav items
-    const navItems = document.querySelectorAll('.nav-item');
-    navItems.forEach(item => item.classList.remove('active'));
+  // Blood type distribution chart
+  const bloodTypeCtx = document.getElementById('bloodTypeChart').getContext('2d');
+  const bloodTypeChart = new Chart(bloodTypeCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+      datasets: [{
+        data: [98, 45, 87, 38, 42, 12, 125, 8],
+        backgroundColor: [
+          '#4CAF50', '#8BC34A',
+          '#2196F3', '#03A9F4',
+          '#9C27B0', '#673AB7',
+          '#FF9800', '#F44336'
+        ],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      cutout: '60%',
+      plugins: {
+        legend: {
+          position: 'right',
+          labels: {
+            boxWidth: 15,
+            padding: 15
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const label = context.label || '';
+              const value = context.parsed || 0;
+              const total = context.dataset.data.reduce((acc, data) => acc + data, 0);
+              const percentage = Math.round((value / total) * 100);
+              return `${label}: ${value} units (${percentage}%)`;
+            }
+          }
+        }
+      }
+    }
+  });
 
-    // Add active class to Dashboard
-    event.currentTarget.classList.add('active');
+  // Donor Retention Rate Chart
+  const donorRetentionCtx = document.getElementById('donorRetentionChart').getContext('2d');
+  const donorRetentionChart = new Chart(donorRetentionCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Retained', 'New'],
+      datasets: [{
+        data: [78, 22],
+        backgroundColor: [
+          '#4CAF50',
+          '#E0E0E0'
+        ],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      cutout: '75%',
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          enabled: false
+        }
+      }
+    }
+  });
 
-    // Ensure main content is visible
-    const mainContent = document.getElementById('mainContent');
-    mainContent.style.display = 'block';
-  }
+  // Success Rate Chart
+  const successRateCtx = document.getElementById('successRateChart').getContext('2d');
+  const successRateChart = new Chart(successRateCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Successful', 'Deferred'],
+      datasets: [{
+        data: [95, 5],
+        backgroundColor: [
+          '#2196F3',
+          '#E0E0E0'
+        ],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      cutout: '75%',
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          enabled: false
+        }
+      }
+    }
+  });
 
-  // Handle other navigation items
-  function handleNavigation(event, section) {
-    event.preventDefault();
-
-    const navItems = document.querySelectorAll('.nav-item');
-    navItems.forEach(item => item.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-
-    // For now, keep dashboard visible; modify this for other content
-    const mainContent = document.getElementById('mainContent');
-    mainContent.style.display = 'block';
-    console.log(`Clicked: ${section}`);
-    // Future: Load different content here, e.g., mainContent.innerHTML = getSectionContent(section);
-  }
-
-  // Set initial state
-  document.addEventListener('DOMContentLoaded', () => {
-    const dashboardNav = document.querySelector('.nav-item.active');
-    if (dashboardNav) {
-      dashboardNav.classList.add('active');
+  // Request Priority Chart
+  const requestPriorityCtx = document.getElementById('requestPriorityChart').getContext('2d');
+  const requestPriorityChart = new Chart(requestPriorityCtx, {
+    type: 'bar',
+    data: {
+      labels: ['Emergency', 'Urgent', 'Standard', 'Scheduled'],
+      datasets: [{
+        label: 'Current Week',
+        data: [12, 27, 58, 43],
+        backgroundColor: '#dc3545',
+        borderWidth: 0,
+        borderRadius: 4,
+        barPercentage: 0.5,
+        categoryPercentage: 0.7
+      },
+        {
+          label: 'Previous Week',
+          data: [8, 22, 62, 38],
+          backgroundColor: '#6c757d',
+          borderWidth: 0,
+          borderRadius: 4,
+          barPercentage: 0.5,
+          categoryPercentage: 0.7
+        }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: {
+          position: 'top',
+          labels: {
+            boxWidth: 12,
+            padding: 10
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: {
+            drawBorder: false
+          }
+        },
+        x: {
+          grid: {
+            display: false
+          }
+        }
+      }
     }
   });
 </script>
+</body>
 </html>

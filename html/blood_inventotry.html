@@ -17,8 +17,7 @@
         }
 
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
+            margin: 0 50px;
         }
 
         h1, h2, h3 {
@@ -182,7 +181,7 @@
     <!-- Add New Inventory Form -->
     <div class="card">
         <h2>Add New Inventory</h2>
-        <form id="inventoryForm">
+        <div id="inventoryForm">
             <div class="form-row">
                 <div class="form-column">
                     <div class="form-group">
@@ -219,15 +218,15 @@
                     </div>
                 </div>
             </div>
-            <button type="submit">Add Inventory</button>
-        </form>
+            <button onclick="addInventory(event )">Add Inventory</button>
+        </div>
     </div>
 
     <!-- Inventory Table -->
     <div class="card">
         <h2>Current Inventory</h2>
         <div id="inventoryTableContainer">
-            <table id="inventoryTable">
+            <table  id="inventoryTable">
                 <thead>
                 <tr>
                     <th>Blood Type</th>
@@ -235,7 +234,6 @@
                     <th>Donation Date</th>
                     <th>Expiry Date</th>
                     <th>Status</th>
-                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody id="inventoryBody">
@@ -253,31 +251,11 @@
         </div>
     </div>
 </div>
-
 <script>
+
     // Sample data structure (in a real app, this would come from an API)
     let inventoryData = [
-        {
-            id: 1,
-            bloodType: 'A+',
-            units: 10,
-            donationDate: '2025-03-01',
-            expiryDate: '2025-04-01'
-        },
-        {
-            id: 2,
-            bloodType: 'O-',
-            units: 5,
-            donationDate: '2025-02-15',
-            expiryDate: '2025-03-15'
-        },
-        {
-            id: 3,
-            bloodType: 'B+',
-            units: 8,
-            donationDate: '2025-03-10',
-            expiryDate: '2025-04-10'
-        }
+
     ];
 
     // Blood types
@@ -294,9 +272,9 @@
     const errorMessage = document.getElementById('errorMessage');
 
     // Format date for display
-    function formatDate(dateString) {
-        const date = new Date(dateString);
-        return date.toLocaleDateString();
+    function formatDateTime(dateTimeString) {
+        const date = new Date(dateTimeString);
+        return date.toLocaleString();
     }
 
     // Calculate days until expiry
@@ -349,8 +327,8 @@
             row.innerHTML = `
                     <td>${item.bloodType}</td>
                     <td>${item.units}</td>
-                    <td>${formatDate(item.donationDate)}</td>
-                    <td>${formatDate(item.expiryDate)}</td>
+                    <td>${formatDateTime(item.donationDate)}</td>
+                    <td>${formatDateTime(item.expiryDate)}</td>
                     <td><span class="status-tag ${getStatusClass(item.expiryDate)}">${getStatusText(item.expiryDate)}</span></td>
                     <td><button class="btn-delete" data-id="${item.id}">Delete</button></td>
                 `;
@@ -433,6 +411,30 @@
     // Initial render
     renderInventoryTable();
     renderInventorySummary();
+
+    // New function to set default date/time values
+    function setDefaultDates() {
+        const now = new Date();
+        const expiryDate = new Date();
+        expiryDate.setDate(now.getDate() + 30);
+
+        // Format for datetime-local input (YYYY-MM-DDTHH:MM)
+        const formatForInput = (date) => {
+            return date.toISOString().slice(0, 16);
+        };
+
+        donationDateInput.value = formatForInput(now);
+        expiryDateInput.value = formatForInput(expiryDate);
+    }
+
+    // Called on page load and after form submission
+    document.addEventListener('DOMContentLoaded', () => {
+        setDefaultDates();
+        // ... other initialization
+    });
 </script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="../JS/blood_inventory.js"></script>
+
 </body>
 </html>

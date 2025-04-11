@@ -161,7 +161,7 @@
     </div>
 
     <p class="mt-3 text-center">Don't have an account?
-        <a href="DonarRegister.html" class="text-decoration-none"> Sign up Now</a>
+        <a href="UserRegister.html" class="text-decoration-none"> Sign up Now</a>
     </p>
 </div>
 
@@ -183,7 +183,6 @@
 </div>
 
 <!-- Firebase SDK -->
-<!--
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.8.0/firebase-auth.js";
@@ -287,8 +286,8 @@
         }
     });
 </script>
--->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!--
 <script>
     // Store feedback entries
     let feedbackEntries = [];
@@ -502,6 +501,117 @@
     // Initialize the feedback display
     displayFeedbackCards();
 </script>
+-->
+<script>
+    // This code should be in your login.js file or replace the inline script
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyD52WhQ79ew9x1fbJjrteEAMeQ_yYNJwjw",
+            authDomain: "springbootfinal-ddc59.firebaseapp.com",
+            projectId: "springbootfinal-ddc59",
+            storageBucket: "springbootfinal-ddc59.firebasestorage.app",
+            messagingSenderId: "1917804613",
+            appId: "1:1917804613:web:84e4c12345d665099b832c",
+            measurementId: "G-HTF9SLYP3F"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // Make functions available globally
+        window.showForgotPasswordPopup = function() {
+            document.getElementById("forgotPasswordPopup").style.display = 'flex';
+        };
+
+        window.hideForgotPasswordPopup = function() {
+            document.getElementById("forgotPasswordPopup").style.display = 'none';
+        };
+
+        // Email Login
+        document.getElementById("loginbtn").addEventListener("click", () => {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            if (!email || !password) {
+                alert("Please enter both email and password");
+                return;
+            }
+
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    console.log("Logged in: ", userCredential.user);
+                    alert("Login successful!");
+                    // Redirect to dashboard or home page
+                })
+                .catch((error) => {
+                    console.error("Error: ", error.message);
+                    alert("Login failed: " + error.message);
+                });
+        });
+
+        // Google Login
+        const googleProvider = new firebase.auth.GoogleAuthProvider();
+        document.getElementById("googleLogin").addEventListener("click", () => {
+            auth.signInWithPopup(googleProvider)
+                .then((result) => {
+                    console.log("Google login successful: ", result.user);
+                    alert("Google login successful!");
+                    window.location.href = "chat.html";
+
+                    // Redirect to dashboard or home page
+                    // window.location.href = "dashboard.html";
+                })
+                .catch((error) => {
+                    console.error("Google login error: ", error.message);
+                    alert("Google login failed: " + error.message);
+                });
+        });
+
+        // Facebook Login
+        const facebookProvider = new firebase.auth.FacebookAuthProvider();
+        document.getElementById("facebookLogin").addEventListener("click", () => {
+            auth.signInWithPopup(facebookProvider)
+                .then((result) => {
+                    console.log("Facebook login successful: ", result.user);
+                    alert("Facebook login successful!");
+                    // Redirect to dashboard or home page
+                    // window.location.href = "dashboard.html";
+                })
+                .catch((error) => {
+                    console.error("Facebook login error: ", error.message);
+                    alert("Facebook login failed: " + error.message);
+                });
+        });
+
+        // Reset Password Form
+        document.getElementById("resetPasswordForm").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const emailOrPhone = document.getElementById("resetEmail").value;
+
+            if (emailOrPhone.includes('@')) {
+                // Email reset
+                auth.sendPasswordResetEmail(emailOrPhone)
+                    .then(() => {
+                        alert("Password reset link sent to your email.");
+                        hideForgotPasswordPopup();
+                    })
+                    .catch((error) => {
+                        console.error("Error: ", error.message);
+                        alert("Error sending reset email: " + error.message);
+                    });
+            } else {
+                // For phone reset, you might need to implement a custom solution
+                // or use Firebase phone authentication
+                alert("Phone reset functionality is not implemented yet.");
+            }
+        });
+    });
+</script>
+<script src="https://www.gstatic.com/firebasejs/9.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.8.0/firebase-auth-compat.js"></script>
 <script src="../JS/login.js"></script>
 </body>
 </html>

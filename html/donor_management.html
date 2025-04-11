@@ -4,6 +4,20 @@
     <meta charset="UTF-8">
     <title>Donor Management</title>
     <style>
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.98);
+            padding: 20px;
+            box-shadow: 0px 0px 10px gray;
+        }
+        .close-btn {
+            cursor: pointer;
+            font-size: 20px;
+        }
         .admin-dashboard {
             font-family: Arial, sans-serif;
             padding: 20px;
@@ -28,14 +42,6 @@
             border-radius: 4px;
         }
 
-        .add-btn {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
 
         .dashboard-stats {
             display: grid;
@@ -223,9 +229,9 @@
         </div>
     </div>
 
-    <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+    <!--<div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
         <button id="getall" onclick="showAllDonors(event)" style="background-color: #24e024">View All</button>
-    </div>
+    </div>-->
 
     <div class="donors-table-container">
         <table class="donors-table">
@@ -248,45 +254,7 @@
                 <th>Actions</th>
             </tr>
             </thead>
-            <tbody>
-            <tr>
-                <td>John Smith </td>
-                <td>1992-05-15</td>
-                <td>Male</td>
-                <td>O+</td>
-                <td>+94 77 1234567</td>
-                <td>john.smith@email.com</td>
-                <td>123 Main Street</td>
-                <td>Colombo</td>
-                <td>Colombo</td>
-                <td>Western</td>
-                <td>10000</td>
-                <td>Diabetes, High Pressure</td>
-                <td>15 Feb 2025</td>
-                <td>
-                    <button class="action-btn edit-btn">Edit</button>
-                    <button class="action-btn delete-btn">Delete</button>
-                </td>
-            </tr>
-            <tr>
-                <td>Maria Fernando</td>
-                <td>1996-08-20</td>
-                <td>Female</td>
-                <td>A-</td>
-                <td>+94 76 9876543</td>
-                <td>maria.fernando@email.com</td>
-                <td>456 Lake Road</td>
-                <td>Kandy</td>
-                <td>Kandy</td>
-                <td>Central</td>
-                <td>20000</td>
-                <td>Low Pressure</td>
-                <td>3 Mar 2025</td>
-                <td>
-                    <button class="action-btn edit-btn">Edit</button>
-                    <button class="action-btn delete-btn">Delete</button>
-                </td>
-            </tr>
+            <tbody id="donorsTableBody">
             </tbody>
         </table>
     </div>
@@ -300,102 +268,59 @@
         <button class="page-btn">5</button>
         <button class="page-btn">&raquo;</button>
     </div>
+
+    <!-- Trigger Button (you can add this anywhere you want) -->
+
+    <!-- Hidden Donor ID -->
+    <input type="hidden" id="donorContact" value="">
+    <!-- Popup Modal for Date and Time -->
+    <div id="dateTimePopup" class="popup">
+        <div class="popup-content">
+            <span onclick="closePopup()" class="close-btn">&times;</span>
+            <h3>Edit Date & Time</h3>
+            <input type="date" id="editDate">
+            <input type="time" id="editTime">
+            <button onclick="saveDateTime()">Save</button>
+        </div>
+    </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="../JS/donor_register.js"></script>
 <script>
+
+    function showPopup() {
+        document.getElementById("dateTimePopup").style.display = "block";
+    }
+
+    function closePopup() {
+        document.getElementById("dateTimePopup").style.display = "none";
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         // DOM Elements
         const searchInput = document.querySelector('.search-input');
         const filterSelect = document.querySelector('.filter-select');
         const donorsTableBody = document.querySelector('.donors-table tbody');
-        const addDonorBtn = document.createElement('button');
-        addDonorBtn.textContent = 'Add Donor';
+        //const addDonorBtn = document.createElement('button');
         addDonorBtn.className = 'add-btn';
         document.querySelector('.dashboard-actions').appendChild(addDonorBtn);
 
         // Donor Data Management
-        let donorData = [
-            {
-                id: 'D001',
-                fullName: 'John Smith',
-                nic: '972345678V',
-                dob: '1992-05-15',
-                gender: 'Male',
-                bloodGroup: 'O+',
-                contact: '+94 77 1234567',
-                email: 'john.smith@email.com',
-                address: '123 Main Street',
-                city: 'Colombo',
-                district: 'Colombo',
-                province: 'Western',
-                zipCode: '10000',
-                healthConditions: ['Diabetes', 'High Pressure'],
-                lastDonation: '2025-02-15'
-            },
-            {
-                id: 'D002',
-                fullName: 'Maria Fernando',
-                nic: '890123456V',
-                dob: '1996-08-20',
-                gender: 'Female',
-                bloodGroup: 'A-',
-                contact: '+94 76 9876543',
-                email: 'maria.fernando@email.com',
-                address: '456 Lake Road',
-                city: 'Kandy',
-                district: 'Kandy',
-                province: 'Central',
-                zipCode: '20000',
-                healthConditions: ['Low Pressure'],
-                lastDonation: '2025-03-03'
-            }
-        ];
 
         // Helper Functions
-        function formatDate(dateString) {
-            if (!dateString) return '';
-            const date = new Date(dateString);
-            return date.toLocaleDateString('en-US', {
-                day: 'numeric',
-                month: 'short',
-                year: 'numeric'
-            });
-        }
 
-        function createDonorRow(donor) {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-            <td>${donor.fullName} </td>
-            <td>${donor.nic}</td>
-            <td>${donor.dob}</td>
-            <td>${donor.gender}</td>
-            <td>${donor.bloodGroup}</td>
-            <td>${donor.contact}</td>
-            <td>${donor.email}</td>
-            <td>${donor.address}</td>
-            <td>${donor.city}</td>
-            <td>${donor.district}</td>
-            <td>${donor.province}</td>
-            <td>${donor.zipCode}</td>
-            <td>${donor.healthConditions.join(', ')}</td>
-            <td>
-                ${formatDate(donor.lastDonation)}
-            </td>
-            <td>
-                <button style="background-color: #ffde00; margin-bottom: 10px;"  class="action-btn edit-donation-date" data-id="${donor.id}">Edit Date</button>
-            </td>
-        `;
-            return row;
-        }
 
-        function renderDonors(donors = donorData) {
-            donorsTableBody.innerHTML = '';
-            donors.forEach(donor => {
-                donorsTableBody.appendChild(createDonorRow(donor));
-            });
-            attachEventListeners();
-        }
+        let modal = document.getElementById("dateModal");
+        let closeModal = document.querySelector(".close");
+        let saveDateBtn = document.getElementById("saveDateBtn");
 
-        function attachEventListeners() {
+
+        closeModal.addEventListener("click", function () {
+            modal.style.display = "none"; // Hide modal
+        });
+
+
+      /*  function attachEventListeners() {
             // Edit Donation Date
             document.querySelectorAll('.edit-donation-date').forEach(btn => {
                 btn.addEventListener('click', function() {
@@ -455,223 +380,13 @@
                 }
             });
         }
-
+*/
         // Rest of the code remains the same as in the original script...
         // (Add Donor, Search, Filter functionalities)
 
         // Initial render
-        renderDonors();
     });
 </script>
-<!--
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // DOM Elements
-        const searchInput = document.querySelector('.search-input');
-        const filterSelect = document.querySelector('.filter-select');
-        const tableRows = document.querySelectorAll('.donors-table tbody tr');
-        const editBtns = document.querySelectorAll('.edit-btn');
-        const deleteBtns = document.querySelectorAll('.delete-btn');
-        const pageBtns = document.querySelectorAll('.page-btn');
-
-        // Sample donor data
-        const donorData = [
-            {
-                id: 'D001',
-                fullName: 'John Smith',
-                age: 32,
-                gender: 'Male',
-                bloodGroup: 'O+',
-                contactNumber: '+94 77 1234567',
-                city: 'Colombo',
-                healthConditions: [],
-                lastDonation: '2025-02-15'
-            },
-            {
-                id: 'D002',
-                fullName: 'Maria Fernando',
-                age: 28,
-                gender: 'Female',
-                bloodGroup: 'A-',
-                contactNumber: '+94 76 9876543',
-                city: 'Kandy',
-                healthConditions: ['Low Pressure'],
-                lastDonation: '2025-03-03'
-            }
-        ];
-
-        // Create a modal for editing donation date
-        function createDonationDateModal(donor) {
-            // Create modal container
-            const modal = document.createElement('div');
-            modal.className = 'donation-date-modal';
-
-            // Create modal content
-            const modalContent = document.createElement('div');
-
-            // Modal HTML
-            modalContent.innerHTML = `
-            <h3>Edit Donation Date</h3>
-            <p>Donor: ${donor.fullName}</p>
-            <label for="donation-date">Last Donation Date:</label>
-            <input type="date" id="donation-date" class="donation-date-input"
-                   value="${donor.lastDonation !== 'Not Eligible' ? donor.lastDonation : ''}"
-                   ${donor.lastDonation === 'Not Eligible' ? 'placeholder="Select Date"' : ''}>
-            <div style="display: flex; justify-content: space-between; margin-top: 15px;">
-                <button class="save-donation-date">Save</button>
-                <button class="cancel-donation-date">Cancel</button>
-            </div>
-        `;
-
-            // Append content to modal
-            modal.appendChild(modalContent);
-            document.body.appendChild(modal);
-
-            // Save button functionality
-            const saveButton = modalContent.querySelector('.save-donation-date');
-            const cancelButton = modalContent.querySelector('.cancel-donation-date');
-            const dateInput = modalContent.querySelector('.donation-date-input');
-
-            // Save donation date
-            saveButton.addEventListener('click', function() {
-                const newDate = dateInput.value;
-
-                // Find and update the donor in donorData
-                const donorToUpdate = donorData.find(d => d.fullName === donor.fullName);
-                if (donorToUpdate) {
-                    donorToUpdate.lastDonation = newDate;
-
-                    // Update the table row
-                    const rows = document.querySelectorAll('.donors-table tbody tr');
-                    rows.forEach(row => {
-                        if (row.cells[0].textContent.includes(donor.fullName)) {
-                            row.cells[12].textContent = formatDate(newDate);
-                        }
-                    });
-                }
-
-                // Remove modal
-                document.body.removeChild(modal);
-
-                // Show a success message
-                alert(`Donation date updated for ${donor.fullName}`);
-            });
-
-            // Cancel button functionality
-            cancelButton.addEventListener('click', function() {
-                document.body.removeChild(modal);
-            });
-
-            // Close modal if clicked outside
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    document.body.removeChild(modal);
-                }
-            });
-        }
-
-        // Helper function to format dates
-        function formatDate(dateString) {
-            if (!dateString || dateString === 'Not Eligible') return dateString;
-
-            const date = new Date(dateString);
-            return date.toLocaleDateString('en-US', {
-                day: 'numeric',
-                month: 'short',
-                year: 'numeric'
-            });
-        }
-
-        // Find donor by name
-        function findDonorByName(name) {
-            return donorData.find(donor => donor.fullName === name);
-        }
-
-        // Attach edit button event listeners
-        editBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const donorName = this.closest('tr').cells[0].textContent.split('<')[0].trim();
-                const donor = findDonorByName(donorName);
-
-                if (donor) {
-                    createDonationDateModal(donor);
-                }
-            });
-        });
-
-        // Delete functionality
-        deleteBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const donorName = this.closest('tr').cells[0].textContent.split('<')[0].trim();
-                const donor = findDonorByName(donorName);
-
-                if (donor && confirm(`Are you sure you want to delete ${donor.fullName}?`)) {
-                    alert(`Donor ${donor.fullName} would be deleted from database`);
-
-                    // Remove the row from the table
-                    const row = this.closest('tr');
-                    row.remove();
-                }
-            });
-        });
-
-        // Search functionality
-        searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            const bloodGroup = filterSelect.value;
-
-            tableRows.forEach(row => {
-                const name = row.cells[0].textContent.toLowerCase();
-                const rowBloodGroup = row.cells[3].textContent;
-
-                const matchesSearch = name.includes(searchTerm);
-                const matchesBloodGroup = bloodGroup === '' || rowBloodGroup === bloodGroup;
-
-                if (matchesSearch && matchesBloodGroup) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
-
-        // Blood group filter
-        filterSelect.addEventListener('change', function() {
-            const searchTerm = searchInput.value.toLowerCase();
-            const bloodGroup = this.value;
-
-            tableRows.forEach(row => {
-                const name = row.cells[0].textContent.toLowerCase();
-                const rowBloodGroup = row.cells[3].textContent;
-
-                const matchesSearch = name.includes(searchTerm);
-                const matchesBloodGroup = bloodGroup === '' || rowBloodGroup === bloodGroup;
-
-                if (matchesSearch && matchesBloodGroup) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
-
-        // Pagination (basic functionality)
-        pageBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                if (!this.classList.contains('active')) {
-                    document.querySelector('.page-btn.active').classList.remove('active');
-                    this.classList.add('active');
-                }
-            });
-        });
-    });
-
-    // Placeholder function for View All button
-    function showAllDonors(event) {
-        event.preventDefault();
-        alert('Show all donors functionality to be implemented');
-    }
-</script>
--->
 </body>
 </html>
+

@@ -1,9 +1,13 @@
+
 function hospitalRegister(event) {
 
     event.preventDefault(); // Prevent form from reloading the page
 
     let hospitalData = {
-        hospitalName: $("#hospitalName").val(),
+/*
+        hospital_Name: $("#hospital").val(),
+*/
+        hospital_Name: "gggggggg",
         typeOfHospital: $("#TypeOfHospital").val(),
         registrationNumber: $("#registrationNumber").val(),
         yearOfEstablishment: $("#yearOfEstablishment").val(),
@@ -36,7 +40,7 @@ function hospitalRegister(event) {
         contentType: "application/json",
         data: JSON.stringify(hospitalData),
         headers: {
-            Authorization: "Bearer " +"eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoidXNlciIsInN1YiI6ImFwc2FyYWxpaGluaTExQGdtYWlsLmNvbSIsImlhdCI6MTc0Mjg3ODY0MywiZXhwIjoxNzQzOTE1NDQzfQ.-ZP780TCw3ozJQcq3ti5n1YfaJCfLt0LjYHffrtX4Pu-Lm9MjP387bSZHqfaQnQWY8Vo7sU_MY59dDPRjRb7eg"
+            Authorization: "Bearer " +"eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoidXNlciIsInN1YiI6InVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDM5MjE2MTQsImV4cCI6MTc0NDk1ODQxNH0.39sBbE25H79CxXFwPxuniNn_prGRRBgox29lX74MfomMjyNBn3dv6dVR6-vwUgWtyEp73xHmcVmK3IRHJjN6Ag"
         },
         success: function (response) {
             console.log("Hospital added successfully:", response);
@@ -48,3 +52,48 @@ function hospitalRegister(event) {
         }
     });
 }
+function loadHospitalTable() {
+    $.ajax({
+        url: 'http://localhost:8080/api/v1/hospitals/getAll',
+        type: 'GET',
+        contentType: "application/json",
+        dataType: "json",
+        headers: {
+            Authorization: "Bearer " + "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoidXNlciIsInN1YiI6InVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDM5MjE2MTQsImV4cCI6MTc0NDk1ODQxNH0.39sBbE25H79CxXFwPxuniNn_prGRRBgox29lX74MfomMjyNBn3dv6dVR6-vwUgWtyEp73xHmcVmK3IRHJjN6Ag"
+        },
+        success: function (response) {
+            console.log(response.data);
+
+            $("#hospitals-data").empty();
+
+            response.data.forEach(function (item) {
+                let hasBloodBankStatus = item.hasBloodBank
+                    ? `<span style="color: green;">●</span> Available`
+                    : `<span style="color: red;">●</span> Not Available`;
+
+                let emergencyServiceStatus = item.emergencyBloodServiceAvailable
+                    ? `<span style="color: green;">●</span> Available`
+                    : `<span style="color: red;">●</span> Not Available`;
+
+                let row = `<tr>
+                    <td>${item.hospitalName}</td>
+                    <td>${item.typeOfHospital}</td>
+                    <td>${item.address}</td>
+                    <td>${item.contactNumber}</td>
+                    <td>${hasBloodBankStatus}</td>
+                    <td>${item.availableBloodGroups}</td>
+                    <td>${emergencyServiceStatus}</td>
+                </tr>`;
+
+                $('#hospitals-data').append(row);
+            });
+        },
+        error: function (xhr, status, error) {
+            console.error("Error loading data:", xhr.responseText);
+            alert('Error loading hospital data');
+        }
+    });
+}
+loadHospitalTable();
+
+
