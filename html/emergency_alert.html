@@ -857,7 +857,7 @@ Contact: 011-XXXXXXX</textarea>
         }
 
         // Handle unauthorized responses
-        function handleUnauthorized(xhr) {
+       /* function handleUnauthorized(xhr) {
             if (xhr.status === 401) {
                 localStorage.removeItem('jwtToken');
                 alert('Session expired. Please log in again.');
@@ -865,7 +865,7 @@ Contact: 011-XXXXXXX</textarea>
             } else if (xhr.status === 403) {
                 alert('Permission denied: You cannot send alerts. Contact support.');
             }
-        }
+        }*/
 
         // Tab navigation
         $('.nav-tab').click(function() {
@@ -1055,6 +1055,7 @@ Contact: 011-XXXXXXX</textarea>
                 alert('Permission denied: Cannot fetch donors. Contact support.');
             }
         }
+
 /*
         function fetchDonors(district, bloodTypes, callback) {
             console.log('Fetching donors for:', district, bloodTypes);

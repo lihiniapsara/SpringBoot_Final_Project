@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blood Bank Management System</title>
+</head>
+<body>
+<div class="registration-form1" id="hospitalForm" >
+    <h3>Hospital Registration</h3>
+    <div style="display: flex; flex-direction: row;justify-content: center; ">
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr ; width: 500px; gap: 10px; font-size: 12px; padding: 10px; background-color: #f9f9f9; border-radius: 8px; border: 1px solid #ddd;">
+            <!-- Basic Information (Column 1) -->
+            <h3 style="grid-column: span 2; font-size: 18px; text-align: center; color: #4CAF50;">1. Basic Information</h3>
+
+            <label style="font-size: 14px;">Hospital Name</label>
+            <input id="hospital" type="text" required placeholder="Enter Hospital Name" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd;">
+
+            <label  style="font-size: 14px;">Type of Hospital</label>
+            <select id="TypeOfHospital" required style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd;">
+                <option value="">Select Type</option>
+                <option value="Private">Private</option>
+                <option value="Government">Government</option>
+                <option value="Specialized">Specialized</option>
+            </select>
+
+            <label style="font-size: 14px;">Registration Number</label>
+            <input id="registrationNumber" type="text" placeholder="Enter Registration Number" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd;">
+
+            <label style="font-size: 14px;">Year of Establishment</label>
+            <input id="yearOfEstablishment" type="number" min="1900" max="2025" required placeholder="Enter Year of Establishment" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd;">
+
+            <!-- Location Details (Column 2) -->
+            <h3 style="grid-column: span 2; font-size: 18px; text-align: center; color: #4CAF50;">2. Location Details</h3>
+
+            <label style="font-size: 14px;">Address</label>
+            <input id="address" type="text" required placeholder="Enter Hospital Address" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd;">
+
+            <label style="font-size: 14px;">City</label>
+            <input id="city" type="text" required placeholder="Enter City" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd;">
+
+            <label style="font-size: 14px;">District</label>
+            <input id="district" type="text" required placeholder="Enter District" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd;">
+
+            <label style="font-size: 14px;">Province</label>
+            <input id="province" type="text" required placeholder="Enter Province" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd;">
+
+            <label style="font-size: 14px;">Zip Code</label>
+            <input id="zipCode" type="text" required placeholder="Enter Zip Code" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd;">
+
+        </div>
+
+        <form style="display: grid; grid-template-columns: 1fr 1fr ; width: 500px; gap: 10px; font-size: 12px; padding: 10px; background-color: #f9f9f9; border-radius: 8px; border: 1px solid #ddd;">
+            <!-- Contact Information (Column 1) -->
+            <h3 style="grid-column: span 2; font-size: 18px; text-align: center; color: #4CAF50;">3. Contact Information</h3>
+
+            <label style="font-size: 14px;">Official Email Address</label>
+            <input id="officialEmail" type="email" required placeholder="Enter Official Email Address" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd; height: 45px">
+
+            <label style="font-size: 14px;">Contact Number</label>
+            <input id="contactNumber" type="tel" required placeholder="Enter Contact Number" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd; height: 45px">
+
+            <label style="font-size: 14px;">Emergency Contact Number</label>
+            <input id="emergencyContactNumber" type="tel" required placeholder="Enter Emergency Contact Number" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd; height: 45px">
+
+            <label style="font-size: 14px;">Website (If available)</label>
+            <input id="website" type="url" placeholder="Enter Website URL" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd; height: 45px">
+
+            <!-- Blood Bank Information (Column 2) -->
+            <h3 style="grid-column: span 2; font-size: 18px; text-align: center; color: #4CAF50;">4. Blood Bank Information</h3>
+
+            <label  style="font-size: 14px;">Does the hospital have a blood bank?</label>
+            <select id="HasBloodBank" required style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd; height: 45px">
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select>
+
+            <label style="font-size: 14px;">Blood Bank Contact Person’s Name</label>
+            <input id="bloodBankContactPersonName" type="text" placeholder="Enter Contact Person's Name" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd; height: 45px">
+
+            <label style="font-size: 14px;">Blood Bank Contact Number</label>
+            <input id="bloodBankContactNumber" type="tel" placeholder="Enter Contact Number" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd; height: 45px">
+
+            <label style="font-size: 14px;">Blood Groups Available</label>
+            <input id="availableBloodGroups" type="text" placeholder="A+, A-, B+, etc." style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd; height: 45px">
+
+        </form>
+
+        <form style="display: grid; grid-template-columns: 1fr 1fr ; width: 500px; gap: 10px; font-size: 12px; padding: 10px; background-color: #f9f9f9; border-radius: 8px; border: 1px solid #ddd;">
+
+            <!-- Licensing & Approvals (Column 1) -->
+            <h3 style="grid-column: span 2; font-size: 18px; text-align: center; color: #4CAF50;">5. Licensing & Approvals</h3>
+
+            <label style="font-size: 14px;">Blood Bank License Number</label>
+            <input id="bloodBankLicenseNumber" type="text" placeholder="Enter License Number" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd; height: 45px">
+
+            <label style="font-size: 14px;">Health Ministry Approval Certificate</label>
+            <input type="file" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd; height: 45px">
+
+            <!-- Services & Facilities (Column 2) -->
+            <h3 style="grid-column: span 2; font-size: 18px; text-align: center; color: #4CAF50;">6. Services & Facilities</h3>
+
+            <label  style="font-size: 14px;">24/7 Emergency Blood Services Available?</label>
+            <select id="EmergencyBloodServiceAvailable"  required style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd; height: 45px">
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select>
+
+            <label  style="font-size: 14px;">Blood Donation Camp Facilities?</label>
+            <select id="BloodDonationCampFacility" required style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd; height: 45px">
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select>
+
+            <label style="font-size: 14px;">Number of Blood Storage Units</label>
+            <input id="numberOfBloodStorageUnits" type="number" min="0" placeholder="Enter Number of Units" style="font-size: 14px; padding: 10px; border-radius: 4px; border: 1px solid #ddd; height: 45px">
+        </form>
+
+    </div>
+
+    <div style="grid-column: span 2; text-align: center; margin-top: 8px;">
+        <button onclick="hospitalRegister(event)" style="padding: 8px 16px; background: green; color: white; border: none; cursor: pointer; margin-left: 1250px; margin-top: 8px">Register</button>
+    </div>
+</div>
+
+<!-- Add Blood Bank Modal -->
+
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="../JS/hospital.js"></script>
+</html>
