@@ -3,18 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blood Emergency Alert System</title>
+    <title>Emergency Blood Donation Alert System</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <style>
+        :root {
+            --primary: #e53935;
+            --primary-dark: #c62828;
+            --primary-light: #ffcdd2;
+            --accent: #1976D2;
+            --dark: #333;
+            --light: #fff;
+            --gray-100: #f8f9fa;
+            --gray-200: #e9ecef;
+            --gray-300: #dee2e6;
+            --gray-400: #ced4da;
+            --gray-500: #adb5bd;
+            --gray-600: #6c757d;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --radius: 8px;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: #f5f5f5;
-            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--gray-100);
+            color: var(--dark);
+            line-height: 1.6;
         }
 
         .container {
@@ -23,329 +42,1336 @@
             padding: 20px;
         }
 
-        header {
-            background-color: #e53935;
-            color: white;
-            padding: 20px 0;
-            text-align: center;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        h1, h2, h3 {
-            margin-bottom: 10px;
-        }
-
-        .blood-search-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .search-box {
-            flex: 1;
-            min-width: 300px;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .results-box {
-            flex: 2;
-            min-width: 300px;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .alert-section {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .blood-types {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 15px 0;
-        }
-
-        .blood-type {
-            background: #f1f1f1;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 8px 15px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .blood-type:hover, .blood-type.active {
-            background: #e53935;
-            color: white;
-            border-color: #c62828;
-        }
-
-        .donor-list {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .donor-card {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--gray-300);
+            margin-bottom: 30px;
         }
 
-        .donor-card:hover {
-            background: #f9f9f9;
-        }
-
-        input, select, button, textarea {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        button {
-            background: #e53935;
-            color: white;
-            border: none;
-            cursor: pointer;
-            transition: background 0.3s;
-            font-weight: bold;
-        }
-
-        button:hover {
-            background: #c62828;
-        }
-
-        .map-container {
-            height: 300px;
-            background: #eee;
-            border-radius: 8px;
-            overflow: hidden;
-            margin: 15px 0;
-            position: relative;
-        }
-
-        .map-placeholder {
-            height: 100%;
+        .header-logo {
             display: flex;
-            justify-content: center;
             align-items: center;
-            color: #666;
-            background: #ddd;
+            gap: 12px;
         }
 
-        .alert-history {
-            margin-top: 20px;
-        }
-
-        .history-item {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .badge {
-            background: #e53935;
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            margin-left: 5px;
+            font-weight: bold;
+            font-size: 18px;
         }
 
-        .status-success {
-            background: #4CAF50;
+        .header-title {
+            margin: 0;
+            color: var(--primary-dark);
+            font-size: 24px;
+            font-weight: 600;
         }
 
-        .status-pending {
-            background: #FF9800;
+        .nav-tabs {
+            display: flex;
+            border-bottom: 2px solid var(--gray-300);
+            margin-bottom: 25px;
         }
 
-        label {
+        .nav-tab {
+            padding: 12px 24px;
             font-weight: 500;
+            cursor: pointer;
+            position: relative;
+            color: var(--gray-600);
+        }
+
+        .nav-tab.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .nav-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: var(--primary);
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
             display: block;
+        }
+
+        .card {
+            background: var(--light);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin: 0;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            flex: 1;
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius);
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.2);
+        }
+
+        .form-control:hover {
+            border-color: var(--gray-400);
+        }
+
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .blood-types-container {
+            margin-bottom: 25px;
+        }
+
+        .blood-types-title {
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .blood-type-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .blood-type-checkbox {
+            display: none;
+        }
+
+        .blood-type-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            border: 2px solid var(--gray-300);
+            font-weight: 600;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--gray-600);
+            background-color: var(--light);
+        }
+
+        .blood-type-checkbox:checked + .blood-type-label {
+            background-color: var(--primary);
+            color: var(--light);
+            border-color: var(--primary-dark);
+            box-shadow: 0 4px 8px rgba(229, 57, 53, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .blood-type-label:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .priority-selector {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .priority-radio {
+            display: none;
+        }
+
+        .priority-label {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid var(--gray-300);
+        }
+
+        .priority-label::before {
+            content: "";
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+            display: inline-block;
+        }
+
+        .priority-label.urgent::before {
+            background-color: #e53935;
+        }
+
+        .priority-label.important::before {
+            background-color: #FF9800;
+        }
+
+        .priority-label.info::before {
+            background-color: #2196F3;
+        }
+
+        .priority-radio:checked + .priority-label {
+            color: var(--light);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .priority-radio:checked + .priority-label.urgent {
+            background-color: #e53935;
+            border-color: #c62828;
+        }
+
+        .priority-radio:checked + .priority-label.important {
+            background-color: #FF9800;
+            border-color: #F57C00;
+        }
+
+        .priority-radio:checked + .priority-label.info {
+            background-color: #2196F3;
+            border-color: #1976D2;
+        }
+
+        .recipient-summary {
+            background-color: var(--gray-100);
+            border-radius: var(--radius);
+            padding: 15px;
             margin-top: 10px;
         }
 
+        .recipient-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--gray-300);
+            font-weight: 600;
+        }
+
+        .recipient-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .recipient-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .recipient-item:last-child {
+            border-bottom: none;
+        }
+
+        .recipient-type {
+            display: flex;
+            align-items: center;
+        }
+
+        .recipient-badge {
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            text-align: center;
+            line-height: 35px;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        .action-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border-radius: var(--radius);
+            font-weight: 500;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--light);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            box-shadow: 0 4px 8px rgba(229, 57, 53, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: var(--accent);
+            color: var(--light);
+        }
+
+        .btn-secondary:hover {
+            background-color: #0d5aa7;
+            box-shadow: 0 4px 8px rgba(25, 118, 210, 0.3);
+        }
+
+        .btn-light {
+            background-color: var(--gray-200);
+            color: var(--gray-600);
+        }
+
+        .btn-light:hover {
+            background-color: var(--gray-300);
+        }
+
+        .btn-icon {
+            font-size: 18px;
+        }
+
+        .preview-panel {
+            display: none;
+            background-color: var(--light);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 25px;
+            margin-top: 25px;
+        }
+
+        .preview-header {
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .preview-email {
+            background-color: var(--gray-100);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .email-header {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--gray-300);
+        }
+
+        .email-subject {
+            font-weight: 600;
+            font-size: 18px;
+            color: var(--dark);
+        }
+
+        .email-content {
+            line-height: 1.7;
+            white-space: pre-line;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-300);
+        }
+
+        .history-table th {
+            background-color: var(--gray-100);
+            font-weight: 600;
+            color: var(--gray-600);
+        }
+
+        .history-table tbody tr:hover {
+            background-color: var(--gray-100);
+        }
+
+        .history-table td:last-child {
+            text-align: right;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .status-sent {
+            background-color: #E8F5E9;
+            color: #2E7D32;
+        }
+
+        .status-draft {
+            background-color: #E3F2FD;
+            color: #1565C0;
+        }
+
+        .status-urgent {
+            background-color: #FFEBEE;
+            color: #C62828;
+        }
+
+        .status-important {
+            background-color: #FFF3E0;
+            color: #E65100;
+        }
+
+        .status-info {
+            background-color: #E1F5FE;
+            color: #0277BD;
+        }
+
+        .blood-type-pill {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .history-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 14px;
+            border-radius: 4px;
+        }
+
+        .detail-panel {
+            display: none;
+            padding: 15px;
+            background-color: var(--gray-100);
+            border-radius: var(--radius);
+            margin-top: 15px;
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--gray-300);
+            padding-bottom: 10px;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .detail-label {
+            width: 150px;
+            font-weight: 600;
+            color: var(--gray-600);
+        }
+
+        .detail-value {
+            flex: 1;
+        }
+
+        .search-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-input input {
+            padding-left: 35px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-500);
+        }
+
+        .filter-select {
+            width: 150px;
+        }
+
+        .date-filter {
+            width: 200px;
+        }
+
         @media (max-width: 768px) {
-            .blood-search-container {
+            .form-row {
                 flex-direction: column;
+                gap: 0;
             }
+
+            .priority-selector {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .search-filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-select, .date-filter {
+                width: 100%;
+            }
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 5px;
+        }
+
+        .page-item {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 4px;
+            background-color: var(--light);
+            border: 1px solid var(--gray-300);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .page-item:hover {
+            background-color: var(--gray-200);
+        }
+
+        .page-item.active {
+            background-color: var(--primary);
+            color: var(--light);
+            border-color: var(--primary-dark);
+        }
+
+        .page-item.disabled {
+            pointer-events: none;
+            color: var(--gray-400);
+            background-color: var(--gray-100);
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <header>
-        <h1>Blood Emergency Alert System</h1>
-        <p>Connect blood donors with patients in critical need</p>
+    <header class="header">
+        <div class="header-logo">
+            <div class="logo-icon">B+</div>
+            <h1 class="header-title">Emergency Blood Donation Alert System</h1>
+        </div>
     </header>
 
-    <div class="blood-search-container">
-        <div class="search-box">
-            <h2>Blood Search Request</h2>
-            <p>Find available donors by blood type and location</p>
-
-            <div>
-                <label for="bloodType">Blood Type:</label>
-                <div class="blood-types">
-                    <div class="blood-type active">A+</div>
-                    <div class="blood-type">A-</div>
-                    <div class="blood-type">B+</div>
-                    <div class="blood-type">B-</div>
-                    <div class="blood-type">AB+</div>
-                    <div class="blood-type">AB-</div>
-                    <div class="blood-type">O+</div>
-                    <div class="blood-type">O-</div>
-                </div>
-            </div>
-
-            <div>
-                <label for="location">Location:</label>
-                <select id="location">
-                    <option>Colombo</option>
-                    <option>Gampaha</option>
-                    <option>Kalutara</option>
-                    <option>Matale</option>
-                    <option>Kandy</option>
-                    <option>Galle</option>
-                </select>
-            </div>
-
-            <div>
-                <label for="radius">Search Radius (km):</label>
-                <input type="range" id="radius" min="5" max="50" value="10">
-                <span id="radiusValue">10 km</span>
-            </div>
-
-            <div>
-                <label for="urgency">Urgency Level:</label>
-                <select id="urgency">
-                    <option>Critical</option>
-                    <option>Urgent</option>
-                    <option>Medium</option>
-                </select>
-            </div>
-
-            <div>
-                <label for="hospital">Hospital:</label>
-                <select id="hospital">
-                    <option>National Hospital, Colombo</option>
-                    <option>Teaching Hospital, Kandy</option>
-                    <option>Teaching Hospital, Karapitiya</option>
-                    <option>Mihidu Senanayake Hospital</option>
-                </select>
-            </div>
-
-            <div>
-                <label for="notes">Additional Notes:</label>
-                <textarea id="notes" rows="3" placeholder="Any specific requirements or information for donors"></textarea>
-            </div>
-
-            <button type="button">Find Donors</button>
-        </div>
-
-        <div class="results-box">
-            <h2>Available Donors</h2>
-            <p>Donors matching your criteria within the selected radius</p>
-
-            <div class="map-container">
-                <div class="map-placeholder">
-                    <p>Location map displays here</p>
-                </div>
-            </div>
-
-            <div class="donor-list">
-                <div class="donor-card">
-                    <div>
-                        <strong>John Smith</strong> <span class="badge">A+</span>
-                        <p>Distance: 3.2 km</p>
-                    </div>
-                    <button>Send Alert</button>
-                </div>
-
-                <div class="donor-card">
-                    <div>
-                        <strong>Mary Johnson</strong> <span class="badge">A+</span>
-                        <p>Distance: 4.7 km</p>
-                    </div>
-                    <button>Send Alert</button>
-                </div>
-
-                <div class="donor-card">
-                    <div>
-                        <strong>Robert Wilson</strong> <span class="badge">A+</span>
-                        <p>Distance: 5.1 km</p>
-                    </div>
-                    <button>Send Alert</button>
-                </div>
-
-                <div class="donor-card">
-                    <div>
-                        <strong>Sarah Davis</strong> <span class="badge">A+</span>
-                        <p>Distance: 6.8 km</p>
-                    </div>
-                    <button>Send Alert</button>
-                </div>
-            </div>
-
-            <button type="button" style="margin-top: 15px;">Alert All Donors</button>
-        </div>
+    <div class="nav-tabs">
+        <div class="nav-tab active" data-tab="create-alert">Create Alert</div>
+        <div class="nav-tab" data-tab="alert-history">Alert History</div>
     </div>
 
-    <div class="alert-section">
-        <h2>Sent Alerts</h2>
-        <p>Track the status of alerts sent to potential donors</p>
-
-        <div class="alert-history">
-            <div class="history-item">
-                <strong>John Smith</strong> - A+
-                <span class="badge status-success">Responded</span>
-                <p>Sent: March 21, 2025 - 09:45 AM</p>
+    <div class="tab-panel active" id="create-alert-panel">
+        <div class="card" id="alertForm">
+            <div class="card-header">
+                <h2 class="card-title">Create Emergency Blood Alert</h2>
             </div>
+            <form id="emergencyAlertForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="alertDistrict">District</label>
+                        <select class="form-control" id="alertDistrict" required>
+                            <option value="">Select District</option>
+                            <option value="Colombo">Colombo</option>
+                            <option value="Gampaha">Gampaha</option>
+                            <option value="Kalutara">Kalutara</option>
+                            <option value="Kandy">Kandy</option>
+                            <option value="Galle">Galle</option>
+                            <option value="Matara">Matara</option>
+                            <option value="Jaffna">Jaffna</option>
+                            <option value="Batticaloa">Batticaloa</option>
+                            <option value="Anuradhapura">Anuradhapura</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="alertHospital">Hospital</label>
+                        <select class="form-control" id="alertHospital" required>
+                            <option value="">Select Hospital</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Alert Priority</label>
+                    <div class="priority-selector">
+                        <input type="radio" name="alertPriority" id="urgent" value="urgent" class="priority-radio" checked>
+                        <label for="urgent" class="priority-label urgent">Urgent (Red Alert)</label>
+                        <input type="radio" name="alertPriority" id="important" value="important" class="priority-radio">
+                        <label for="important" class="priority-label important">Important (Orange Alert)</label>
+                        <input type="radio" name="alertPriority" id="info" value="info" class="priority-radio">
+                        <label for="info" class="priority-label info">Informational (Blue Alert)</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="emergencyType">Emergency Type</label>
+                    <select class="form-control" id="emergencyType">
+                        <option value="general">General Shortage</option>
+                        <option value="disaster">Natural Disaster</option>
+                        <option value="accident">Major Accident</option>
+                        <option value="surgery">Scheduled Surgery</option>
+                    </select>
+                </div>
+                <div class="blood-types-container">
+                    <h3 class="blood-types-title">Blood Types Needed</h3>
+                    <p style="color: var(--gray-600); margin-bottom: 12px;">Select the blood types needed for the alert.</p>
+                    <div class="blood-type-grid">
+                        <input type="checkbox" id="type-aplus" class="blood-type-checkbox" value="A+" aria-label="Blood Type A Positive">
+                        <label for="type-aplus" class="blood-type-label">A+</label>
+                        <input type="checkbox" id="type-aminus" class="blood-type-checkbox" value="A-" aria-label="Blood Type A Negative">
+                        <label for="type-aminus" class="blood-type-label">A-</label>
+                        <input type="checkbox" id="type-bplus" class="blood-type-checkbox" value="B+" aria-label="Blood Type B Positive">
+                        <label for="type-bplus" class="blood-type-label">B+</label>
+                        <input type="checkbox" id="type-bminus" class="blood-type-checkbox" value="B-" aria-label="Blood Type B Negative">
+                        <label for="type-bminus" class="blood-type-label">B-</label>
+                        <input type="checkbox" id="type-abplus" class="blood-type-checkbox" value="AB+" aria-label="Blood Type AB Positive">
+                        <label for="type-abplus" class="blood-type-label">AB+</label>
+                        <input type="checkbox" id="type-abminus" class="blood-type-checkbox" value="AB-" aria-label="Blood Type AB Negative">
+                        <label for="type-abminus" class="blood-type-label">AB-</label>
+                        <input type="checkbox" id="type-oplus" class="blood-type-checkbox" value="O+" aria-label="Blood Type O Positive">
+                        <label for="type-oplus" class="blood-type-label">O+</label>
+                        <input type="checkbox" id="type-ominus" class="blood-type-checkbox" value="O-" aria-label="Blood Type O Negative">
+                        <label for="type-ominus" class="blood-type-label">O-</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="emailSubject">Email Subject</label>
+                    <input type="text" class="form-control" id="emailSubject" value="URGENT: Blood Donation Need in [District]" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="emailBody">Email Message</label>
+                    <textarea class="form-control" id="emailBody" required>Dear Donor,
 
-            <div class="history-item">
-                <strong>Mary Johnson</strong> - A+
-                <span class="badge status-pending">Pending</span>
-                <p>Sent: March 21, 2025 - 09:45 AM</p>
+We urgently need your help. [Hospital] in [District] is experiencing a critical shortage of [Blood Types] blood.
+
+Your donation could save lives in this emergency situation.
+
+Please visit the blood bank at [Hospital] as soon as possible. Your previous donations have helped many patients, and we hope we can count on your support again.
+
+Thank you for your generosity.
+
+Blood Donation Center
+Ministry of Health
+Contact: 011-XXXXXXX</textarea>
+                </div>
+<!--
+                <div class="form-group">
+                    <label class="form-label">Available Blood Stock</label>
+                    <div class="recipient-summary">
+                        <div class="recipient-header">
+                            <span>Blood Type</span>
+                            <span>Units Available</span>
+                        </div>
+                        <div class="recipient-list" id="recipientList">
+                            <div class="recipient-item">
+                                <span>Select a district and hospital to see available blood types</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+-->
+                <div class="action-bar">
+                    <button type="button" class="btn btn-light" onclick="resetForm()">
+                        <span class="btn-icon">↺</span> Reset
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="previewEmail()">
+                        <span class="btn-icon">👁</span> Preview
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <span class="btn-icon">📤</span> Send Alert
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="preview-panel" id="emailPreview">
+            <div class="preview-header">
+                <h2 class="card-title">Email Preview</h2>
             </div>
-
-            <div class="history-item">
-                <strong>Robert Wilson</strong> - A+
-                <span class="badge status-pending">Pending</span>
-                <p>Sent: March 21, 2025 - 09:45 AM</p>
+            <div class="preview-email">
+                <div class="email-header">
+                    <div class="email-subject" id="previewSubject"></div>
+                </div>
+                <div class="email-content" id="previewBody"></div>
+            </div>
+            <div class="action-bar">
+                <button type="button" class="btn btn-light" onclick="hidePreview()">
+                    <span class="btn-icon">←</span> Back to Edit
+                </button>
+                <button type="button" class="btn btn-primary" onclick="sendEmergencyAlert()">
+                    <span class="btn-icon">✓</span> Confirm & Send
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="tab-panel" id="alert-history-panel">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Alert History</h2>
+            </div>
+            <div class="search-filters">
+                <div class="search-input">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="form-control" placeholder="Search alerts..." id="searchAlerts">
+                </div>
+                <div class="filter-select">
+                    <select class="form-control" id="priorityFilter">
+                        <option value="">All Priorities</option>
+                        <option value="urgent">Urgent</option>
+                        <option value="important">Important</option>
+                        <option value="info">Info</option>
+                    </select>
+                </div>
+                <div class="date-filter">
+                    <input type="date" class="form-control" id="dateFilter">
+                </div>
+            </div>
+            <table class="history-table">
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>District</th>
+                    <th>Hospital</th>
+                    <th>Blood Types</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody id="alertHistoryBody"></tbody>
+            </table>
+            <div class="pagination" id="historyPagination">
+                <span class="page-item disabled">Previous</span>
+                <span class="page-item active">1</span>
+                <span class="page-item">Next</span>
+            </div>
+        </div>
+        <div class="card" id="alertDetailView" style="display: none;">
+            <div class="card-header">
+                <h2 class="card-title">Alert Details</h2>
+            </div>
+            <div id="alertDetailContent"></div>
+            <div class="action-bar">
+                <button type="button" class="btn btn-light" onclick="hideAlertDetail()">
+                    <span class="btn-icon">←</span> Back to History
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="cloneAlert()">
+                    <span class="btn-icon">📋</span> Clone Alert
+                </button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // Simple interactive elements
-    document.querySelectorAll('.blood-type').forEach(type => {
-        type.addEventListener('click', function() {
-            document.querySelectorAll('.blood-type').forEach(t => t.classList.remove('active'));
-            this.classList.add('active');
-        });
-    });
+    $(document).ready(function() {
+        // Initialize headers with JWT token
+        function getHeaders() {
+            const token = localStorage.getItem('jwtToken');
+            return token ? { 'Authorization': 'Bearer ' + token } : {};
+        }
 
-    const radiusInput = document.getElementById('radius');
-    const radiusValue = document.getElementById('radiusValue');
-    radiusInput.addEventListener('input', function() {
-        radiusValue.textContent = this.value + ' km';
+        // Handle unauthorized responses
+        function handleUnauthorized(xhr) {
+            if (xhr.status === 401) {
+                localStorage.removeItem('jwtToken');
+                alert('Session expired. Please log in again.');
+                window.location.href = '/login';
+            } else if (xhr.status === 403) {
+                alert('Permission denied: You cannot send alerts. Contact support.');
+            }
+        }
+
+        // Tab navigation
+        $('.nav-tab').click(function() {
+            $('.nav-tab').removeClass('active');
+            $('.tab-panel').removeClass('active');
+            $(this).addClass('active');
+            const tabId = $(this).data('tab');
+            $('#' + tabId + '-panel').addClass('active');
+            $('#emailPreview').hide();
+            $('#alertForm').show();
+            $('#alertDetailView').hide();
+            if (tabId === 'alert-history' && !$('#alertHistoryBody').hasClass('loaded')) {
+                loadHistory();
+            }
+        });
+
+        // Populate hospitals when district changes
+        $('#alertDistrict').change(function() {
+            const district = $(this).val();
+            const $hospitalSelect = $('#alertHospital');
+            $hospitalSelect.html('<option value="">Select Hospital</option>');
+
+            $('.blood-type-checkbox').prop('checked', false).prop('disabled', false);
+            $('#recipientList').html(`
+            <div class="recipient-item">
+                <span>Select a district and hospital to see available blood types</span>
+            </div>`);
+
+            if (!district) {
+                $hospitalSelect.prop('disabled', true);
+                return;
+            }
+
+            $hospitalSelect.prop('disabled', true);
+            $.ajax({
+                url: 'http://localhost:8080/api/v1/hospitals/' + encodeURIComponent(district),
+                type: 'GET',
+                headers: getHeaders(),
+                dataType: 'json',
+                beforeSend: function() {
+                    $hospitalSelect.after('<span class="loading" style="color: var(--gray-600); margin-left: 10px;">Loading hospitals...</span>');
+                },
+                success: function(response) {
+                    $('.loading').remove();
+                    $hospitalSelect.prop('disabled', false);
+                    if (Array.isArray(response) && response.length > 0) {
+                        response.forEach(function(hospital) {
+                            if (hospital.hospitalName) {
+                                $hospitalSelect.append(`<option value="${hospital.hospitalName}">${hospital.hospitalName}</option>`);
+                            }
+                        });
+                    } else {
+                        $hospitalSelect.append('<option value="">No hospitals found</option>');
+                    }
+                },
+                error: function(xhr) {
+                    $('.loading').remove();
+                    $hospitalSelect.prop('disabled', false);
+                    handleUnauthorized(xhr);
+                    $hospitalSelect.html('<option value="">Error loading hospitals</option>');
+                    alert('Failed to load hospitals: ' + xhr.statusText);
+                }
+            });
+        });
+
+        // Update recipient summary
+        function updateRecipientSummary() {
+            const district = $('#alertDistrict').val();
+            const hospitalName = $('#alertHospital').val();
+            const $recipientList = $('#recipientList');
+
+            $('.blood-type-checkbox').prop('disabled', false);
+
+            if (!district || !hospitalName) {
+                $recipientList.html(`
+                <div class="recipient-item">
+                    <span>Select a district and hospital to see available blood types</span>
+                </div>`);
+                return;
+            }
+
+            $recipientList.html('<div class="recipient-item"><span>Loading stock details...</span></div>');
+
+            const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+
+            $.ajax({
+                url: 'http://localhost:8080/api/v1/recipients/summary',
+                type: 'GET',
+                headers: getHeaders(),
+                data: {
+                    hospitalName: hospitalName,
+                    bloodTypes: bloodTypes.join(',')
+                },
+                dataType: 'json',
+                success: function(stockData) {
+                    $('.blood-type-checkbox').prop('disabled', false);
+
+                    if (!Array.isArray(stockData) || stockData.length === 0) {
+                        $recipientList.html(`
+                        <div class="recipient-item">
+                            <span>No blood types available for ${hospitalName}</span>
+                        </div>`);
+                        return;
+                    }
+
+                    const items = stockData.map(item => `
+                    <div class="recipient-item">
+                        <span class="recipient-type">
+                            <span class="recipient-badge">${item.bloodType}</span>
+                            ${item.bloodType}
+                        </span>
+                        <span>${item.count || 0} units available</span>
+                    </div>
+                `).join('');
+                    $recipientList.html(items);
+                },
+                error: function(xhr) {
+                    handleUnauthorized(xhr);
+                    $recipientList.html(`
+                    <div class="recipient-item">
+                        <span>Error loading stock details</span>
+                    </div>`);
+                    $('.blood-type-checkbox').prop('disabled', false);
+                }
+            });
+        }
+
+        // Form validation
+        function validateForm() {
+            const district = $('#alertDistrict').val();
+            const hospital = $('#alertHospital').val();
+            const selectedBloodTypes = $('.blood-type-checkbox:checked').map(function() { return $(this).val(); }).get();
+            const subject = $('#emailSubject').val().trim();
+            const body = $('#emailBody').val().trim();
+
+            let errors = [];
+            if (!district) errors.push('District is required.');
+            if (!hospital) errors.push('Hospital is required.');
+            if (selectedBloodTypes.length === 0) errors.push('At least one blood type is required.');
+            if (!subject) errors.push('Email subject is required.');
+            if (subject.length > 100) errors.push('Email subject must be 100 characters or less.');
+            if (!body) errors.push('Email message is required.');
+
+            if (errors.length > 0) {
+                alert(errors.join('\n'));
+                return false;
+            }
+            return true;
+        }
+
+        // Fetch donors
+        function fetchDonors(district, bloodTypes, callback) {
+            console.log('Fetching donors for:', district, bloodTypes);
+            const url = `http://localhost:8080/api/v1/donor/${encodeURIComponent(district)}?bloodTypes=${encodeURIComponent(bloodTypes.join(','))}`;
+            $.ajax({
+                url: url,
+                type: 'GET',
+                headers: getHeaders(),
+                dataType: 'json',
+                beforeSend: function() {
+                    console.log('JWT Token:', localStorage.getItem('jwtToken'));
+                    console.log('Request URL:', url);
+                },
+                success: function(donors) {
+                    if (Array.isArray(donors)) {
+                        const emails = donors.map(donor => donor.email).filter(email => email);
+                        console.log('Donors fetched:', emails);
+                        callback(null, emails);
+                    } else {
+                        callback(new Error('Invalid donor data'));
+                    }
+                },
+                error: function(xhr) {
+                    console.error('Donor fetch error:', xhr.status, xhr.responseText);
+                    handleUnauthorized(xhr);
+                    callback(new Error('Failed to fetch donors'));
+                }
+            });
+        }
+
+        function handleUnauthorized(xhr) {
+            if (xhr.status === 401) {
+                localStorage.removeItem('jwtToken');
+                alert('Session expired. Please log in again.');
+                window.location.href = '/login';
+            } else if (xhr.status === 403) {
+                alert('Permission denied: Cannot fetch donors. Contact support.');
+            }
+        }
+/*
+        function fetchDonors(district, bloodTypes, callback) {
+            console.log('Fetching donors for:', district, bloodTypes);
+            $.ajax({
+                url: 'http://localhost:8080/api/v1/donor?district=' + encodeURIComponent(district) + '&bloodTypes=' + encodeURIComponent(bloodTypes.join(',')),
+                type: 'GET',
+                headers: getHeaders(),
+                dataType: 'json',
+                success: function(donors) {
+                    if (Array.isArray(donors)) {
+                        const emails = donors.map(donor => donor.email).filter(email => email);
+                        console.log('Donors fetched:', emails);
+                        callback(null, emails);
+                    } else {
+                        callback(new Error('Invalid donor data'));
+                    }
+                },
+                error: function(xhr) {
+                    console.error('Donor fetch error:', xhr.status, xhr.responseText);
+                    handleUnauthorized(xhr);
+                    callback(new Error('Failed to fetch donors'));
+                }
+            });
+        }
+*/
+
+        // Reset form
+        window.resetForm = function() {
+            $('#emergencyAlertForm')[0].reset();
+            $('#alertDistrict').val('');
+            $('#alertHospital').html('<option value="">Select Hospital</option>').prop('disabled', true);
+            $('#emailSubject').val('URGENT: Blood Donation Need in [District]');
+            $('#emailBody').val(`Dear Donor,
+
+We urgently need your help. [Hospital] in [District] is experiencing a critical shortage of [Blood Types] blood.
+
+Your donation could save lives in this emergency situation.
+
+Please visit the blood bank at [Hospital] as soon as possible. Your previous donations have helped many patients, and we hope we can count on your support again.
+
+Thank you for your generosity.
+
+Blood Donation Center
+Ministry of Health
+Contact: 011-XXXXXXX`);
+            $('.blood-type-checkbox').prop('checked', false).prop('disabled', false);
+            $('#recipientList').html(`
+            <div class="recipient-item">
+                <span>Select a district and hospital to see available blood types</span>
+            </div>`);
+            hidePreview();
+        };
+
+        // Preview email
+        window.previewEmail = function() {
+            if (!validateForm()) return;
+
+            const district = $('#alertDistrict').val();
+            const hospital = $('#alertHospital').val();
+            const bloodTypes = $('.blood-type-checkbox:checked').map(function() { return $(this).val(); }).get().join(', ') || '[Blood Types]';
+            let subject = $('#emailSubject').val();
+            let body = $('#emailBody').val();
+
+            subject = subject.replace('[District]', district);
+            body = body.replace('[Hospital]', hospital).replace('[District]', district).replace('[Blood Types]', bloodTypes);
+
+            $('#previewSubject').text(subject);
+            $('#previewBody').text(body);
+            $('#emailPreview').show();
+            $('#alertForm').hide();
+        };
+
+        // Hide preview
+        window.hidePreview = function() {
+            $('#emailPreview').hide();
+            $('#alertForm').show();
+        };
+
+        // Send emergency alert
+        window.sendEmergencyAlert = function() {
+            if (!validateForm()) return;
+
+            const district = $('#alertDistrict').val();
+            const hospital = $('#alertHospital').val();
+            const bloodTypes = $('.blood-type-checkbox:checked').map(function() { return $(this).val(); }).get();
+            const alertData = {
+                district: district,
+                hospital: hospital,
+                bloodTypes: bloodTypes,
+                priority: $('input[name="alertPriority"]:checked').val(),
+                emergencyType: $('#emergencyType').val(),
+                subject: $('#emailSubject').val(),
+                body: $('#emailBody').val()
+            };
+
+            const $submitBtn = $('#emergencyAlertForm .btn-primary');
+            $submitBtn.prop('disabled', true).html('<span class="btn-icon">⏳</span> Sending...');
+
+            console.log('Sending alert with token:', localStorage.getItem('jwtToken'));
+            fetchDonors(district, bloodTypes, function(err, emails) {
+                if (err) {
+                    $submitBtn.prop('disabled', false).html('<span class="btn-icon">📤</span> Send Alert');
+                    alert('Error fetching donors. Please try again.');
+                    return;
+                }
+
+                console.log('Donors to notify:', emails);
+
+                $.ajax({
+                    url: 'http://localhost:8080/api/v1/alerts',
+                    type: 'POST',
+                    headers: getHeaders(),
+                    contentType: 'application/json',
+                    data: JSON.stringify(alertData),
+                    dataType: 'json',
+                    success: function(savedAlert) {
+                        $submitBtn.prop('disabled', false).html('<span class="btn-icon">📤</span> Send Alert');
+                        alert(`Alert sent successfully! Notified ${emails.length} donors.`);
+                        resetForm();
+                        addToHistory(savedAlert);
+                        updatePagination();
+                    },
+                    error: function(xhr) {
+                        $submitBtn.prop('disabled', false).html('<span class="btn-icon">📤</span> Send Alert');
+                        console.error('Alert error:', xhr.status, xhr.responseText);
+                        handleUnauthorized(xhr);
+                        alert('Error sending alert: ' + xhr.statusText + (xhr.responseText ? ' - ' + xhr.responseText : ''));
+                    }
+                });
+            });
+        };
+
+        // Add to history
+        function addToHistory(alertData) {
+            const $row = $(`<tr>
+            <td>${alertData.date || 'N/A'}</td>
+            <td>${alertData.district || 'N/A'}</td>
+            <td>${alertData.hospital || 'N/A'}</td>
+            <td>${Array.isArray(alertData.bloodTypes) ? alertData.bloodTypes.map(type => `<span class="blood-type-pill">${type}</span>`).join('') : 'N/A'}</td>
+            <td><span class="status-badge status-${alertData.priority || 'info'}">${alertData.priority || 'Info'}</span></td>
+            <td><span class="status-badge status-${alertData.status || 'sent'}">${alertData.status || 'Sent'}</span></td>
+            <td class="history-actions">
+                <button class="btn btn-sm btn-secondary" onclick="viewAlertDetail(${alertData.id})">View</button>
+            </td>
+        </tr>`);
+            $('#alertHistoryBody').prepend($row);
+        }
+
+        // View alert detail
+        window.viewAlertDetail = function(id) {
+            $('#alertDetailContent').html('<div>Loading...</div>');
+            $('#alertDetailView').show();
+            $('.history-table').parent().hide();
+
+            $.ajax({
+                url: 'http://localhost:8080/api/v1/alerts/' + encodeURIComponent(id),
+                type: 'GET',
+                headers: getHeaders(),
+                dataType: 'json',
+                success: function(alertData) {
+                    $('#alertDetailContent').html(`
+                    <div class="detail-row"><div class="detail-label">Date</div><div class="detail-value">${alertData.date || 'N/A'}</div></div>
+                    <div class="detail-row"><div class="detail-label">District</div><div class="detail-value">${alertData.district || 'N/A'}</div></div>
+                    <div class="detail-row"><div class="detail-label">Hospital</div><div class="detail-value">${alertData.hospital || 'N/A'}</div></div>
+                    <div class="detail-row"><div class="detail-label">Blood Types</div><div class="detail-value">${Array.isArray(alertData.bloodTypes) ? alertData.bloodTypes.join(', ') : 'N/A'}</div></div>
+                    <div class="detail-row"><div class="detail-label">Priority</div><div class="detail-value">${alertData.priority || 'N/A'}</div></div>
+                    <div class="detail-row"><div class="detail-label">Emergency Type</div><div class="detail-value">${alertData.emergencyType || 'N/A'}</div></div>
+                    <div class="detail-row"><div class="detail-label">Subject</div><div class="detail-value">${alertData.subject || 'N/A'}</div></div>
+                    <div class="detail-row"><div class="detail-label">Message</div><div class="detail-value">${alertData.body ? alertData.body.replace(/\n/g, '<br>') : 'N/A'}</div></div>
+                    <div class="detail-row"><div class="detail-label">Status</div><div class="detail-value">${alertData.status || 'N/A'}</div></div>
+                    <div class="detail-row"><div class="detail-label">Recipients</div><div class="detail-value">${Array.isArray(alertData.recipientEmails) ? alertData.recipientEmails.join(', ') : 'N/A'}</div></div>
+                `);
+                },
+                error: function(xhr) {
+                    handleUnauthorized(xhr);
+                    $('#alertDetailContent').html('<div>Error loading details</div>');
+                }
+            });
+        };
+
+        // Hide alert detail
+        window.hideAlertDetail = function() {
+            $('#alertDetailView').hide();
+            $('.history-table').parent().show();
+        };
+
+        // Clone alert
+        window.cloneAlert = function() {
+            $.ajax({
+                url: 'http://localhost:8080/api/v1/alerts',
+                type: 'GET',
+                headers: getHeaders(),
+                dataType: 'json',
+                success: function(history) {
+                    const alertData = history[0];
+                    if (!alertData) {
+                        alert('No alert to clone.');
+                        return;
+                    }
+
+                    $('#alertDistrict').val(alertData.district).trigger('change');
+                    setTimeout(() => {
+                        $('#alertHospital').val(alertData.hospital);
+                        $(`input[name="alertPriority"][value="${alertData.priority}"]`).prop('checked', true);
+                        $('#emergencyType').val(alertData.emergencyType);
+                        alertData.bloodTypes.forEach(type => {
+                            $(`#type-${type.toLowerCase().replace('+', 'plus').replace('-', 'minus')}`).prop('checked', true);
+                        });
+                        $('#emailSubject').val(alertData.subject);
+                        $('#emailBody').val(alertData.body);
+                        updateRecipientSummary();
+                    }, 500);
+                    $('#alertDetailView').hide();
+                    $('.nav-tab[data-tab="create-alert"]').click();
+                },
+                error: function(xhr) {
+                    handleUnauthorized(xhr);
+                    alert('Error cloning alert');
+                }
+            });
+        };
+
+        // Filter history
+        function filterHistory() {
+            const search = $('#searchAlerts').val().toLowerCase();
+            const priority = $('#priorityFilter').val();
+            const date = $('#dateFilter').val();
+
+            $('#alertHistoryBody tr').each(function() {
+                const $row = $(this);
+                const dateText = $row.find('td').eq(0).text();
+                const district = $row.find('td').eq(1).text().toLowerCase();
+                const hospital = $row.find('td').eq(2).text().toLowerCase();
+                const priorityText = $row.find('td').eq(4).text().toLowerCase();
+                const dateMatch = !date || dateText.includes(new Date(date).toLocaleDateString());
+                const priorityMatch = !priority || priorityText.includes(priority);
+                const searchMatch = !search || district.includes(search) || hospital.includes(search);
+                $row.css('display', dateMatch && priorityMatch && searchMatch ? '' : 'none');
+            });
+            updatePagination();
+        }
+
+        // Update pagination
+        function updatePagination() {
+            const $rows = $('#alertHistoryBody tr');
+            const pageSize = 5;
+            const pageCount = Math.max(1, Math.ceil($rows.length / pageSize));
+            const $pagination = $('#historyPagination');
+
+            $pagination.html(`
+            <span class="page-item disabled">Previous</span>
+            ${Array.from({length: pageCount}, (_, i) => `<span class="page-item ${i === 0 ? 'active' : ''}">${i + 1}</span>`).join('')}
+            <span class="page-item ${pageCount === 1 ? 'disabled' : ''}">Next</span>
+        `);
+
+            $rows.each(function(i) {
+                $(this).css('display', i < pageSize ? '' : 'none');
+            });
+
+            $('.page-item').off('click').on('click', function() {
+                if ($(this).hasClass('disabled')) return;
+                const text = $(this).text();
+                const activePage = parseInt($('.page-item.active').text());
+
+                if (text === 'Previous' && activePage > 1) {
+                    $(`.page-item:contains(${activePage - 1})`).click();
+                } else if (text === 'Next' && activePage < pageCount) {
+                    $(`.page-item:contains(${activePage + 1})`).click();
+                } else if (!isNaN(text)) {
+                    const page = parseInt(text);
+                    $('.page-item').removeClass('active');
+                    $(this).addClass('active');
+                    $('.page-item:first').toggleClass('disabled', page === 1);
+                    $('.page-item:last').toggleClass('disabled', page === pageCount);
+                    $rows.each(function(i) {
+                        $(this).css('display', (i >= (page - 1) * pageSize && i < page * pageSize) ? '' : 'none');
+                    });
+                }
+            });
+        }
+
+        // Load history
+        function loadHistory() {
+            const $historyTable = $('#alertHistoryBody');
+            $historyTable.html('<tr><td colspan="7">Loading...</td></tr>');
+
+            $.ajax({
+                url: 'http://localhost:8080/api/v1/alerts/getAll',
+                type: 'GET',
+                headers: getHeaders(),
+                dataType: 'json',
+                success: function(history) {
+                    $historyTable.empty();
+                    if (Array.isArray(history) && history.length > 0) {
+                        history.forEach(addToHistory);
+                    } else {
+                        $historyTable.html('<tr><td colspan="7">No alerts found</td></tr>');
+                    }
+                    updatePagination();
+                    $historyTable.addClass('loaded');
+                },
+                error: function(xhr) {
+                    handleUnauthorized(xhr);
+                    $historyTable.html('<tr><td colspan="7">Error loading history</td></tr>');
+                }
+            });
+        }
+
+        // Event listeners
+        $('#alertHospital').on('change', updateRecipientSummary);
+        $('#emergencyAlertForm').on('submit', function(e) {
+            e.preventDefault();
+            sendEmergencyAlert();
+        });
+        $('#searchAlerts').on('input', filterHistory);
+        $('#priorityFilter').on('change', filterHistory);
+        $('#dateFilter').on('change', filterHistory);
     });
 </script>
 </body>

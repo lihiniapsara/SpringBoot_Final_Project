@@ -81,3 +81,74 @@ function clearForm() {
 
 // Call the function when the page loads
 window.onload = loadBloodRequests;
+
+async function loadBloodRequests() {
+    try {
+        const response = await fetch('http://localhost:8080/api/v1/blood_request/getAll', {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status} ${response.statusText}`);
+        }
+
+        const requests = await response.json();
+        console.log('Parsed response:', requests);
+
+        if (!Array.isArray(requests)) {
+            console.error('Error: Response is not an array:', requests);
+            const requestList = document.getElementById('requestList');
+            if (requestList) {
+                requestList.innerHTML = '<li>Invalid data format from server</li>';
+            }
+            return;
+        }
+
+        const requestList = document.getElementById('requestList');
+        if (!requestList) {
+            console.error('Error: requestList element not found');
+            return;
+        }
+        requestList.innerHTML = '';
+
+        if (requests.length === 0) {
+            requestList.innerHTML = '<li>No blood requests available</li>';
+            return;
+        }
+
+        requests.forEach(request => {
+            const hospitalName = request.hospital?.hospitalName || 'N/A'; // Access nested hospitalName safely
+            const listItem = document.createElement('li');
+            listItem.className = 'request-item';
+            listItem.innerHTML = `
+                <div class="request-icon">
+                    <i class="fas fa-tint"></i>
+                </div>
+                <div class="request-info">
+                    <div class="request-type">${request.bloodType || 'N/A'}</div>
+                    <div class="request-date">${request.requestDate || 'N/A'}</div>
+                    <div class="hospital-name">${hospitalName}</div>
+                </div>
+            `;
+            requestList.appendChild(listItem);
+        });
+    } catch (error) {
+        console.error('Fetch error:', error);
+        const requestList = document.getElementById('requestList');
+        if (requestList) {
+            requestList.innerHTML = `<li>Error: ${error.message}</li>`;
+        }
+    }
+}
+
+window.onload = function () {
+    loadBloodRequests();
+    const requestDateInput = document.getElementById('requestDate');
+    if (requestDateInput) {
+        requestDateInput.value = new Date().toISOString().split('T')[0];
+    } else {
+        console.error('Error: requestDate element not found');
+    }
+};
+

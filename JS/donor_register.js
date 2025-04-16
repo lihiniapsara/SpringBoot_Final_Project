@@ -1,3 +1,4 @@
+/*
 function registerdonor(event) {
     event.preventDefault();
     console.log("Donor Registering...");
@@ -46,6 +47,7 @@ function registerdonor(event) {
         }
     });
 }
+*/
 
 // Function to open the popup and set the donor ID
 function openPopup(contact) {
@@ -82,7 +84,107 @@ function openPopup(contact) {
         alert("Please select both date and time.");
     }
 }*/
-function getAllDonors() {
+function registerdonor(event) {
+    event.preventDefault();
+    console.log("Donor Registering...");
+
+    let donor = {
+        fullName: $("#donorname").val(),
+        dateOfBirth: $("#dateOfBirth").val(),
+        gender: $("#gender").val(),
+        bloodGroup: $("#bloodGroup").val(),
+        nicOrPassport: $("#nicOrPassport").val(),
+        contact: $("#contactdonor").val(),
+        email: $("#donoremail").val(),
+        address: $("#homeAddress").val(),
+        city: $("#city").val(),
+        district: $("#dist").val(),
+        province: $("#province").val(),
+        zipCode: $("#zipCode").val(),
+        hasDiabetes: false,
+        hasHeartProblem: false,
+        hasLowPressure: false,
+        hasHighPressure: false,
+        hasSocialIssues: false,
+        hasTattoos: false,
+        hasOtherIssues: false,
+        donationDate: $("#donationDate").val() || null // Allow dynamic input
+    };
+
+    // Map health conditions to boolean fields
+    $("input[name='health_conditions']:checked").each(function() {
+        const condition = $(this).val();
+        if (condition === "Diabetes") donor.hasDiabetes = true;
+        if (condition === "Heart Problem") donor.hasHeartProblem = true;
+        if (condition === "Low Pressure") donor.hasLowPressure = true;
+        if (condition === "High Pressure") donor.hasHighPressure = true;
+        if (condition === "Social Issues") donor.hasSocialIssues = true;
+        if (condition === "Tattoos") donor.hasTattoos = true;
+        if (condition === "Other Issues") donor.hasOtherIssues = true;
+    });
+
+    console.log("Donor Data:", donor);
+
+    $.ajax({
+        type: "POST",
+        url: 'http://localhost:8080/api/v1/donor/register',
+        contentType: "application/json",
+        data: JSON.stringify(donor),
+        dataType: "json",
+        headers: {
+            Authorization: "Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoidXNlciIsInN1YiI6InVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDM5MjE2MTQsImV4cCI6MTc0NDk1ODQxNH0.39sBbE25H79CxXFwPxuniNn_prGRRBgox29lX74MfomMjyNBn3dv6dVR6-vwUgWtyEp73xHmcVmK3IRHJjN6Ag"
+        },
+        success: function(response) {
+            $("#responseMessage").html("<p style='color:green;'>Successfully registered!</p>");
+        },
+        error: function(xhr, status, error) {
+            console.error("Error:", xhr.status, xhr.responseText);
+            $("#responseMessage").html(`<p style='color:red;'>Error submitting the form: ${xhr.responseText || 'Unknown error'}</p>`);
+        }
+    });
+}
+
+function saveDateTime() {
+    console.log("Saving Date...");
+
+    let contact = document.getElementById("donorContact").value;
+    let date = document.getElementById("editDate").value;
+
+    if (!contact) {
+        alert("Error: Donor contact is missing!");
+        return;
+    }
+
+    if (!date) {
+        alert("Please select a date.");
+        return;
+    }
+
+    let donorData = {
+        contact: contact,
+        donationDate: date
+    };
+
+    $.ajax({
+        url: "http://localhost:8080/api/v1/donor/update-date",
+        type: "PUT",
+        contentType: "application/json",
+        headers: {
+            Authorization: "Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoidXNlciIsInN1YiI6InVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDM5MjE2MTQsImV4cCI6MTc0NDk1ODQxNH0.39sBbE25H79CxXFwPxuniNn_prGRRBgox29lX74MfomMjyNBn3dv6dVR6-vwUgWtyEp73xHmcVmK3IRHJjN6Ag"
+        },
+        data: JSON.stringify(donorData),
+        success: function(response) {
+            console.log("Date updated successfully:", response);
+            alert("Donation date updated successfully!");
+            closePopup();
+            getAllDonors();
+        },
+        error: function(xhr, status, error) {
+            console.error("Error updating date:", error);
+            alert("Failed to update donation date. Please try again.");
+        }
+    });
+}function getAllDonors() {
     console.log("Step 1: Function getAllDonors() called");
 
     // Check if jQuery is loaded
@@ -189,3 +291,155 @@ function getAllDonors() {
             tbody.append(row);
         });
     }*/
+document.addEventListener('DOMContentLoaded', function() {
+    // DOM Elements
+    const searchInput = document.querySelector('.search-input');
+    const filterSelect = document.querySelector('.filter-select');
+    const donorsTableBody = document.querySelector('.donors-table tbody');
+
+    // Initial load of donors
+    getAllDonors();
+
+    // Search by Contact Number
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.trim().toLowerCase();
+        filterDonors(searchTerm, filterSelect.value);
+    });
+
+    // Filter by Blood Group
+    filterSelect.addEventListener('change', function() {
+        const bloodGroup = this.value;
+        filterDonors(searchInput.value.trim().toLowerCase(), bloodGroup);
+    });
+
+    // Function to filter donors
+    function filterDonors(searchTerm, bloodGroup) {
+        $.ajax({
+            type: "GET",
+            url: "http://localhost:8080/api/v1/donor/getAll",
+            dataType: "json",
+            headers: {
+                Authorization: "Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoidXNlciIsInN1YiI6InVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDM5MjE2MTQsImV4cCI6MTc0NDk1ODQxNH0.39sBbE25H79CxXFwPxuniNn_prGRRBgox29lX74MfomMjyNBn3dv6dVR6-vwUgWtyEp73xHmcVmK3IRHJjN6Ag"
+            },
+            success: function (response) {
+                if (response && response.data) {
+                    let filteredDonors = response.data;
+
+                    // Filter by contact number
+                    if (searchTerm) {
+                        filteredDonors = filteredDonors.filter(donor =>
+                            donor.contact && donor.contact.toLowerCase().includes(searchTerm)
+                            );
+                    }
+
+                    // Filter by blood group
+                    if (bloodGroup) {
+                        filteredDonors = filteredDonors.filter(donor =>
+                            donor.bloodGroup === bloodGroup
+                            );
+                    }
+
+                    // Render filtered donors
+                    let tableBody = "";
+                    filteredDonors.forEach((donor, index) => {
+                        let healthConditions = [];
+                        if (donor.hasDiabetes) healthConditions.push("Diabetes");
+                        if (donor.hasHeartProblem) healthConditions.push("Heart Problem");
+                        if (donor.hasLowPressure) healthConditions.push("Low Pressure");
+                        if (donor.hasHighPressure) healthConditions.push("High Pressure");
+                        if (donor.hasSocialIssues) healthConditions.push("Social Issues");
+                        if (donor.hasTattoos) healthConditions.push("Tattoos");
+                        if (donor.hasOtherIssues) healthConditions.push("Other Issues");
+
+                        let healthConditionsDisplay = healthConditions.length > 0 ? healthConditions.join(", ") : "None";
+
+                        tableBody += `
+                            <tr>
+                                <td>${donor.fullName || "N/A"}</td>
+                                <td>${donor.nicOrPassport || "N/A"}</td>
+                                <td>${donor.dateOfBirth || "N/A"}</td>
+                                <td>${donor.gender || "N/A"}</td>
+                                <td>${donor.bloodGroup || "N/A"}</td>
+                                <td>${donor.contact || "N/A"}</td>
+                                <td>${donor.email || "N/A"}</td>
+                                <td>${donor.address || "N/A"}</td>
+                                <td>${donor.city || "N/A"}</td>
+                                <td>${donor.district || "N/A"}</td>
+                                <td>${donor.province || "N/A"}</td>
+                                <td>${donor.zipCode || "N/A"}</td>
+                                <td>${healthConditionsDisplay}</td>
+                                <td><span class="editable-date" data-id="${donor.contact || "N/A"}">${donor.donationDate || "N/A"}</span></td>
+                                <td><button style="background-color: #10ad10; border-radius: 15%;" onclick="openPopup('${donor.contact}')">Edit Date</button></td>
+                            </tr>
+                        `;
+                    });
+
+                    donorsTableBody.innerHTML = tableBody;
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching donors:", error);
+            }
+        });
+    }
+});
+
+function filterDonors(searchTerm, bloodGroup) {
+    let url = "http://localhost:8080/api/v1/donor/getAll";
+    if (searchTerm || bloodGroup) {
+        url += "?";
+        if (searchTerm) url += `contact=${encodeURIComponent(searchTerm)}`;
+        if (bloodGroup) url += `${searchTerm ? "&" : ""}bloodGroup=${encodeURIComponent(bloodGroup)}`;
+    }
+
+    $.ajax({
+        type: "GET",
+        url: url,
+        dataType: "json",
+        headers: {
+            Authorization: "Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoidXNlciIsInN1YiI6InVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDM5MjE2MTQsImV4cCI6MTc0NDk1ODQxNH0.39sBbE25H79CxXFwPxuniNn_prGRRBgox29lX74MfomMjyNBn3dv6dVR6-vwUgWtyEp73xHmcVmK3IRHJjN6Ag"
+        },
+        success: function (response) {
+            if (response && response.data) {
+                let tableBody = "";
+                response.data.forEach((donor, index) => {
+                    let healthConditions = [];
+                    if (donor.hasDiabetes) healthConditions.push("Diabetes");
+                    if (donor.hasHeartProblem) healthConditions.push("Heart Problem");
+                    if (donor.hasLowPressure) healthConditions.push("Low Pressure");
+                    if (donor.hasHighPressure) healthConditions.push("High Pressure");
+                    if (donor.hasSocialIssues) healthConditions.push("Social Issues");
+                    if (donor.hasTattoos) healthConditions.push("Tattoos");
+                    if (donor.hasOtherIssues) healthConditions.push("Other Issues");
+
+                    let healthConditionsDisplay = healthConditions.length > 0 ? healthConditions.join(", ") : "None";
+
+                    tableBody += `
+                        <tr>
+                            <td>${donor.fullName || "N/A"}</td>
+                            <td>${donor.nicOrPassport || "N/A"}</td>
+                            <td>${donor.dateOfBirth || "N/A"}</td>
+                            <td>${donor.gender || "N/A"}</td>
+                            <td>${donor.bloodGroup || "N/A"}</td>
+                            <td>${donor.contact || "N/A"}</td>
+                            <td>${donor.email || "N/A"}</td>
+                            <td>${donor.address || "N/A"}</td>
+                            <td>${donor.city || "N/A"}</td>
+                            <td>${donor.district || "N/A"}</td>
+                            <td>${donor.province || "N/A"}</td>
+                            <td>${donor.zipCode || "N/A"}</td>
+                            <td>${healthConditionsDisplay}</td>
+                            <td><span class="editable-date" data-id="${donor.contact || "N/A"}">${donor.donationDate || "N/A"}</span></td>
+                            <td><button style="background-color: #10ad10; border-radius: 15%;" onclick="openPopup('${donor.contact}')">Edit Date</button></td>
+                        </tr>
+                    `;
+                });
+
+                donorsTableBody.innerHTML = tableBody;
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Error fetching donors:", error);
+        }
+    });
+}
