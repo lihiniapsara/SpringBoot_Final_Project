@@ -16,7 +16,7 @@ function addInventory(event) {
         data: JSON.stringify(blood_inventory),
         dataType: "json",
         headers: {
-            Authorization: "Bearer " +"eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoidXNlciIsInN1YiI6InVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDM5MjE2MTQsImV4cCI6MTc0NDk1ODQxNH0.39sBbE25H79CxXFwPxuniNn_prGRRBgox29lX74MfomMjyNBn3dv6dVR6-vwUgWtyEp73xHmcVmK3IRHJjN6Ag"
+            Authorization: "Bearer " + "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiZG9ub3IiLCJzdWIiOiJqYW5lLmRvZUBnbWFpbC5jb20iLCJpYXQiOjE3NDUxMzczMjQsImV4cCI6MTc0NjE3NDEyNH0.0HbqYUKDOIFGrzZ_aXWdh80M7jBRuRn7V6C1yS_sifUg1J0UUClR0gDnfGiWnEyySVg2klpif4pU-94NxVggWg"
         },
         success: function (response) {
             console.log(response);
@@ -45,7 +45,7 @@ function loadInventoryTable() {
         contentType: "application/json",
         dataType: "json",
         headers: {
-            Authorization: "Bearer " +"eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoidXNlciIsInN1YiI6InVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDM5MjE2MTQsImV4cCI6MTc0NDk1ODQxNH0.39sBbE25H79CxXFwPxuniNn_prGRRBgox29lX74MfomMjyNBn3dv6dVR6-vwUgWtyEp73xHmcVmK3IRHJjN6Ag"
+            Authorization: "Bearer " + "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiZG9ub3IiLCJzdWIiOiJqYW5lLmRvZUBnbWFpbC5jb20iLCJpYXQiOjE3NDUxMzczMjQsImV4cCI6MTc0NjE3NDEyNH0.0HbqYUKDOIFGrzZ_aXWdh80M7jBRuRn7V6C1yS_sifUg1J0UUClR0gDnfGiWnEyySVg2klpif4pU-94NxVggWg"
         },
         success: function (response) {
             console.log(response.data);
@@ -115,7 +115,7 @@ function deleteExpiredItems(ids) {
                 url: `http://localhost:8080/api/v1/blood-inventory/delete/${id}`,
                 type: 'DELETE',
                 headers: {
-                    Authorization: "Bearer " +"eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoidXNlciIsInN1YiI6InVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDM5MjE2MTQsImV4cCI6MTc0NDk1ODQxNH0.39sBbE25H79CxXFwPxuniNn_prGRRBgox29lX74MfomMjyNBn3dv6dVR6-vwUgWtyEp73xHmcVmK3IRHJjN6Ag"
+                    Authorization: "Bearer " + "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiZG9ub3IiLCJzdWIiOiJqYW5lLmRvZUBnbWFpbC5jb20iLCJpYXQiOjE3NDUxMzczMjQsImV4cCI6MTc0NjE3NDEyNH0.0HbqYUKDOIFGrzZ_aXWdh80M7jBRuRn7V6C1yS_sifUg1J0UUClR0gDnfGiWnEyySVg2klpif4pU-94NxVggWg"
                 },
                 success: function() {
                     console.log(`Deleted expired item with ID: ${id}`);

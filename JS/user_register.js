@@ -1,4 +1,3 @@
-
 function registerUser(event) {
     event.preventDefault(); // Prevent form from submitting the traditional way
 
@@ -11,6 +10,9 @@ function registerUser(event) {
                     username: $("input[placeholder='Choose a username']").val(),
                     email: $("input[placeholder='Enter your email']").val(),
                     password: $("#password").val(),
+                    fullName: $("input[placeholder='Enter your full name']").val(),
+                    mobileNumber: $("input[placeholder='Enter your phone number']").val(),
+                    nicNumber: $("input[placeholder='Enter your nic']").val(),
                     role: "USER",
                 };
                 console.log(user)
@@ -22,7 +24,7 @@ function registerUser(event) {
                     data:JSON.stringify(user),
                     dataType: "json",
                     headers: {
-                        Authorization: "Bearer " +"eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoidXNlciIsInN1YiI6InVzZXJAZXhhbXBsZS5jb20iLCJpYXQiOjE3NDM5MjE2MTQsImV4cCI6MTc0NDk1ODQxNH0.39sBbE25H79CxXFwPxuniNn_prGRRBgox29lX74MfomMjyNBn3dv6dVR6-vwUgWtyEp73xHmcVmK3IRHJjN6Ag"
+                        Authorization: "Bearer " + "eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiZG9ub3IiLCJzdWIiOiJqYW5lLmRvZUBnbWFpbC5jb20iLCJpYXQiOjE3NDUxMzczMjQsImV4cCI6MTc0NjE3NDEyNH0.0HbqYUKDOIFGrzZ_aXWdh80M7jBRuRn7V6C1yS_sifUg1J0UUClR0gDnfGiWnEyySVg2klpif4pU-94NxVggWg"
                     },
                     success: function (response) {
                         alert(response.message);

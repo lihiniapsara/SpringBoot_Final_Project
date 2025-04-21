@@ -1,43 +1,73 @@
 document.addEventListener('DOMContentLoaded', function () {
-    $("#loginbtn").on("click", function (event) {
+});
+$("#loginbtn").on("click", function (event) {
+    event.preventDefault();
+    console.log("esdrtfhyuol")
+    // Get the form data
+    let formData = {
+        email: $("#email").val(),
+        password: $("#password").val()
+    };
 
-console.log("esdrtfhyuol")
-        // Get the form data
-        let formData = {
-            email: $("#email").val(),
-            password: $("#password").val()
-        };
+    // Send data using AJAX
+    $.ajax({
+        type: "POST",
+        url: "http://localhost:8080/api/v1/auth/authenticate",  // Your login endpoint here
+        contentType: "application/json",  // Make sure to send JSON data
+        dataType: "json",
+        data: JSON.stringify(formData),  // Convert the data to JSON format
+        success: function (response) {
 
-        // Send data using AJAX
-        $.ajax({
-            type: "POST",
-            url: "http://localhost:8080/api/v1/auth/authenticate",  // Your login endpoint here
-            contentType: "application/json",  // Make sure to send JSON data
-            dataType: "json",
+            console.log("Login response:"+response)
 
-            data: JSON.stringify(formData),  // Convert the data to JSON format
-            success: function (response) {
-
-                console.log("Login response:"+response)
-
-                window.location.href = "../html/index.html";
-           /*     if (response.message === "success") {
-                    // Handle success (e.g., redirect or display message)
-                    alert("Login successful!");
-                    window.location.href = "dashboard.html"; // Redirect to dashboard or homepage
-                } else {
-                    // Handle error (e.g., invalid credentials)
-                    alert("Invalid credentials. Please try again.");
-                }*/
-            },
-            error: function (xhr, status, error) {
-                // Handle errors (e.g., server issues)
-                console.error("Error:", xhr.responseText);
-                alert("An error occurred. Please try again later.");
-            }
-        });
+            //  window.location.href = "../html/index.html";
+            localStorage.setItem("token", response.data.token);
+            localStorage.setItem("email", response.data.email);
+            //alert("sdert7ygfcfyu7ygfcgyuygfvgu")
+            getuser(response.data.email);
+            // Handle success (e.g., redirect or display message)
+            // alert("Login successful!");
+            //window.location.href = "dashboard.html"; // Redirect to dashboard or homepage
+        },
+        error: function (xhr, status, error) {
+            // Handle errors (e.g., server issues)
+            console.error("Error:", xhr.responseText);
+            alert("An error occurred. Please try again later.");
+        }
     });
 });
+
+function getuser(email) {
+    console.log(email)
+    $.ajax({
+        type: "GET",
+        url: "http://localhost:8080/api/v1/user/getemail/" + email,
+        contentType: "application/json",
+        dataType: "json",
+        success: function (response) {
+            console.log(response);
+                localStorage.setItem("user",response.data);
+                localStorage.setItem("role",response.data.role);
+                let role = localStorage.getItem("role");
+                // Handle success (e.g., redirect or display message)
+//USER donor Hospital
+            if (role === "USER") {
+                window.location.href = "../html/chat.html";
+            } else if (role === "donor") {
+                window.location.href = "../html/chat.html";
+            } else if (role === "Hospital") {
+                window.location.href = "../html/index.html";
+            } else if (role === "admin") {
+                window.location.href = "../html/index.html";
+
+            }
+
+                console.log(response.data);
+                alert("Login successful!");
+               // window.location.href = "dashboard.html"; // Redirect to dashboard or homepage
+
+        }})
+}
 $(document).ready(function() {
     let countdownTime = 30; // 30 seconds
     let countdown = setInterval(function() {

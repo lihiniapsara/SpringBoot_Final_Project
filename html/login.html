@@ -3,25 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login System - Firebase</title>
+    <title>Login System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
+        /* Your existing CSS remains unchanged */
         body {
-            background-image: url('../Assest/images/login.png'); /* Replace with your image URL */
-            background-size: cover; /* Ensures the image covers the entire screen */
-            background-position: center; /* Centers the image */
-            background-repeat: no-repeat; /* Prevents the image from repeating */
-            background-attachment: fixed; /* Makes the background fixed while scrolling */
+            background-image: url('../Assest/images/login.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
             position: relative;
             min-height: 100vh;
             display: flex;
-            justify-content: flex-start; /* Aligns the container to the left */
-            align-items: center; /* Centers the items vertically */
-            padding-left: 50px; /* Adds some padding to the left to avoid touching the edge */
+            justify-content: flex-start;
+            align-items: center;
+            padding-left: 50px;
         }
 
-        /* Login container positioned to the left */
         .login-container {
             width: 400px;
             padding: 30px;
@@ -55,12 +55,12 @@
             cursor: pointer;
             transition: all 0.3s ease;
             margin: 0 10px;
-            background-color: rgba(255, 255, 255, 0); /* White background */
+            background-color: rgba(255, 255, 255, 0);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
         .social-icon:hover {
-            transform: scale(1.1); /* Slightly larger on hover */
+            transform: scale(1.1);
         }
 
         .social-icon img {
@@ -68,7 +68,7 @@
         }
 
         .social-icon img:hover {
-            transform: scale(1.1); /* Slightly increase the size */
+            transform: scale(1.1);
         }
 
         .facebook-icon {
@@ -82,20 +82,15 @@
 
         .social-icons-container {
             display: flex;
-            align-items: center; /* Center the items vertically */
-            justify-content: flex-end; /* Center the items horizontally */
+            align-items: center;
+            justify-content: flex-end;
             margin-top: 20px;
-        }
-
-        .social-icon i {
-            margin: 0;
         }
 
         .forgot-password-btn {
             text-decoration: underline;
         }
 
-        /* Forgot Password Popup */
         .popup-container {
             display: none;
             position: fixed;
@@ -125,6 +120,10 @@
             top: 10px;
             right: 15px;
         }
+
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -132,7 +131,8 @@
 <div class="login-container">
     <h3 class="text-center mb-4 text-danger">Login</h3>
 
-    <!-- Email & Phone Number Login -->
+    <!-- Email & Password Login Form -->
+    <form id="loginForm">
         <div class="mb-3">
             <label for="email" class="form-label">Email Address</label>
             <input type="email" class="form-control" id="email" placeholder="Enter your email address" required>
@@ -140,54 +140,69 @@
         <div class="mb-3">
             <label for="password" class="form-label">Password</label>
             <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
-            <a href="#" class="forgot-password-btn text-decoration-none" style="color: #8b0000;" onclick="showForgotPasswordPopup()">Forgot Password?</a>
+            <a href="#" class="forgot-password-btn text-decoration-none" style="color: #8b0000;" onclick="openForgetModal()">Forgot Password?</a>
         </div>
-        <!-- Login Button aligned to the right -->
         <div class="d-flex justify-content-end">
             <button id="loginbtn" class="btn btn-red w-50">Login</button>
         </div>
+    </form>
 
     <!-- Google and Facebook Login -->
     <div class="social-icons-container">
-        <!-- Google Login Icon -->
         <div id="googleLogin" class="social-icon google-icon">
             <img src="../Assest/images/google.png" style="width: 30px; height: 30px;" alt="Google Logo" />
         </div>
-
-        <!-- Facebook Login Icon -->
         <div id="facebookLogin" class="social-icon facebook-icon">
             <i class="fab fa-facebook-f"></i>
         </div>
     </div>
 
     <p class="mt-3 text-center">Don't have an account?
-        <a href="UserRegister.html" class="text-decoration-none"> Sign up Now</a>
+        <a href="UserRegister.html" class="text-decoration-none">Sign up Now</a>
     </p>
 </div>
 
 <!-- Forgot Password Popup -->
-<div id="forgotPasswordPopup" class="popup-container">
+<div id="forget" class="popup-container">
     <div class="popup-content">
-        <span class="close-btn" onclick="hideForgotPasswordPopup()">&times;</span>
+        <span class="close-btn" onclick="closePopup()">×</span>
         <h4>Reset Password</h4>
         <form id="resetPasswordForm">
             <div class="mb-3">
-                <label for="resetEmail" class="form-label">Email or Phone</label>
-                <input type="text" class="form-control" id="resetEmail" placeholder="Enter your email or phone" required>
+                <label for="resetEmail" class="form-label">Email</label>
+                <input type="email" class="form-control" id="resetEmail" placeholder="Enter your email" required>
             </div>
             <div class="d-flex justify-content-end">
-                <button type="submit" class="btn btn-red w-50">Send OTP</button>
+                <button type="button" id="sentOTP" class="btn btn-red w-50" onclick="sendOTP()">Send OTP</button>
             </div>
+            <div id="otpField" class="mb-3 hidden">
+                <label for="otp" class="form-label">Enter OTP</label>
+                <input type="text" class="form-control" id="otp" placeholder="Enter OTP" required>
+            </div>
+            <div class="d-flex justify-content-end hidden" id="submitOTP">
+                <button type="button" class="btn btn-red w-50" onclick="verifyOTP()">Submit OTP</button>
+            </div>
+            <div id="newPassword" class="mb-3 hidden">
+                <label for="newPass" class="form-label">New Password</label>
+                <input type="password" class="form-control" id="newPass" placeholder="Enter new password" required>
+            </div>
+            <div class="d-flex justify-content-end hidden" id="submitPass">
+                <button type="button" class="btn btn-red w-50" onclick="resetPassword()">Reset Password</button>
+            </div>
+            <p id="resend" class="hidden">
+                Resend OTP in <span id="countdown"></span>
+            </p>
         </form>
     </div>
 </div>
 
-<!-- Firebase SDK -->
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.8.0/firebase-auth.js";
-
-    // Firebase configuration
+<!-- Firebase SDK (Compatibility Mode) -->
+<script src="https://www.gstatic.com/firebasejs/9.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.8.0/firebase-auth-compat.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="../JS/login.js"></script>
+<script>
+    // Firebase Configuration
     const firebaseConfig = {
         apiKey: "AIzaSyD52WhQ79ew9x1fbJjrteEAMeQ_yYNJwjw",
         authDomain: "springbootfinal-ddc59.firebaseapp.com",
@@ -199,47 +214,78 @@
     };
 
     // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
-    // Make functions available globally
-    window.showForgotPasswordPopup = function() {
-        document.getElementById("forgotPasswordPopup").style.display = 'flex';
-    };
+    // Modal and Popup Functions
+    function openModal() {
+        document.getElementById("loginModal").style.display = "block";
+    }
 
-    window.hideForgotPasswordPopup = function() {
-        document.getElementById("forgotPasswordPopup").style.display = 'none';
-    };
+    function closeModal() {
+        document.getElementById("loginModal").style.display = "none";
+    }
 
-    // Email Login
-    document.getElementById("loginForm").addEventListener("submit", (e) => {
-        e.preventDefault();
+    function openRegModal() {
+        document.getElementById("registrationModal").style.display = "block";
+    }
 
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
+    function closeRegModal() {
+        document.getElementById("registrationModal").style.display = "none";
+    }
 
-        signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                console.log("Logged in: ", userCredential.user);
-                alert("Login successful!");
-                // Redirect to dashboard or home pagea
-                // window.location.href = "dashboard.html";
-            })
-            .catch((error) => {
-                console.error("Error: ", error.message);
-                alert("Login failed: " + error.message);
-            });
+    function openForgetModal() {
+        document.getElementById("forget").style.display = "flex";
+    }
+
+    function closePopup() {
+        document.getElementById("forget").style.display = "none";
+    }
+
+    // Email/Password Login (Spring Boot Backend)
+/*
+    document.getElementById("loginForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const formData = {
+            email: $("#email").val(),
+            password: $("#password").val()
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:8080/api/v1/auth/authenticate",
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify(formData),
+            success: function (response) {
+                console.log("Login response:", response);
+                if (response.message === "Success") { // Adjust based on your backend response
+                    console.log("dfghjk")
+                    alert("Login successful!");
+                    window.location.href = "../html/index.html"; // Redirect to your desired page
+                } else {
+                    alert("Invalid credentials. Please try again.");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error:", xhr.responseText);
+                alert("An error occurred. Please try again later.");
+            }
+        });
     });
+*/
 
-    // Google Login
-    const googleProvider = new GoogleAuthProvider();
+    // Google Login (Firebase)
+    const googleProvider = new firebase.auth.GoogleAuthProvider();
     document.getElementById("googleLogin").addEventListener("click", () => {
-        signInWithPopup(auth, googleProvider)
+        auth.signInWithPopup(googleProvider)
             .then((result) => {
                 console.log("Google login successful: ", result.user);
                 alert("Google login successful!");
-                // Redirect to dashboard or home page
-                // window.location.href = "dashboard.html";
+                // Optionally sync user data with your backend
+                syncUserWithBackend(result.user);
+                window.location.href = "../html/index.html"; // Redirect
             })
             .catch((error) => {
                 console.error("Google login error: ", error.message);
@@ -247,15 +293,16 @@
             });
     });
 
-    // Facebook Login
-    const facebookProvider = new FacebookAuthProvider();
+    // Facebook Login (Firebase)
+    const facebookProvider = new firebase.auth.FacebookAuthProvider();
     document.getElementById("facebookLogin").addEventListener("click", () => {
-        signInWithPopup(auth, facebookProvider)
+        auth.signInWithPopup(facebookProvider)
             .then((result) => {
                 console.log("Facebook login successful: ", result.user);
                 alert("Facebook login successful!");
-                // Redirect to dashboard or home page
-                // window.location.href = "dashboard.html";
+                // Optionally sync user data with your backend
+                syncUserWithBackend(result.user);
+                window.location.href = "../html/index.html"; // Redirect
             })
             .catch((error) => {
                 console.error("Facebook login error: ", error.message);
@@ -263,140 +310,146 @@
             });
     });
 
-    // Reset Password Form
-    document.getElementById("resetPasswordForm").addEventListener("submit", (e) => {
-        e.preventDefault();
-        const emailOrPhone = document.getElementById("resetEmail").value;
+    // Sync Firebase User with Backend (Optional)
+    function syncUserWithBackend(user) {
+        const userData = {
+            email: user.email,
+            firebaseUid: user.uid,
+            displayName: user.displayName
+        };
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:8080/api/v1/users/sync", // Your backend endpoint
+            contentType: "application/json",
+            data: JSON.stringify(userData),
+            success: function (response) {
+                console.log("User synced with backend:", response);
+            },
+            error: function (xhr, status, error) {
+                console.error("Error syncing user:", xhr.responseText);
+            }
+        });
+    }
 
-        if (emailOrPhone.includes('@')) {
-            // Email reset
-            sendPasswordResetEmail(auth, emailOrPhone)
-                .then(() => {
-                    alert("Password reset link sent to your email.");
-                    hideForgotPasswordPopup();
-                })
-                .catch((error) => {
-                    console.error("Error: ", error.message);
-                    alert("Error sending reset email: " + error.message);
-                });
-        } else {
-            // For phone reset, you might need to implement a custom solution
-            // or use Firebase phone authentication
-            alert("Phone reset functionality is not implemented yet.");
+    // OTP and Password Reset Logic
+    let serverOTP;
+
+    function sendOTP() {
+        const email = document.getElementById("resetEmail").value;
+        if (!email) {
+            alert("Please enter your email address.");
+            return;
         }
-    });
-</script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    // This code should be in your login.js file or replace the inline script
 
-    document.addEventListener("DOMContentLoaded", function() {
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyD52WhQ79ew9x1fbJjrteEAMeQ_yYNJwjw",
-            authDomain: "springbootfinal-ddc59.firebaseapp.com",
-            projectId: "springbootfinal-ddc59",
-            storageBucket: "springbootfinal-ddc59.firebasestorage.app",
-            messagingSenderId: "1917804613",
-            appId: "1:1917804613:web:84e4c12345d665099b832c",
-            measurementId: "G-HTF9SLYP3F"
-        };
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:8080/api/v1/pass/OTP",
+            contentType: "application/json",
+            data: JSON.stringify({ email: email }),
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+                serverOTP = response; // Store OTP from server
+                alert("OTP has been sent to " + email + ". Please check your inbox.");
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
+                // Show OTP field and submit button
+                document.getElementById("otpField").classList.remove("hidden");
+                document.getElementById("submitOTP").classList.remove("hidden");
+                document.getElementById("sentOTP").classList.add("hidden");
+                document.getElementById("resend").classList.remove("hidden");
 
-        // Make functions available globally
-        window.showForgotPasswordPopup = function() {
-            document.getElementById("forgotPasswordPopup").style.display = 'flex';
-        };
+                // Start countdown
+                let countdownTime = 30;
+                document.getElementById("resend").classList.add("disabled");
+                document.getElementById("countdown").textContent = countdownTime + "s";
 
-        window.hideForgotPasswordPopup = function() {
-            document.getElementById("forgotPasswordPopup").style.display = 'none';
-        };
-
-        // Email Login
-        document.getElementById("loginbtn").addEventListener("click", () => {
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
-
-            if (!email || !password) {
-                alert("Please enter both email and password");
-                return;
-            }
-
-            auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    console.log("Logged in: ", userCredential.user);
-                    alert("Login successful!");
-                    // Redirect to dashboard or home page
-                })
-                .catch((error) => {
-                    console.error("Error: ", error.message);
-                    alert("Login failed: " + error.message);
-                });
-        });
-
-        // Google Login
-        const googleProvider = new firebase.auth.GoogleAuthProvider();
-        document.getElementById("googleLogin").addEventListener("click", () => {
-            auth.signInWithPopup(googleProvider)
-                .then((result) => {
-                    console.log("Google login successful: ", result.user);
-                    alert("Google login successful!");
-                    window.location.href = "chat.html";
-
-                    // Redirect to dashboard or home page
-                    // window.location.href = "dashboard.html";
-                })
-                .catch((error) => {
-                    console.error("Google login error: ", error.message);
-                    alert("Google login failed: " + error.message);
-                });
-        });
-
-        // Facebook Login
-        const facebookProvider = new firebase.auth.FacebookAuthProvider();
-        document.getElementById("facebookLogin").addEventListener("click", () => {
-            auth.signInWithPopup(facebookProvider)
-                .then((result) => {
-                    console.log("Facebook login successful: ", result.user);
-                    alert("Facebook login successful!");
-                    // Redirect to dashboard or home page
-                    // window.location.href = "dashboard.html";
-                })
-                .catch((error) => {
-                    console.error("Facebook login error: ", error.message);
-                    alert("Facebook login failed: " + error.message);
-                });
-        });
-
-        // Reset Password Form
-        document.getElementById("resetPasswordForm").addEventListener("submit", (e) => {
-            e.preventDefault();
-            const emailOrPhone = document.getElementById("resetEmail").value;
-
-            if (emailOrPhone.includes('@')) {
-                // Email reset
-                auth.sendPasswordResetEmail(emailOrPhone)
-                    .then(() => {
-                        alert("Password reset link sent to your email.");
-                        hideForgotPasswordPopup();
-                    })
-                    .catch((error) => {
-                        console.error("Error: ", error.message);
-                        alert("Error sending reset email: " + error.message);
-                    });
-            } else {
-                // For phone reset, you might need to implement a custom solution
-                // or use Firebase phone authentication
-                alert("Phone reset functionality is not implemented yet.");
+                const countdown = setInterval(function () {
+                    countdownTime--;
+                    document.getElementById("countdown").textContent = countdownTime + "s";
+                    if (countdownTime <= 0) {
+                        clearInterval(countdown);
+                        document.getElementById("resend").classList.remove("disabled");
+                        document.getElementById("countdown").textContent = "";
+                    }
+                }, 1000);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert("Failed to send OTP. Please try again.");
             }
         });
-    });
+    }
+
+    function resendOTP() {
+        if (document.getElementById("resend").classList.contains("disabled")) {
+            return;
+        }
+        sendOTP();
+    }
+
+    function verifyOTP() {
+        const enteredOTP = document.getElementById("otp").value;
+        if (!enteredOTP) {
+            alert("Please enter the OTP.");
+            return;
+        }
+
+        if (enteredOTP == serverOTP) {
+            alert("OTP Verified. Please set your new password.");
+            document.getElementById("newPassword").classList.remove("hidden");
+            document.getElementById("submitPass").classList.remove("hidden");
+            document.getElementById("otpField").classList.add("hidden");
+            document.getElementById("submitOTP").classList.add("hidden");
+            document.getElementById("resend").classList.add("hidden");
+        } else {
+            alert("Invalid OTP. Please try again.");
+        }
+    }
+
+    function resetPassword() {
+        const email = document.getElementById("resetEmail").value;
+        const password = document.getElementById("newPass").value;
+
+        if (!password) {
+            alert("Please enter a new password.");
+            return;
+        }
+
+        const data = {
+            email: email,
+            password: password
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:8080/api/v1/pass/resetPassword",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+                alert("Password has been reset successfully. You can now login with your new password.");
+                closePopup();
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert("Failed to reset password. Please try again.");
+            }
+        });
+    }
+
+    // Handle clicks outside modals
+    window.onclick = function (event) {
+        if (event.target == document.getElementById("loginModal")) {
+            closeModal();
+        }
+        if (event.target == document.getElementById("registrationModal")) {
+            closeRegModal();
+        }
+        if (event.target == document.getElementById("forget")) {
+            closePopup();
+        }
+    };
 </script>
-<script src="https://www.gstatic.com/firebasejs/9.8.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.8.0/firebase-auth-compat.js"></script>
-<script src="../JS/login.js"></script>
 </body>
 </html>

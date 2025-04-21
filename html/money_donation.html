@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood AI Blood Donation System</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #e53935;
+            --primary-dark: #c62828;
+            --primary-light: #ffcdd2;
+            --accent: #ff7043;
+            --text-dark: #333333;
+            --text-light: #757575;
+            --background: #f5f5f5;
+            --white: #ffffff;
+            --success: #4CAF50;
+            --border-radius: 10px;
+            --box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--white);
+            padding: 30px 0;
+            text-align: center;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/api/placeholder/900/300');
+            background-size: cover;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .logo-icon {
+            font-size: 40px;
+            margin-right: 15px;
+            color: var(--white);
+        }
+
+        .logo-text h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .logo-text p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .main-card {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 40px;
+            background-color: #fafafa;
+            border-bottom: 1px solid #eee;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            flex: 1;
+        }
+
+        .progress-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background-color: #ddd;
+            z-index: 1;
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--white);
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+            transition: var(--transition);
+        }
+
+        .step-active .step-number {
+            background-color: var(--primary);
+        }
+
+        .step-complete .step-number {
+            background-color: var(--success);
+        }
+
+        .step-title {
+            font-size: 14px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .step-active .step-title {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .step-complete .step-title {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 40px;
+        }
+
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        .step-title-heading {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+
+        .step-subtitle {
+            font-size: 16px;
+            color: var(--text-light);
+            margin-bottom: 30px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .required::after {
+            content: " *";
+            color: var(--primary);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .amount-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .amount-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px 15px;
+            background-color: #f0f0f0;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .amount-btn:hover {
+            background-color: #e6e6e6;
+            border-color: #ccc;
+        }
+
+        .amount-btn.active {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            border-color: var(--primary);
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+        }
+
+        .btn {
+            padding: 14px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .btn-prev {
+            background-color: #f0f0f0;
+            color: var(--text-dark);
+        }
+
+        .btn-prev:hover {
+            background-color: #e0e0e0;
+        }
+
+        .btn-next {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-next:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .card-methods {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .card-method {
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .card-method:hover {
+            border-color: #ccc;
+        }
+
+        .card-method.active {
+            border-color: var(--primary);
+        }
+
+        .card-method img {
+            height: 30px;
+            margin-right: 10px;
+        }
+
+        .secure-badge {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+            color: var(--success);
+            font-weight: 500;
+        }
+
+        .secure-badge i {
+            margin-right: 8px;
+        }
+
+        .payment-details {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+
+        .summary-table {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .summary-table tr {
+            border-bottom: 1px solid #eee;
+        }
+
+        .summary-table td {
+            padding: 12px 0;
+        }
+
+        .summary-table td:last-child {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .total-row td {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--primary);
+        }
+
+        .thank-you {
+            display: none;
+            text-align: center;
+            padding: 60px 40px;
+        }
+
+        .thank-you-icon {
+            width: 80px;
+            height: 80px;
+            background-color: var(--success);
+            color: var(--white);
+            font-size: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+        }
+
+        .thank-you h2 {
+            color: var(--success);
+            margin-bottom: 15px;
+            font-size: 28px;
+        }
+
+        .thank-you p {
+            color: var(--text-light);
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .transaction-details {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .transaction-details p {
+            margin-bottom: 10px;
+        }
+
+        .transaction-details p strong {
+            color: var(--text-dark);
+        }
+
+        footer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 40px;
+            padding: 20px 0;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .card-body {
+                padding: 25px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+
+            .progress-bar {
+                padding: 15px;
+            }
+
+            .step-number {
+                width: 40px;
+                height: 40px;
+                font-size: 14px;
+            }
+
+            .step-title {
+                font-size: 12px;
+            }
+
+            .progress-step:not(:last-child)::after {
+                top: 20px;
+            }
+
+            .amount-options {
+                flex-direction: column;
+            }
+
+            .amount-btn {
+                width: 100%;
+            }
+
+            .card-methods {
+                flex-direction: column;
+            }
+
+            .card-method {
+                width: 100%;
+            }
+
+            footer {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .footer-links {
+                justify-content: center;
+            }
+        }
+
+        .error-message {
+            color: var(--primary);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* Styles for donations list */
+        .donations-list {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .donations-list h2 {
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .donations-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .donations-table th,
+        .donations-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .donations-table th {
+            background-color: #f9f9f9;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .donations-table td {
+            color: var(--text-light);
+        }
+
+        .fetch-donations-btn {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 14px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            margin-bottom: 20px;
+        }
+
+        .fetch-donations-btn:hover {
+            background-color: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-heartbeat logo-icon"></i>
+                <div class="logo-text">
+                    <h1>Blood AI</h1>
+                    <p>Blood Donation System</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-card">
+        <div class="progress-bar">
+            <div class="progress-step step-active" data-step="1">
+                <div class="step-number">1</div>
+                <div class="step-title">Personal Info</div>
+            </div>
+            <div class="progress-step" data-step="2">
+                <div class="step-number">2</div>
+                <div class="step-title">Donation Amount</div>
+            </div>
+            <div class="progress-step" data-step="3">
+                <div class="step-number">3</div>
+                <div class="step-title">Payment</div>
+            </div>
+            <div class="progress-step" data-step="4">
+                <div class="step-number">4</div>
+                <div class="step-title">Confirmation</div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <!-- Step 1: Personal Information -->
+            <div class="form-step active" id="step1">
+                <h2 class="step-title-heading">Your Information</h2>
+                <p class="step-subtitle">Please provide your contact details</p>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name" class="required">Full Name</label>
+                        <input type="text" id="name" placeholder="Enter your full name">
+                        <div class="error-message" id="name-error">Full name is required</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="required">Email Address</label>
+                        <input type="email" id="email" placeholder="Enter your email address">
+                        <div class="error-message" id="email-error">Valid email is required</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone" class="required">Mobile Number</label>
+                        <input type="tel" id="phone" placeholder="Enter your mobile number">
+                        <div class="error-message" id="phone-error">Mobile number is required</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nic">NIC Number</label>
+                        <input type="text" id="nic" placeholder="Enter your NIC number (Optional)">
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <div></div>
+                    <button class="btn btn-next" id="toStep2">Continue</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Donation Amount -->
+            <div class="form-step" id="step2">
+                <h2 class="step-title-heading">Donation Amount</h2>
+                <p class="step-subtitle">How much would you like to donate today?</p>
+
+                <div class="form-group full-width">
+                    <label class="required">Select Amount (LKR)</label>
+                    <div class="amount-options">
+                        <div class="amount-btn" data-amount="500">LKR 500</div>
+                        <div class="amount-btn" data-amount="1000">LKR 1,000</div>
+                        <div class="amount-btn" data-amount="2500">LKR 2,500</div>
+                        <div class="amount-btn" data-amount="5000">LKR 5,000</div>
+                        <div class="amount-btn" data-amount="10000">LKR 10,000</div>
+                    </div>
+                    <input type="number" id="customAmount" placeholder="Or enter custom amount">
+                    <div class="error-message" id="amount-error">Please select or enter a donation amount</div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-prev" id="backToStep1">Back</button>
+                    <button class="btn btn-next" id="toStep3">Continue</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Payment Method -->
+            <div class="form-step" id="step3">
+                <h2 class="step-title-heading">Payment Method</h2>
+                <p class="step-subtitle">Choose your preferred payment method</p>
+
+                <div class="form-group full-width">
+                    <label class="required">Select Payment Method</label>
+                    <div class="card-methods">
+                        <div class="card-method payment-option active" data-payment="credit">
+                            <i class="fas fa-credit-card fa-lg" style="margin-right: 10px;"></i>
+                            <span>Credit/Debit Card</span>
+                        </div>
+                        <div class="card-method payment-option" data-payment="bank">
+                            <i class="fas fa-university fa-lg" style="margin-right: 10px;"></i>
+                            <span>Bank Transfer</span>
+                        </div>
+                        <div class="card-method payment-option" data-payment="payhere">
+                            <i class="fas fa-mobile-alt fa-lg" style="margin-right: 10px;"></i>
+                            <span>PayHere</span>
+                        </div>
+                    </div>
+                    <div class="error-message" id="payment-error">Please select a payment method</div>
+                </div>
+
+                <!-- Credit/Debit Card Payment Details -->
+                <div class="payment-details" id="creditPayment">
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label for="cardName" class="required">Cardholder Name</label>
+                            <input type="text" id="cardName" placeholder="Name as it appears on card">
+                            <div class="error-message" id="cardName-error">Cardholder name is required</div>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="bankSelection" class="required">Select Your Bank</label>
+                            <select id="bankSelection" class="form-control">
+                                <option value="" disabled selected>-- Select Your Bank --</option>
+                                <option value="BOC">Bank of Ceylon</option>
+                                <option value="PB">People's Bank</option>
+                                <option value="CB">Commercial Bank</option>
+                                <option value="HNB">Hatton National Bank</option>
+                                <option value="SAMPATH">Sampath Bank</option>
+                                <option value="SEYLAN">Seylan Bank</option>
+                                <option value="NTB">Nations Trust Bank</option>
+                                <option value="NSB">National Savings Bank</option>
+                                <option value="DFCC">DFCC Bank</option>
+                                <option value="NDB">NDB Bank</option>
+                                <option value="PAN">Pan Asia Bank</option>
+                                <option value="UNION">Union Bank</option>
+                                <option value="RDB">Regional Development Bank</option>
+                                <option value="AMANA">Amana Bank</option>
+                                <option value="CARGILLS">Cargills Bank</option>
+                            </select>
+                            <div class="error-message" id="bankSelection-error">Please select your bank</div>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="cardNumber" class="required">Card Number</label>
+                            <input type="text" id="cardNumber" placeholder="XXXX XXXX XXXX XXXX" maxlength="19">
+                            <div class="error-message" id="cardNumber-error">Valid card number is required</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="expiry" class="required">Expiry Date</label>
+                            <input type="text" id="expiry" placeholder="MM/YY" maxlength="5">
+                            <div class="error-message" id="expiry-error">Valid expiry date is required</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cvv" class="required">CVV/CVC</label>
+                            <input type="password" id="cvv" placeholder="XXX" maxlength="4">
+                            <div class="error-message" id="cvv-error">CVV is required</div>
+                        </div>
+                    </div>
+
+                    <div class="secure-badge">
+                        <i class="fas fa-lock"></i>
+                        <span>Secure Payment</span>
+                    </div>
+                    <p style="color: var(--text-light); font-size: 14px; margin-top: 8px;">Your payment is encrypted and secure. We never store your card details.</p>
+                </div>
+
+                <!-- Bank Transfer Details -->
+                <div class="payment-details" id="bankPayment" style="display: none;">
+                    <div class="form-group full-width">
+                        <h3 style="font-size: 18px; margin-bottom: 15px;">Bank Transfer Instructions</h3>
+                        <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px;">
+                            <p><strong>Bank:</strong> Bank of Ceylon</p>
+                            <p><strong>Account Name:</strong> Blood AI Donation System</p>
+                            <p><strong>Account Number:</strong> 7010-29814-1</p>
+                            <p><strong>Branch:</strong> Colombo Main Branch</p>
+                            <p style="margin-top: 15px; color: var(--primary);">Please use your NIC number as reference</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="proofOfPayment" class="required">Upload Proof of Payment</label>
+                        <input type="file" id="proofOfPayment" style="padding: 12px; border: 1px dashed #ddd;">
+                        <div class="error-message" id="proofOfPayment-error">Proof of payment is required</div>
+                    </div>
+                </div>
+
+                <!-- PayHere Details -->
+                <div class="payment-details" id="payherePayment" style="display: none;">
+                    <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; text-align: center;">
+                        <i class="fas fa-info-circle" style="color: var(--primary); font-size: 24px; margin-bottom: 15px;"></i>
+                        <p style="margin-bottom: 15px;">Click "Continue" to be redirected to the secure PayHere payment gateway.</p>
+                        <p>Supported methods: VISA, MasterCard, AMEX, eZ Cash, mCash, LankaPay</p>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="btn btn-prev" id="backToStep2">Back</button>
+                    <button class="btn btn-next" id="toStep4">Continue</button>
+                </div>
+            </div>
+
+            <!-- Step 4: Confirmation -->
+            <div class="form-step" id="step4">
+                <h2 class="step-title-heading">Review & Confirm</h2>
+                <p class="step-subtitle">Please review your donation details</p>
+
+                <table class="summary-table">
+                    <tr>
+                        <td>Name</td>
+                        <td id="summary-name"></td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td id="summary-email"></td>
+                    </tr>
+                    <tr>
+                        <td>Phone</td>
+                        <td id="summary-phone"></td>
+                    </tr>
+                    <tr>
+                        <td>Payment Method</td>
+                        <td id="summary-payment"></td>
+                    </tr>
+                    <tr class="total-row">
+                        <td>Donation Amount</td>
+                        <td id="summary-amount"></td>
+                    </tr>
+                </table>
+
+                <div class="button-group">
+                    <button class="btn btn-prev" id="backToStep3">Back</button>
+                    <button class="btn btn-next" id="completeDonation">Complete Donation</button>
+                </div>
+            </div>
+
+            <!-- Thank You Message -->
+            <div class="thank-you" id="thankYou">
+                <div class="thank-you-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h2>Thank You for Your Support!</h2>
+                <p>Your donation has been successfully processed.</p>
+                <p>A confirmation has been sent to your email.</p>
+
+                <div class="transaction-details">
+                    <p><strong>Transaction ID:</strong> <span id="transaction-id"></span></p>
+                    <p><strong>Date:</strong> <span id="transaction-date"></span></p>
+                    <p><strong>Amount:</strong> <span id="transaction-amount"></span></p>
+                </div>
+
+                <button class="btn btn-next" onclick="location.reload()">Make Another Donation</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Donations List Section -->
+    <div class="donations-list">
+        <h2>All Donations</h2>
+        <button class="fetch-donations-btn" id="fetchDonations">Fetch All Donations</button>
+        <table class="donations-table" id="donationsTable">
+            <thead>
+            <tr>
+                <th>Transaction ID</th>
+                <th>Amount (LKR)</th>
+                <th>Payment Method</th>
+                <th>Status</th>
+                <th>Date</th>
+            </tr>
+            </thead>
+            <tbody id="donationsTableBody">
+            <!-- Donations will be populated here -->
+            </tbody>
+        </table>
+    </div>
+
+    <footer>
+        <div class="copyright">
+            © 2025 Blood AI Blood Donation System. All rights reserved.
+        </div>
+        <div class="footer-links">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Contact</a>
+        </div>
+    </footer>
+</div>
+
+<script src="../JS/money.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</body>
+</html>
