@@ -39,6 +39,7 @@ $("#loginbtn").on("click", function (event) {
 
 function getuser(email) {
     console.log(email)
+
     $.ajax({
         type: "GET",
         url: "http://localhost:8080/api/v1/user/getemail/" + email,
